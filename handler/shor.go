@@ -29,7 +29,7 @@ func Shor(c *gin.Context) {
 	N, err := strconv.Atoi(Nstr)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"message": fmt.Sprintf("N=%v. N must be integer.", N),
+			"message": fmt.Sprintf("N=%v. N must be integer.", Nstr),
 		})
 		return
 	}
@@ -37,7 +37,7 @@ func Shor(c *gin.Context) {
 	t, err := strconv.Atoi(tstr)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"message": fmt.Sprintf("t=%v. t must be integer.", t),
+			"message": fmt.Sprintf("t=%v. t must be integer.", tstr),
 		})
 		return
 	}
@@ -45,7 +45,7 @@ func Shor(c *gin.Context) {
 	a, err := strconv.Atoi(astr)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"message": fmt.Sprintf("a=%v. a must be integer.", a),
+			"message": fmt.Sprintf("a=%v. a must be integer.", astr),
 		})
 		return
 	}
@@ -127,4 +127,8 @@ func Shor(c *gin.Context) {
 		})
 		return
 	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"N": N, "a": a, "t": t,
+	})
 }

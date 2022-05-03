@@ -3,6 +3,7 @@ package shor
 import (
 	"context"
 	"fmt"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -24,6 +25,7 @@ func Func(c *gin.Context) {
 	ctx := context.Background()
 	parent, err := tracer.NewContext(ctx, traceID, spanID, traceTrue)
 	if err != nil {
+		log.Printf("new context. traceID=%v spanID=%v: %v", traceID, spanID, err)
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}

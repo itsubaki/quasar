@@ -106,10 +106,11 @@ func Func(c *gin.Context) {
 	qsim.H(r0...)
 	qsim.CModExp2(a, N, r0, r1)
 	qsim.InvQFT(r0...)
+	qsim.Measure(r0...)
 
 	for _, state := range qsim.State(r0) {
 		_, m := state.Value()
-		_, r, _, ok := number.FindOrder(a, N, fmt.Sprintf("0.%s", m))
+		s, r, _, ok := number.FindOrder(a, N, fmt.Sprintf("0.%s", m))
 		if !ok || number.IsOdd(r) {
 			continue
 		}
@@ -122,8 +123,10 @@ func Func(c *gin.Context) {
 
 		c.JSON(http.StatusOK, gin.H{
 			"N": N, "a": a, "t": t,
-			"p": p0,
-			"q": p1,
+			"m":   fmt.Sprintf("0.%s", m),
+			"s/r": fmt.Sprintf("%v/%v", s, r),
+			"p":   p0,
+			"q":   p1,
 		})
 		return
 	}

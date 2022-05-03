@@ -128,32 +128,38 @@ func Func(c *gin.Context) {
 	Span(parent, "qsim.InvQFT(r0...)", func() { qsim.InvQFT(r0...) })
 	Span(parent, "qsim.Measure(r0...)", func() { qsim.Measure(r0...) })
 
-	for _, state := range qsim.State(r0) {
-		_, m := state.Value()
-		s, r, _, ok := number.FindOrder(a, N, fmt.Sprintf("0.%s", m))
-		if !ok || number.IsOdd(r) {
-			continue
+	out := func() gin.H {
+		_, s := tra.Start(parent, "find non-trivial factors")
+		defer s.End()
+
+		for _, state := range qsim.State(r0) {
+			_, m := state.Value()
+			s, r, _, ok := number.FindOrder(a, N, fmt.Sprintf("0.%s", m))
+			if !ok || number.IsOdd(r) {
+				continue
+			}
+
+			p0 := number.GCD(number.Pow(a, r/2)-1, N)
+			p1 := number.GCD(number.Pow(a, r/2)+1, N)
+			if number.IsTrivial(N, p0, p1) {
+				continue
+			}
+
+			return gin.H{
+				"N": N, "a": a, "t": t,
+				"m":   fmt.Sprintf("0.%s", m),
+				"s/r": fmt.Sprintf("%v/%v", s, r),
+				"p":   p0,
+				"q":   p1,
+			}
 		}
 
-		p0 := number.GCD(number.Pow(a, r/2)-1, N)
-		p1 := number.GCD(number.Pow(a, r/2)+1, N)
-		if number.IsTrivial(N, p0, p1) {
-			continue
-		}
-
-		c.JSON(http.StatusOK, gin.H{
+		return gin.H{
 			"N": N, "a": a, "t": t,
-			"m":   fmt.Sprintf("0.%s", m),
-			"s/r": fmt.Sprintf("%v/%v", s, r),
-			"p":   p0,
-			"q":   p1,
-		})
-		return
-	}
+		}
+	}()
 
-	c.JSON(http.StatusOK, gin.H{
-		"N": N, "a": a, "t": t,
-	})
+	c.JSON(http.StatusOK, out)
 }
 
 func Span(parent context.Context, spanName string, f func()) {

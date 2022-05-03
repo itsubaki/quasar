@@ -4,6 +4,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/itsubaki/quasar/handler/qasm"
+	"github.com/itsubaki/quasar/handler/shor"
 )
 
 func New() *gin.Engine {
@@ -18,7 +20,8 @@ func New() *gin.Engine {
 	Status(g)
 
 	// application
-	g.GET("/shor/:N", Shor)
+	g.GET("/shor/:N", shor.Func)
+	g.POST("/qasm",qasm.Func)
 
 	return g
 }

@@ -1,4 +1,4 @@
-package handler
+package shor
 
 import (
 	"fmt"
@@ -11,7 +11,7 @@ import (
 	"github.com/itsubaki/q/pkg/math/rand"
 )
 
-func Shor(c *gin.Context) {
+func Func(c *gin.Context) {
 	Nstr := c.Param("N")
 	tstr := c.Query("t")
 	astr := c.Query("a")

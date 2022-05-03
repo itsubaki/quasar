@@ -11,7 +11,7 @@ $ gcloud app deploy app.yaml
 ## Example
 
 ```shell
-% curl -s https://${PROJECT_ID}.an.r.appspot.com/shor/15 | jq .
+$ curl -s https://${PROJECT_ID}.an.r.appspot.com/shor/15 | jq .
 {
   "N": 15,
   "a": 13,

@@ -17,6 +17,9 @@ func New() *gin.Engine {
 	Root(g)
 	Status(g)
 
+	// application
+	g.GET("/shor/:N", Shor)
+
 	return g
 }
 

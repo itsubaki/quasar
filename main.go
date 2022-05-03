@@ -10,15 +10,26 @@ import (
 	"syscall"
 	"time"
 
+	"cloud.google.com/go/profiler"
 	"github.com/itsubaki/quasar/handler"
 )
 
-var timeout = 5 * time.Second
+var (
+	timeout   = 5 * time.Second
+	port      = os.Getenv("PORT")
+	projectID = os.Getenv("GOOGLE_CLOUD_PROJECT")
+)
 
 func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
-	port := os.Getenv("PORT")
+	if len(projectID) > 0 {
+		// enable profiler on GCP
+		if err := profiler.Start(profiler.Config{}); err != nil {
+			log.Fatalf("profiler start: %v", err)
+		}
+	}
+
 	if port == "" {
 		port = "8080"
 	}

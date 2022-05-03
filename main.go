@@ -12,6 +12,7 @@ import (
 
 	"cloud.google.com/go/profiler"
 	"github.com/itsubaki/quasar/handler"
+	"github.com/itsubaki/quasar/tracer"
 )
 
 var (
@@ -29,6 +30,12 @@ func main() {
 			log.Fatalf("profiler start: %v", err)
 		}
 	}
+
+	f, err := tracer.Setup(timeout)
+	if err != nil {
+		log.Fatalf("tracer setup: %v", err)
+	}
+	defer f()
 
 	if port == "" {
 		port = "8080"

@@ -1,12 +1,12 @@
 module github.com/itsubaki/quasar
 
-go 1.17
+go 1.18
 
 require (
 	cloud.google.com/go/profiler v0.2.0
 	github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/trace v1.5.0
 	github.com/gin-gonic/gin v1.7.7
-	github.com/itsubaki/q v1.0.7
+	github.com/itsubaki/q v1.1.5-0.20220503154805-4ea73de7b194
 	go.opentelemetry.io/otel v1.7.0
 	go.opentelemetry.io/otel/sdk v1.7.0
 	go.opentelemetry.io/otel/trace v1.7.0

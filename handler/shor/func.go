@@ -31,17 +31,8 @@ func Func(c *gin.Context) {
 	}
 
 	Nstr := c.Param("N")
-	tstr := c.Query("t")
-	astr := c.Query("a")
-
-	// set default value
-	if tstr == "" {
-		tstr = "3"
-	}
-
-	if astr == "" {
-		astr = "-1"
-	}
+	tstr := DefaultValue(c.Query("t"), "3")
+	astr := DefaultValue(c.Query("a"), "-1")
 
 	// validation
 	N, err := strconv.Atoi(Nstr)
@@ -68,6 +59,7 @@ func Func(c *gin.Context) {
 		return
 	}
 
+	// primality test
 	if msg, ok := func() (string, bool) {
 		_, s := tra.Start(parent, "primality test")
 		defer s.End()
@@ -128,7 +120,15 @@ func Func(c *gin.Context) {
 	Span(parent, "qsim.H(r0...)", func() { qsim.H(r0...) })
 	Span(parent, "qsim.CModExp2(a, N, r0, r1)", func() { qsim.CModExp2(a, N, r0, r1) })
 	Span(parent, "qsim.InvQFT(r0...)", func() { qsim.InvQFT(r0...) })
-	Span(parent, "qsim.Measure(r0...)", func() { qsim.Measure(r0...) })
+	Span(parent, "qsim.Measure()", func() { qsim.Measure() })
+
+	if len(qsim.State(r0)) != 1 {
+		log.Printf("qsim.State(r0)=%v", qsim.State(r0))
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"message": "something went wrong.",
+		})
+		return
+	}
 
 	out := func() gin.H {
 		_, s := tra.Start(parent, "find non-trivial factors")
@@ -138,13 +138,21 @@ func Func(c *gin.Context) {
 			_, m := state.Value()
 			s, r, _, ok := number.FindOrder(a, N, fmt.Sprintf("0.%s", m))
 			if !ok || number.IsOdd(r) {
-				continue
+				return gin.H{
+					"N": N, "a": a, "t": t,
+					"m":   fmt.Sprintf("0.%s", m),
+					"s/r": fmt.Sprintf("%v/%v", s, r),
+				}
 			}
 
 			p0 := number.GCD(number.Pow(a, r/2)-1, N)
 			p1 := number.GCD(number.Pow(a, r/2)+1, N)
 			if number.IsTrivial(N, p0, p1) {
-				continue
+				return gin.H{
+					"N": N, "a": a, "t": t,
+					"m":   fmt.Sprintf("0.%s", m),
+					"s/r": fmt.Sprintf("%v/%v", s, r),
+				}
 			}
 
 			return gin.H{
@@ -162,6 +170,14 @@ func Func(c *gin.Context) {
 	}()
 
 	c.JSON(http.StatusOK, out)
+}
+
+func DefaultValue(in, v string) string {
+	if in == "" {
+		return v
+	}
+
+	return in
 }
 
 func Span(parent context.Context, spanName string, f func()) {

@@ -7,7 +7,7 @@ require (
 	cloud.google.com/go/profiler v0.2.0
 	github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/trace v1.5.1
 	github.com/gin-gonic/gin v1.7.7
-	github.com/itsubaki/q v1.1.5-0.20220503154805-4ea73de7b194
+	github.com/itsubaki/q v1.1.5-0.20220505141859-b17cd14c17cf
 	go.opentelemetry.io/otel v1.7.0
 	go.opentelemetry.io/otel/sdk v1.7.0
 	go.opentelemetry.io/otel/trace v1.7.0

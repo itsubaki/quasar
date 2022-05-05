@@ -224,6 +224,8 @@ github.com/ianlancetaylor/demangle v0.0.0-20200824232613-28f6c0f3b639/go.mod h1:
 github.com/ianlancetaylor/demangle v0.0.0-20210905161508-09a460cdf81d/go.mod h1:aYm2/VgdVmcIU8iMfdMvDMsRAQjcfZSKFby6HOFvi/w=
 github.com/itsubaki/q v1.1.5-0.20220503154805-4ea73de7b194 h1:wHaVOIXa75knI7L99Hb7NGBhSTt2RavNuLUqX376wx4=
 github.com/itsubaki/q v1.1.5-0.20220503154805-4ea73de7b194/go.mod h1:p37X1D0ObvLcJ+26P1wRBbEBkIw3jZA/2q85LniQ6Ic=
+github.com/itsubaki/q v1.1.5-0.20220505141859-b17cd14c17cf h1:mAYfh6bmnkEU1IKhGaS3jaM78v8pf/STs1aeiizyzJk=
+github.com/itsubaki/q v1.1.5-0.20220505141859-b17cd14c17cf/go.mod h1:p37X1D0ObvLcJ+26P1wRBbEBkIw3jZA/2q85LniQ6Ic=
 github.com/json-iterator/go v1.1.9/go.mod h1:KdQUCv79m/52Kvf8AW2vK1V8akMuk1QjK/uOdHXbAo4=
 github.com/json-iterator/go v1.1.12 h1:PV8peI4a0ysnczrg+LtxykD8LfKY9ML6u2jnxaEnrnM=
 github.com/json-iterator/go v1.1.12/go.mod h1:e30LSqwooZae/UwlEbR2852Gd8hjQvJoHmT4TnhNGBo=

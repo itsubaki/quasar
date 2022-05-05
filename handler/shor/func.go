@@ -11,6 +11,7 @@ import (
 	"github.com/itsubaki/q"
 	"github.com/itsubaki/q/pkg/math/number"
 	"github.com/itsubaki/q/pkg/math/rand"
+	"github.com/itsubaki/q/pkg/quantum/qubit"
 	"github.com/itsubaki/quasar/logger"
 	"github.com/itsubaki/quasar/tracer"
 	"go.opentelemetry.io/otel"
@@ -27,6 +28,7 @@ func Func(c *gin.Context) {
 	spanID := c.GetString("span_id")
 	traceTrue := c.GetBool("trace_true")
 
+	// logger and tracer
 	log := logf.New(traceID, c.Request)
 	parent, err := tracer.NewContext(context.Background(), traceID, spanID, traceTrue)
 	if err != nil {
@@ -118,49 +120,59 @@ func Func(c *gin.Context) {
 		return
 	}
 
-	log.SpanOf(spanID).Debug("N=%v, a=%v, t=%v, seed=%v", N, a, t, seed)
-
 	// quantum algorithm
-	qsim := q.New()
-	if seed > 0 {
-		qsim.Seed = []int64{int64(seed)}
-		qsim.Rand = rand.Math
-		log.SpanOf(spanID).Debug("set seed=%v", seed)
-	}
-
-	r0 := func() []q.Qubit {
-		_, s := tra.Start(parent, "qsim.ZeroWith(t)")
+	qs, err := func() ([]qubit.State, error) {
+		qa, s := tra.Start(parent, "quantum algorithm")
 		defer s.End()
 
-		return qsim.ZeroWith(t)
+		log.Span(s).Debug("N=%v, a=%v, t=%v, seed=%v", N, a, t, seed)
+
+		qsim := q.New()
+		if seed > 0 {
+			qsim.Seed = []int64{int64(seed)}
+			qsim.Rand = rand.Math
+			log.Span(s).Debug("set seed=%v", seed)
+		}
+
+		r0 := func() []q.Qubit {
+			_, s := tra.Start(qa, "qsim.ZeroWith(t)")
+			defer s.End()
+
+			return qsim.ZeroWith(t)
+		}()
+
+		r1 := func() []q.Qubit {
+			_, s := tra.Start(qa, "qsim.ZeroLog2(N)")
+			defer s.End()
+
+			return qsim.ZeroLog2(N)
+		}()
+
+		Span(qa, "qsim.X(r1[len(r1)-1])", func() { qsim.X(r1[len(r1)-1]) })
+		Span(qa, "qsim.H(r0...)", func() { qsim.H(r0...) })
+		Span(qa, "qsim.CModExp2(a, N, r0, r1)", func() { qsim.CModExp2(a, N, r0, r1) })
+		Span(qa, "qsim.InvQFT(r0...)", func() { qsim.InvQFT(r0...) })
+		Span(qa, "qsim.Measure()", func() { qsim.Measure() })
+
+		if len(qsim.State(r0)) != 1 {
+			return nil, fmt.Errorf("len(qsim.State(r0)) must be 1. qsim.State(r0)=%v", qsim.State(r0))
+		}
+
+		return qsim.State(r0), nil
 	}()
-
-	r1 := func() []q.Qubit {
-		_, s := tra.Start(parent, "qsim.ZeroLog2(N)")
-		defer s.End()
-
-		return qsim.ZeroLog2(N)
-	}()
-
-	Span(parent, "qsim.X(r1[len(r1)-1])", func() { qsim.X(r1[len(r1)-1]) })
-	Span(parent, "qsim.H(r0...)", func() { qsim.H(r0...) })
-	Span(parent, "qsim.CModExp2(a, N, r0, r1)", func() { qsim.CModExp2(a, N, r0, r1) })
-	Span(parent, "qsim.InvQFT(r0...)", func() { qsim.InvQFT(r0...) })
-	Span(parent, "qsim.Measure()", func() { qsim.Measure() })
-
-	if len(qsim.State(r0)) != 1 {
-		log.ErrorReport("qsim.State(r0) msut be 1. qsim.State(r0)=%v", qsim.State(r0))
+	if err != nil {
+		log.ErrorReport("quantum algorithm: %v", err)
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
-			"message": "something went wrong.",
+			"message": "something went wrong",
 		})
 		return
 	}
 
-	out := func() gin.H {
+	out, ok := func() (gin.H, bool) {
 		_, s := tra.Start(parent, "find non-trivial factors")
 		defer s.End()
 
-		for _, state := range qsim.State(r0) {
+		for _, state := range qs {
 			_, m := state.Value()
 			s, r, _, ok := number.FindOrder(a, N, fmt.Sprintf("0.%s", m))
 			if !ok || number.IsOdd(r) {
@@ -168,7 +180,7 @@ func Func(c *gin.Context) {
 					"N": N, "a": a, "t": t,
 					"m":   fmt.Sprintf("0.%s", m),
 					"s/r": fmt.Sprintf("%v/%v", s, r),
-				}
+				}, false
 			}
 
 			p0 := number.GCD(number.Pow(a, r/2)-1, N)
@@ -178,7 +190,7 @@ func Func(c *gin.Context) {
 					"N": N, "a": a, "t": t,
 					"m":   fmt.Sprintf("0.%s", m),
 					"s/r": fmt.Sprintf("%v/%v", s, r),
-				}
+				}, false
 			}
 
 			return gin.H{
@@ -187,15 +199,15 @@ func Func(c *gin.Context) {
 				"s/r": fmt.Sprintf("%v/%v", s, r),
 				"p":   p0,
 				"q":   p1,
-			}
+			}, true
 		}
 
 		return gin.H{
 			"N": N, "a": a, "t": t,
-		}
+		}, false
 	}()
 
-	log.SpanOf(spanID).Debug("out: %v", out)
+	log.SpanOf(spanID).Debug("out: %v, ok: %v", out, ok)
 	c.JSON(http.StatusOK, out)
 }
 

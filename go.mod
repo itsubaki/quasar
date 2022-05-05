@@ -3,6 +3,7 @@ module github.com/itsubaki/quasar
 go 1.17
 
 require (
+	cloud.google.com/go/errorreporting v0.2.0
 	cloud.google.com/go/profiler v0.2.0
 	github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/trace v1.5.0
 	github.com/gin-gonic/gin v1.7.7
@@ -38,6 +39,7 @@ require (
 	golang.org/x/crypto v0.0.0-20220427172511-eb4f295cb31f // indirect
 	golang.org/x/net v0.0.0-20220425223048-2871e0cb64e4 // indirect
 	golang.org/x/oauth2 v0.0.0-20220411215720-9780585627b5 // indirect
+	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
 	golang.org/x/sys v0.0.0-20220502124256-b6088ccd6cba // indirect
 	golang.org/x/text v0.3.7 // indirect
 	google.golang.org/api v0.77.0 // indirect

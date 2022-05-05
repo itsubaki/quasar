@@ -3,58 +3,75 @@ package shor
 import (
 	"context"
 	"fmt"
-	"log"
 	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/itsubaki/q"
 	"github.com/itsubaki/q/pkg/math/number"
 	"github.com/itsubaki/q/pkg/math/rand"
+	"github.com/itsubaki/quasar/logger"
 	"github.com/itsubaki/quasar/tracer"
 	"go.opentelemetry.io/otel"
 )
 
-var tra = otel.Tracer("handler/shor")
+var (
+	projectID = os.Getenv("GOOGLE_CLOUD_PROJECT")
+	tra       = otel.Tracer("handler/shor")
+	logf      = logger.MustNew(context.Background(), projectID)
+)
 
 func Func(c *gin.Context) {
 	traceID := c.GetString("trace_id")
 	spanID := c.GetString("span_id")
 	traceTrue := c.GetBool("trace_true")
 
-	ctx := context.Background()
-	parent, err := tracer.NewContext(ctx, traceID, spanID, traceTrue)
+	log := logf.New(traceID, c.Request)
+	parent, err := tracer.NewContext(context.Background(), traceID, spanID, traceTrue)
 	if err != nil {
-		log.Printf("new context. traceID=%v spanID=%v: %v", traceID, spanID, err)
+		log.ErrorReport("new context: %v", traceID, spanID, err)
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
 
-	Nstr := c.Param("N")
-	tstr := DefaultValue(c.Query("t"), "3")
-	astr := DefaultValue(c.Query("a"), "-1")
+	// inputs
+	Nq := c.Param("N")
+	tq := DefaultValue(c.Query("t"), "3")
+	aq := DefaultValue(c.Query("a"), "-1")
+	sq := DefaultValue(c.Query("seed"), "-1")
+
+	log.SpanOf(spanID).Debug("param(N)=%v, query(a)=%v, query(t)=%v, query(seed)=%v", Nq, aq, tq, sq)
 
 	// validation
-	N, err := strconv.Atoi(Nstr)
+	N, err := strconv.Atoi(Nq)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"message": fmt.Sprintf("N=%v. N must be integer.", Nstr),
+			"message": fmt.Sprintf("N=%v. N must be integer.", Nq),
 		})
 		return
 	}
 
-	t, err := strconv.Atoi(tstr)
+	t, err := strconv.Atoi(tq)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"message": fmt.Sprintf("t=%v. t must be integer.", tstr),
+			"message": fmt.Sprintf("t=%v. t must be integer.", tq),
 		})
 		return
 	}
 
-	a, err := strconv.Atoi(astr)
+	a, err := strconv.Atoi(aq)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"message": fmt.Sprintf("a=%v. a must be integer.", astr),
+			"message": fmt.Sprintf("a=%v. a must be integer.", aq),
+		})
+		return
+	}
+
+	seed, err := strconv.Atoi(sq)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"message": fmt.Sprintf("seed=%v. seed must be integer.", sq),
 		})
 		return
 	}
@@ -82,6 +99,7 @@ func Func(c *gin.Context) {
 
 		if a < 0 {
 			a = rand.Coprime(N)
+			log.Span(s).Debug("rand.Coprime(%v)=%v", N, a)
 		}
 
 		if a < 2 || a > N-1 {
@@ -100,8 +118,16 @@ func Func(c *gin.Context) {
 		return
 	}
 
+	log.SpanOf(spanID).Debug("N=%v, a=%v, t=%v, seed=%v", N, a, t, seed)
+
 	// quantum algorithm
 	qsim := q.New()
+	if seed > 0 {
+		qsim.Seed = []int64{int64(seed)}
+		qsim.Rand = rand.Math
+		log.SpanOf(spanID).Debug("set seed=%v", seed)
+	}
+
 	r0 := func() []q.Qubit {
 		_, s := tra.Start(parent, "qsim.ZeroWith(t)")
 		defer s.End()
@@ -123,7 +149,7 @@ func Func(c *gin.Context) {
 	Span(parent, "qsim.Measure()", func() { qsim.Measure() })
 
 	if len(qsim.State(r0)) != 1 {
-		log.Printf("qsim.State(r0)=%v", qsim.State(r0))
+		log.ErrorReport("qsim.State(r0) msut be 1. qsim.State(r0)=%v", qsim.State(r0))
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"message": "something went wrong.",
 		})
@@ -169,15 +195,16 @@ func Func(c *gin.Context) {
 		}
 	}()
 
+	log.SpanOf(spanID).Debug("out: %v", out)
 	c.JSON(http.StatusOK, out)
 }
 
-func DefaultValue(in, v string) string {
-	if in == "" {
-		return v
+func DefaultValue(v, w string) string {
+	if v == "" {
+		return w
 	}
 
-	return in
+	return v
 }
 
 func Span(parent context.Context, spanName string, f func()) {

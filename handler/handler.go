@@ -69,6 +69,8 @@ func SetTraceID(c *gin.Context) {
 	// MUST be a 16-hex-character lowercase string
 	c.Set("span_id", fmt.Sprintf("%016x", i))
 
+	// https://cloud.google.com/trace/docs/setup
+	// TRACE_TRUE must be 1 to trace this request. Specify 0 to not trace the request.
 	c.Set("trace_true", false)
 	if len(strings.Split(value, ";")) > 1 && strings.Split(value, ";")[1] == "o=1" {
 		c.Set("trace_true", true)

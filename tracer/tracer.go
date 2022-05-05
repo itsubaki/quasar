@@ -62,8 +62,7 @@ func NewContext(ctx context.Context, traceID, spanID string, traceTrue bool) (co
 		return nil, fmt.Errorf("traceID from hex(%v): %v", traceID, err)
 	}
 
-	// hex encoded span-id must have length equals to 16
-	sID, err := trace.SpanIDFromHex(spanID[:16])
+	sID, err := trace.SpanIDFromHex(spanID)
 	if err != nil {
 		return nil, fmt.Errorf("spanID from hex(%v): %v", spanID, err)
 	}

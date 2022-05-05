@@ -24,5 +24,10 @@ merge:
 deploy:
 	gcloud app deploy app.yaml
 
+rundeploy:
+	echo "project: ${PROJECT_ID}"
+	gcloud builds submit --tag gcr.io/${PROJECT_ID}/quasar --project ${PROJECT_ID}
+	gcloud run deploy  --image gcr.io/${PROJECT_ID}/quasar --project ${PROJECT_ID} --platform managed
+
 browse:
 	gcloud app browse

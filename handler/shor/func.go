@@ -33,7 +33,10 @@ func Func(c *gin.Context) {
 	parent, err := tracer.NewContext(context.Background(), traceID, spanID, traceTrue)
 	if err != nil {
 		log.ErrorReport("new context: %v", traceID, spanID, err)
-		c.AbortWithStatus(http.StatusInternalServerError)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message":  "something went wrong",
+			"trace_id": traceID,
+		})
 		return
 	}
 
@@ -48,7 +51,7 @@ func Func(c *gin.Context) {
 	// validation
 	N, err := strconv.Atoi(Nq)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+		c.JSON(http.StatusOK, gin.H{
 			"message": fmt.Sprintf("N=%v. N must be integer.", Nq),
 		})
 		return
@@ -56,7 +59,7 @@ func Func(c *gin.Context) {
 
 	t, err := strconv.Atoi(tq)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+		c.JSON(http.StatusOK, gin.H{
 			"message": fmt.Sprintf("t=%v. t must be integer.", tq),
 		})
 		return
@@ -64,7 +67,7 @@ func Func(c *gin.Context) {
 
 	a, err := strconv.Atoi(aq)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+		c.JSON(http.StatusOK, gin.H{
 			"message": fmt.Sprintf("a=%v. a must be integer.", aq),
 		})
 		return
@@ -72,7 +75,7 @@ func Func(c *gin.Context) {
 
 	seed, err := strconv.Atoi(sq)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+		c.JSON(http.StatusOK, gin.H{
 			"message": fmt.Sprintf("seed=%v. seed must be integer.", sq),
 		})
 		return
@@ -114,7 +117,7 @@ func Func(c *gin.Context) {
 
 		return "", false
 	}(); ok {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+		c.JSON(http.StatusOK, gin.H{
 			"message": msg,
 		})
 		return
@@ -162,8 +165,9 @@ func Func(c *gin.Context) {
 	}()
 	if err != nil {
 		log.ErrorReport("quantum algorithm: %v", err)
-		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
-			"message": "something went wrong",
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message":  "something went wrong",
+			"trace_id": traceID,
 		})
 		return
 	}

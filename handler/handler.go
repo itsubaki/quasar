@@ -33,13 +33,17 @@ func New() *gin.Engine {
 
 func Root(g *gin.Engine) {
 	g.GET("/", func(c *gin.Context) {
-		c.Status(http.StatusOK)
+		c.JSON(http.StatusOK, gin.H{
+			"ok": true,
+		})
 	})
 }
 
 func Status(g *gin.Engine) {
 	g.GET("/status", func(c *gin.Context) {
-		c.Status(http.StatusOK)
+		c.JSON(http.StatusOK, gin.H{
+			"ok": true,
+		})
 	})
 }
 

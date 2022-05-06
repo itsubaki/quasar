@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-	"os"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -18,9 +17,8 @@ import (
 )
 
 var (
-	projectID = os.Getenv("GOOGLE_CLOUD_PROJECT")
-	tra       = otel.Tracer("handler/shor")
-	logf      = logger.MustNew(context.Background(), projectID)
+	tra  = otel.Tracer("handler/shor")
+	logf = logger.Factory
 )
 
 func Func(c *gin.Context) {
@@ -32,7 +30,7 @@ func Func(c *gin.Context) {
 	log := logf.New(traceID, c.Request)
 	parent, err := tracer.NewContext(context.Background(), traceID, spanID, traceTrue)
 	if err != nil {
-		log.ErrorReport("new context: %v", traceID, spanID, err)
+		log.SpanOf(spanID).ErrorReport("new context: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message":  "something went wrong",
 			"trace_id": traceID,
@@ -164,7 +162,7 @@ func Func(c *gin.Context) {
 		return qsim.State(r0), nil
 	}()
 	if err != nil {
-		log.ErrorReport("quantum algorithm: %v", err)
+		log.SpanOf(spanID).ErrorReport("quantum algorithm: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message":  "something went wrong",
 			"trace_id": traceID,

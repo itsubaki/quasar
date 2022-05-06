@@ -12,24 +12,30 @@ import (
 
 	"cloud.google.com/go/profiler"
 	"github.com/itsubaki/quasar/handler"
+	"github.com/itsubaki/quasar/logger"
 	"github.com/itsubaki/quasar/tracer"
 )
 
 var (
-	timeout   = 5 * time.Second
-	port      = os.Getenv("PORT")
-	projectID = os.Getenv("GOOGLE_CLOUD_PROJECT")
+	timeout = 5 * time.Second
+	port    = os.Getenv("PORT")
+	gae     = os.Getenv("GAE_APPLICATION") // https://cloud.google.com/appengine/docs/standard/go/runtime#environment_variables
 )
 
 func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
-	if len(projectID) > 0 {
-		// enable profiler on GCP
-		if err := profiler.Start(profiler.Config{}); err != nil {
+	if len(gae) > 0 {
+		// enable profiler on Google AppEngine
+		// https://cloud.google.com/profiler/docs/about-profiler#environment_and_languages
+		if err := profiler.Start(profiler.Config{
+			MutexProfiling: true,
+		}); err != nil {
 			log.Fatalf("profiler start: %v", err)
 		}
 	}
+
+	defer logger.Factory.Close()
 
 	f, err := tracer.Setup(timeout)
 	if err != nil {

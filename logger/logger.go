@@ -25,6 +25,12 @@ const (
 	EMERGENCY = "Emergency"
 )
 
+var (
+	// https://cloud.google.com/appengine/docs/standard/go/runtime#environment_variables
+	projectID = os.Getenv("GOOGLE_CLOUD_PROJECT")
+	Factory   = MustNew(context.Background(), projectID)
+)
+
 type LoggerFactory struct {
 	projectID string
 	errC      *errorreporting.Client
@@ -64,6 +70,13 @@ func (f *LoggerFactory) New(traceID string, req *http.Request) *Logger {
 		errC:  f.errC,
 		trace: trace,
 		req:   req,
+	}
+}
+
+func (f *LoggerFactory) Close() {
+	f.errC.Flush()
+	if err := f.errC.Close(); err != nil {
+		log.Printf("errorreporing client close: %v", err)
 	}
 }
 
@@ -131,6 +144,8 @@ func (l *Logger) SpanOf(spanID string) *SpanLogEntry {
 	return &SpanLogEntry{
 		Trace:  l.trace,
 		SpanID: spanID,
+		errC:   l.errC,
+		req:    l.req,
 	}
 }
 
@@ -138,6 +153,8 @@ func (l *Logger) Span(span trace.Span) *SpanLogEntry {
 	return &SpanLogEntry{
 		Trace:  l.trace,
 		SpanID: span.SpanContext().SpanID().String(),
+		errC:   l.errC,
+		req:    l.req,
 	}
 }
 
@@ -147,6 +164,28 @@ type SpanLogEntry struct {
 	Time     time.Time `json:"time"`
 	Trace    string    `json:"logging.googleapis.com/trace"`
 	SpanID   string    `json:"logging.googleapis.com/spanId"`
+	errC     *errorreporting.Client
+	req      *http.Request
+}
+
+func (e *SpanLogEntry) LogReport(severity, format string, a ...interface{}) {
+	// logging
+	e.Log(severity, format, a...)
+
+	// error reporting
+	if e.errC == nil {
+		return
+	}
+
+	for _, aa := range a {
+		switch err := aa.(type) {
+		case error:
+			e.errC.Report(errorreporting.Entry{
+				Error: err,
+				Req:   e.req,
+			})
+		}
+	}
 }
 
 func (e *SpanLogEntry) Log(severity, format string, a ...interface{}) {
@@ -163,4 +202,12 @@ func (e *SpanLogEntry) Log(severity, format string, a ...interface{}) {
 
 func (e *SpanLogEntry) Debug(format string, a ...interface{}) {
 	e.Log(DEBUG, format, a...)
+}
+
+func (e *SpanLogEntry) Error(format string, a ...interface{}) {
+	e.Log(ERROR, format, a...)
+}
+
+func (e *SpanLogEntry) ErrorReport(format string, a ...interface{}) {
+	e.LogReport(ERROR, format, a...)
 }

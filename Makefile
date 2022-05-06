@@ -22,7 +22,7 @@ merge:
 	cat coverage-pkg.out >> coverage.txt
 
 deploy:
-	gcloud app deploy app.yaml
+	gcloud app deploy app.yaml --project ${PROJECT_ID}
 
 browse:
 	gcloud app browse

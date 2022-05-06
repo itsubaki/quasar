@@ -17,8 +17,8 @@ import (
 )
 
 var (
-	tra  = otel.Tracer("handler/shor")
 	logf = logger.Factory
+	tra  = otel.Tracer("handler/shor")
 )
 
 func Func(c *gin.Context) {

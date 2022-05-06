@@ -170,6 +170,7 @@ func Func(c *gin.Context) {
 		return
 	}
 
+	// find non-trivial factors (classical algorithm)
 	out, ok := func() (gin.H, bool) {
 		_, s := tra.Start(parent, "find non-trivial factors")
 		defer s.End()

@@ -28,7 +28,7 @@ const (
 var (
 	// https://cloud.google.com/appengine/docs/standard/go/runtime#environment_variables
 	projectID = os.Getenv("GOOGLE_CLOUD_PROJECT")
-	Factory   = MustNew(context.Background(), projectID)
+	Factory   = Must(New(context.Background(), projectID))
 )
 
 type LoggerFactory struct {
@@ -54,10 +54,6 @@ func New(ctx context.Context, projectID string) (*LoggerFactory, error) {
 		projectID: projectID,
 		errC:      c,
 	}, nil
-}
-
-func MustNew(ctx context.Context, projectID string) *LoggerFactory {
-	return Must(New(ctx, projectID))
 }
 
 func (f *LoggerFactory) New(traceID string, req *http.Request) *Logger {

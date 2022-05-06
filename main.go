@@ -25,6 +25,10 @@ var (
 func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
+	// logger, tracer, profiler
+	defer logger.Factory.Close()
+	defer tracer.Must(tracer.Setup(timeout))()
+
 	if len(gae) > 0 {
 		// enable profiler on Google AppEngine
 		// https://cloud.google.com/profiler/docs/about-profiler#environment_and_languages
@@ -35,14 +39,7 @@ func main() {
 		}
 	}
 
-	defer logger.Factory.Close()
-
-	f, err := tracer.Setup(timeout)
-	if err != nil {
-		log.Fatalf("tracer setup: %v", err)
-	}
-	defer f()
-
+	// http handler
 	if port == "" {
 		port = "8080"
 	}
@@ -59,6 +56,7 @@ func main() {
 		}
 	}()
 
+	// shutdown
 	ch := make(chan os.Signal, 2)
 	signal.Notify(ch, syscall.SIGINT, syscall.SIGTERM)
 	<-ch

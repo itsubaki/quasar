@@ -23,6 +23,14 @@ var (
 	deploymentID = os.Getenv("GAE_DEPLOYMENT_ID")
 )
 
+func Must(f func(), err error) func() {
+	if err != nil {
+		panic(err)
+	}
+
+	return f
+}
+
 func Setup(timeout time.Duration) (func(), error) {
 	exporter, err := gcp.New(gcp.WithProjectID(projectID))
 	if err != nil {

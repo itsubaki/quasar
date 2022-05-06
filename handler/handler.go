@@ -2,7 +2,6 @@ package handler
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -10,7 +9,10 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/itsubaki/quasar/handler/qasm"
 	"github.com/itsubaki/quasar/handler/shor"
+	"github.com/itsubaki/quasar/logger"
 )
+
+var logf = logger.Factory
 
 func New() *gin.Engine {
 	g := gin.New()
@@ -64,7 +66,7 @@ func SetTraceID(c *gin.Context) {
 	// SPAN_ID is the decimal representation of the (unsigned) span ID.
 	i, err := strconv.ParseUint(ids[1], 10, 64)
 	if err != nil {
-		log.Printf("parse %v: %v", ids[1], err)
+		logf.New(ids[0], c.Request).ErrorReport("parse %v: %v", ids[1], err)
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}

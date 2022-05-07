@@ -11,9 +11,9 @@ import (
 	"time"
 
 	"cloud.google.com/go/profiler"
-	"github.com/itsubaki/quasar/handler"
-	"github.com/itsubaki/quasar/logger"
-	"github.com/itsubaki/quasar/tracer"
+	"github.com/itsubaki/quasar/pkg/handler"
+	"github.com/itsubaki/quasar/pkg/logger"
+	"github.com/itsubaki/quasar/pkg/tracer"
 )
 
 var (

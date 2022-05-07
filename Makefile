@@ -1,14 +1,9 @@
 SHELL := /bin/bash
-DATE := $(shell date +%Y%m%d-%H:%M:%S)
-HASH := $(shell git rev-parse HEAD)
-GOVERSION := $(shell go version)
-LDFLAGS := -X 'main.date=${DATE}' -X 'main.hash=${HASH}' -X 'main.goversion=${GOVERSION}'
 
 install:
 	-rm ${GOPATH}/bin/quasar
 	go get -u
 	go mod tidy
-	go install -ldflags "${LDFLAGS}"
 
 test:
 	GOOGLE_APPLICATION_CREDENTIALS=../credentials.json go test --godog.format=pretty -v -coverprofile=coverage.out -covermode=atomic -coverpkg ./...
@@ -28,3 +23,11 @@ deploy:
 
 browse:
 	gcloud app browse
+
+shor:
+	echo "DOMAIN: ${CLOUDRUN_DOMAIN}"
+	curl -s -H "Authorization: Bearer $(shell gcloud auth print-identity-token)" https://${CLOUDRUN_DOMAIN}/shor/15 | jq .
+
+qasm:
+	echo "DOMAIN: ${CLOUDRUN_DOMAIN}"
+	curl -s -H "Authorization: Bearer $(shell gcloud auth print-identity-token)" -X POST -F file=@testdata/bell.qasm https://${CLOUDRUN_DOMAIN} | jq .

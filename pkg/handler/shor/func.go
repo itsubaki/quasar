@@ -11,8 +11,8 @@ import (
 	"github.com/itsubaki/q/pkg/math/number"
 	"github.com/itsubaki/q/pkg/math/rand"
 	"github.com/itsubaki/q/pkg/quantum/qubit"
-	"github.com/itsubaki/quasar/logger"
-	"github.com/itsubaki/quasar/tracer"
+	"github.com/itsubaki/quasar/pkg/logger"
+	"github.com/itsubaki/quasar/pkg/tracer"
 	"go.opentelemetry.io/otel"
 )
 

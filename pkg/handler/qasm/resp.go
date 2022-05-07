@@ -13,7 +13,6 @@ type Amplitude struct {
 }
 
 type Response struct {
-	TraceID  string  `json:"trace_id"`
 	Filename string  `json:"filename"`
 	Content  string  `json:"content"`
 	State    []State `json:"state"`

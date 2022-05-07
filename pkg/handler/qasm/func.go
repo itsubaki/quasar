@@ -60,6 +60,7 @@ func Func(c *gin.Context) {
 			log.Span(s).ErrorReport("read all: %v", err)
 			return "", nil, fmt.Errorf("read all: %v", err)
 		}
+
 		return file.Filename, r, nil
 	}()
 	if err != nil {
@@ -116,7 +117,6 @@ func Func(c *gin.Context) {
 
 	// response
 	c.JSON(http.StatusOK, Response{
-		TraceID:  traceID,
 		Filename: filename,
 		Content:  string(r),
 		State:    state,

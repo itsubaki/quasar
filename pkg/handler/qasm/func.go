@@ -90,6 +90,7 @@ func Func(c *gin.Context) {
 			return nil, fmt.Errorf("eval: %v", err)
 		}
 
+		// for json encoding
 		state := make([]State, 0, len(e.Q.State()))
 		for _, s := range e.Q.State() {
 			state = append(state, State{

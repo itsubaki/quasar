@@ -22,7 +22,9 @@ merge:
 	cat coverage-pkg.out >> coverage.txt
 
 deploy:
-	gcloud app deploy app.yaml --project ${PROJECT_ID}
+	echo "project: ${PROJECT_ID}"
+	gcloud builds submit     --tag gcr.io/${PROJECT_ID}/quasar   --project ${PROJECT_ID}
+	gcloud run deploy quasar --image gcr.io/${PROJECT_ID}/quasar --project ${PROJECT_ID} --set-env-vars=GOOGLE_CLOUD_PROJECT=${PROJECT_ID}
 
 browse:
 	gcloud app browse

@@ -6,10 +6,10 @@ install:
 	go mod tidy
 
 test:
-	GOOGLE_APPLICATION_CREDENTIALS=../credentials.json go test --godog.format=pretty -v -coverprofile=coverage.out -covermode=atomic -coverpkg ./...
+	go test --godog.format=pretty -v -coverprofile=coverage.out -covermode=atomic -coverpkg ./...
 
 run:
-	GOOGLE_APPLICATION_CREDENTIALS=./credentials.json go run main.go
+	go run main.go
 
 merge:
 	echo "" > coverage.txt
@@ -22,9 +22,7 @@ deploy:
 	gcloud run deploy quasar --image gcr.io/${PROJECT_ID}/quasar --project ${PROJECT_ID} --set-env-vars=GOOGLE_CLOUD_PROJECT=${PROJECT_ID}
 
 shor:
-	echo "DOMAIN: ${CLOUDRUN_DOMAIN}"
-	curl -s -H "Authorization: Bearer $(shell gcloud auth print-identity-token)" https://${CLOUDRUN_DOMAIN}/shor/15 | jq .
+	curl -s -H "Authorization: Bearer $(shell gcloud auth print-identity-token)" $(shell gcloud run services describe quasar --project ${PROJECT_ID} --format 'value(status.url)')/shor/15 | jq .
 
 qasm:
-	echo "DOMAIN: ${CLOUDRUN_DOMAIN}"
-	curl -s -H "Authorization: Bearer $(shell gcloud auth print-identity-token)" -X POST -F file=@testdata/shor.qasm https://${CLOUDRUN_DOMAIN} | jq .
+	curl -s -H "Authorization: Bearer $(shell gcloud auth print-identity-token)" $(shell gcloud run services describe quasar --project ${PROJECT_ID} --format 'value(status.url)') -X POST -F file=@testdata/shor.qasm | jq .

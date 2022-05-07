@@ -1,7 +1,11 @@
 SHELL := /bin/bash
 
-install:
-	-rm ${GOPATH}/bin/quasar
+SERVICE_NAME := quasar
+IMAGE := gcr.io/${PROJECT_ID}/${SERVICE_NAME}
+TOKEN := $(shell gcloud auth print-identity-token)
+URL   := $(shell gcloud run services describe ${SERVICE_NAME} --project ${PROJECT_ID} --format 'value(status.url)')
+
+update:
 	go get -u
 	go mod tidy
 
@@ -17,12 +21,11 @@ merge:
 	cat coverage-pkg.out >> coverage.txt
 
 deploy:
-	echo "project: ${PROJECT_ID}"
-	gcloud builds submit     --tag gcr.io/${PROJECT_ID}/quasar   --project ${PROJECT_ID}
-	gcloud run deploy quasar --image gcr.io/${PROJECT_ID}/quasar --project ${PROJECT_ID} --set-env-vars=GOOGLE_CLOUD_PROJECT=${PROJECT_ID}
+	gcloud builds submit --project ${PROJECT_ID} --tag   ${IMAGE} 
+	gcloud run deploy    --project ${PROJECT_ID} --image ${IMAGE} --set-env-vars=GOOGLE_CLOUD_PROJECT=${PROJECT_ID} ${SERVICE_NAME} 
 
 shor:
-	curl -s -H "Authorization: Bearer $(shell gcloud auth print-identity-token)" $(shell gcloud run services describe quasar --project ${PROJECT_ID} --format 'value(status.url)')/shor/15 | jq .
+	curl -s -H "Authorization: Bearer ${TOKEN}" ${URL}/shor/15 | jq .
 
 qasm:
-	curl -s -H "Authorization: Bearer $(shell gcloud auth print-identity-token)" $(shell gcloud run services describe quasar --project ${PROJECT_ID} --format 'value(status.url)') -X POST -F file=@testdata/shor.qasm | jq .
+	curl -s -H "Authorization: Bearer ${TOKEN}" ${URL} -X POST -F file=@testdata/shor.qasm | jq .

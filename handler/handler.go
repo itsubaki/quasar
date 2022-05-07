@@ -28,7 +28,7 @@ func New() *gin.Engine {
 	Status(g)
 
 	g.GET("/shor/:N", shor.Func)
-	g.POST("/qasm", qasm.Func)
+	g.POST("/", qasm.Func)
 
 	return g
 }

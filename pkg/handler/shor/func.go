@@ -26,7 +26,7 @@ func Func(c *gin.Context) {
 	spanID := c.GetString("span_id")
 	traceTrue := c.GetBool("trace_true")
 
-	// logger and tracer
+	// logger, tracer
 	log := logf.New(traceID, c.Request)
 	parent, err := tracer.NewContext(context.Background(), traceID, spanID, traceTrue)
 	if err != nil {

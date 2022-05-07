@@ -8,6 +8,8 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	"github.com/itsubaki/q"
+	"github.com/itsubaki/qasm/pkg/ast"
 	"github.com/itsubaki/qasm/pkg/evaluator"
 	"github.com/itsubaki/qasm/pkg/lexer"
 	"github.com/itsubaki/qasm/pkg/parser"
@@ -91,9 +93,19 @@ func Func(c *gin.Context) {
 			return nil, fmt.Errorf("eval: %v", err)
 		}
 
+		var index [][]int
+		for _, n := range e.Env.Qubit.Name {
+			qb, ok := e.Env.Qubit.Get(&ast.IdentExpr{Name: n})
+			if !ok {
+				return nil, fmt.Errorf("qubit(%v) not found", n)
+			}
+
+			index = append(index, q.Index(qb...))
+		}
+
 		// for json encoding
-		state := make([]State, 0, len(e.Q.State()))
-		for _, s := range e.Q.State() {
+		state := make([]State, 0, len(e.Q.Raw().State()))
+		for _, s := range e.Q.Raw().State(index...) {
 			state = append(state, State{
 				Amplitude: Amplitude{
 					Real: real(s.Amplitude),

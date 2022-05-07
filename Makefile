@@ -21,13 +21,10 @@ deploy:
 	gcloud builds submit     --tag gcr.io/${PROJECT_ID}/quasar   --project ${PROJECT_ID}
 	gcloud run deploy quasar --image gcr.io/${PROJECT_ID}/quasar --project ${PROJECT_ID} --set-env-vars=GOOGLE_CLOUD_PROJECT=${PROJECT_ID}
 
-browse:
-	gcloud app browse
-
 shor:
 	echo "DOMAIN: ${CLOUDRUN_DOMAIN}"
 	curl -s -H "Authorization: Bearer $(shell gcloud auth print-identity-token)" https://${CLOUDRUN_DOMAIN}/shor/15 | jq .
 
 qasm:
 	echo "DOMAIN: ${CLOUDRUN_DOMAIN}"
-	curl -s -H "Authorization: Bearer $(shell gcloud auth print-identity-token)" -X POST -F file=@testdata/bell.qasm https://${CLOUDRUN_DOMAIN} | jq .
+	curl -s -H "Authorization: Bearer $(shell gcloud auth print-identity-token)" -X POST -F file=@testdata/shor.qasm https://${CLOUDRUN_DOMAIN} | jq .

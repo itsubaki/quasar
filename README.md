@@ -6,8 +6,8 @@ Quantum Computation Simulator as a Service
 
 ```shell
 $ export PROJECT_ID=YOUR_GOOGLE_CLOUD_PROJECT_ID
-$ gcloud builds submit --project ${PROJECT_ID} --tag gcr.io/${PROJECT_ID}/quasar
-$ gcloud run deploy quasar --project ${PROJECT_ID} --image gcr.io/${PROJECT_ID}/quasar --set-env-vars=GOOGLE_CLOUD_PROJECT=${PROJECT_ID}
+$ gcloud builds submit --tag gcr.io/${PROJECT_ID}/quasar
+$ gcloud run deploy --image gcr.io/${PROJECT_ID}/quasar --set-env-vars=GOOGLE_CLOUD_PROJECT=${PROJECT_ID} quasar
 ```
 
 ## Example
@@ -26,7 +26,7 @@ reset q;
 h q[0];
 cx q[0], q[1];
 
-$ curl -s -H "Authorization: Bearer $(gcloud auth print-identity-token)" $(gcloud run services describe quasar --project ${PROJECT_ID} --format 'value(status.url)') -X POST -F file=@testdata/bell.qasm | jq .
+$ curl -s $(gcloud run services describe quasar --format 'value(status.url)') -X POST -F file=@testdata/bell.qasm | jq .
 {
   "filename": "bell.qasm",
   "content": "OPENQASM 3.0;\n\ngate h q { U(pi/2.0, 0, pi) q; }\ngate x q { U(pi, 0, pi) q; }\ngate cx c, t { ctrl @ x c, t; }\n\nqubit[2] q;\nreset q;\n\nh q[0];\ncx q[0], q[1];\n",
@@ -62,7 +62,7 @@ $ curl -s -H "Authorization: Bearer $(gcloud auth print-identity-token)" $(gclou
 ```
 
 ```shell
-$ curl -s -H "Authorization: Bearer $(gcloud auth print-identity-token)" $(gcloud run services describe quasar --project ${PROJECT_ID} --format 'value(status.url)')/shor/15 | jq .
+$ curl -s -H $(gcloud run services describe quasar --format 'value(status.url)')/shor/15 | jq .
 {
   "N": 15,
   "a": 13,

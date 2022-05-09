@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"mime/multipart"
 	"net/http"
 	"strings"
 
@@ -40,30 +41,27 @@ func Func(c *gin.Context) {
 		return
 	}
 
-	// file
-	filename, r, err := func() (string, []byte, error) {
-		_, s := tra.Start(parent, "file")
+	// file read
+	file, r, err := func() (*multipart.FileHeader, []byte, error) {
+		_, s := tra.Start(parent, "file read")
 		defer s.End()
 
 		file, err := c.FormFile("file")
 		if err != nil {
-			log.Span(s).ErrorReport("form file: %v", err)
-			return "", nil, fmt.Errorf("form file: %v", err)
+			return nil, nil, fmt.Errorf("form file: %v", err)
 		}
 
 		f, err := file.Open()
 		if err != nil {
-			log.Span(s).ErrorReport("file open: %v", err)
-			return "", nil, fmt.Errorf("file open: %v", err)
+			return nil, nil, fmt.Errorf("file open: %v", err)
 		}
 
 		r, err := io.ReadAll(f)
 		if err != nil {
-			log.Span(s).ErrorReport("read all: %v", err)
-			return "", nil, fmt.Errorf("read all: %v", err)
+			return nil, nil, fmt.Errorf("read all: %v", err)
 		}
 
-		return file.Filename, r, nil
+		return file, r, nil
 	}()
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -78,21 +76,21 @@ func Func(c *gin.Context) {
 		_, s := tra.Start(parent, "compute")
 		defer s.End()
 
+		// eval
 		l := lexer.New(strings.NewReader(string(r)))
 		p := parser.New(l)
 
 		a := p.Parse()
 		if errs := p.Errors(); len(errs) != 0 {
-			log.Span(s).ErrorReport("parse: %v", err)
 			return nil, fmt.Errorf("parse: %v", err)
 		}
 
 		e := evaluator.Default()
 		if err := e.Eval(a); err != nil {
-			log.Span(s).ErrorReport("eval: %v", err)
 			return nil, fmt.Errorf("eval: %v", err)
 		}
 
+		// quantum state index
 		var index [][]int
 		for _, n := range e.Env.Qubit.Name {
 			qb, ok := e.Env.Qubit.Get(&ast.IdentExpr{Name: n})
@@ -103,7 +101,7 @@ func Func(c *gin.Context) {
 			index = append(index, q.Index(qb...))
 		}
 
-		// for json encoding
+		// quantum state for json encoding
 		state := make([]State, 0, len(e.Q.Raw().State()))
 		for _, s := range e.Q.Raw().State(index...) {
 			state = append(state, State{
@@ -120,6 +118,7 @@ func Func(c *gin.Context) {
 		return state, nil
 	}()
 	if err != nil {
+		log.SpanOf(spanID).ErrorReport("compute: %v", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message":  "something went wrong",
 			"trace_id": traceID,
@@ -129,7 +128,7 @@ func Func(c *gin.Context) {
 
 	// response
 	c.JSON(http.StatusOK, Response{
-		Filename: filename,
+		Filename: file.Filename,
 		Content:  string(r),
 		State:    state,
 	})

@@ -15,4 +15,4 @@ h r0;
 CMODEXP2(a, N) r0, r1;
 IQFT r0;
 
-measure r1;
+measure r0, r1;

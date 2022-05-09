@@ -21,6 +21,7 @@ merge:
 	cat coverage-pkg.out >> coverage.txt
 
 deploy:
+	echo "PROJECT_ID=${PROJECT_ID}"
 	gcloud builds submit --project ${PROJECT_ID} --tag   ${IMAGE} 
 	gcloud run deploy    --project ${PROJECT_ID} --image ${IMAGE} --set-env-vars=GOOGLE_CLOUD_PROJECT=${PROJECT_ID} ${SERVICE_NAME} 
 

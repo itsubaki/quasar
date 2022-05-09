@@ -64,6 +64,7 @@ func Func(c *gin.Context) {
 		return file, r, nil
 	}()
 	if err != nil {
+		log.SpanOf(spanID).ErrorReport("file read: %v", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message":  "something went wrong",
 			"trace_id": traceID,

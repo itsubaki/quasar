@@ -23,7 +23,7 @@ merge:
 deploy:
 	echo "PROJECT_ID=${PROJECT_ID}"
 	gcloud builds submit --project ${PROJECT_ID} --tag   ${IMAGE} 
-	gcloud run deploy    --project ${PROJECT_ID} --image ${IMAGE} --set-env-vars=GOOGLE_CLOUD_PROJECT=${PROJECT_ID} ${SERVICE_NAME} 
+	gcloud run deploy --project ${PROJECT_ID} --image ${IMAGE} --set-env-vars=GOOGLE_CLOUD_PROJECT=${PROJECT_ID},GIN_MODE=release ${SERVICE_NAME} 
 
 shor:
 	curl -s -H "Authorization: Bearer ${TOKEN}" ${URL}/shor/15 | jq .

@@ -155,11 +155,12 @@ func Func(c *gin.Context) {
 		Span(qa, "qsim.InvQFT(r0...)", func() { qsim.InvQFT(r0...) })
 		Span(qa, "qsim.Measure()", func() { qsim.Measure() })
 
-		if len(qsim.State(r0)) != 1 {
-			return nil, fmt.Errorf("len(qsim.State(r0)) must be 1. qsim.State(r0)=%v", qsim.State(r0))
+		s0 := qsim.State(r0)
+		if len(s0) != 1 {
+			return nil, fmt.Errorf("len(qsim.State(r0)) must be 1. qsim.State(r0)=%v", s0)
 		}
 
-		return qsim.State(r0), nil
+		return s0, nil
 	}()
 	if err != nil {
 		log.SpanOf(spanID).ErrorReport("quantum algorithm: %v", err)

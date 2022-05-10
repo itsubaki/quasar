@@ -15,6 +15,5 @@
 # vendor/
 
 
-# Google AppEngine
-secrets.yaml
+# Google Cloud
 credentials.json

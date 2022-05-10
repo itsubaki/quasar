@@ -10,7 +10,6 @@ import (
 	"os"
 	"strings"
 
-	"cloud.google.com/go/bigquery"
 	"github.com/cucumber/godog"
 	"github.com/gin-gonic/gin"
 	"github.com/itsubaki/quasar/pkg/handler"
@@ -29,20 +28,17 @@ type apiFeature struct {
 
 	server *gin.Engine
 	keep   map[string]interface{}
-	result [][]bigquery.Value
 }
 
 func (a *apiFeature) start() {
 	a.server = handler.New()
 	a.keep = make(map[string]interface{})
-	a.result = make([][]bigquery.Value, 0)
 }
 
 func (a *apiFeature) reset(sc *godog.Scenario) {
 	a.header = make(http.Header)
 	a.body = nil
 	a.resp = httptest.NewRecorder()
-	a.result = make([][]bigquery.Value, 0)
 }
 
 func (a *apiFeature) replace(str string) string {

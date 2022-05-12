@@ -2,6 +2,7 @@ package handler
 
 import (
 	"fmt"
+	"math/rand"
 	"net/http"
 	"strconv"
 	"strings"
@@ -52,8 +53,8 @@ func Status(g *gin.Engine) {
 func SetTraceID(c *gin.Context) {
 	value := c.GetHeader("X-Cloud-Trace-Context")
 	if value == "" {
-		c.Next()
-		return
+		// new trace id, span id for test
+		value = fmt.Sprintf("%016x%016x/%d;o=0", rand.Int63(), rand.Int63(), rand.Int63())
 	}
 
 	// https://cloud.google.com/trace/docs/setup

@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"math/rand"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -56,7 +55,6 @@ func (a *apiFeature) Request(method, endpoint string) error {
 	r := a.replace(endpoint)
 	req := httptest.NewRequest(method, r, a.body)
 	req.Header = a.header
-	req.Header.Add(NewXCloudTraceContext())
 
 	a.server.ServeHTTP(a.resp, req)
 	return nil
@@ -114,8 +112,4 @@ func InitializeScenario(ctx *godog.ScenarioContext) {
 	ctx.Step(`^I send "([^"]*)" request to "([^"]*)"$`, api.Request)
 	ctx.Step(`^the response code should be (\d+)$`, api.ResponseCodeShouldBe)
 	ctx.Step(`^the response should match json:$`, api.ResponseShouldMatchJSON)
-}
-
-func NewXCloudTraceContext() (string, string) {
-	return "X-Cloud-Trace-Context", fmt.Sprintf("%016x%016x/%d;", rand.Int63(), rand.Int63(), rand.Int63())
 }

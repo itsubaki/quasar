@@ -31,6 +31,7 @@ qasm:
 
 build:
 	docker build -t ghcr.io/itsubaki/quasar .
+	docker push ghcr.io/itsubaki/quasar
 
 up:
 	echo "PROJECT_ID: ${PROJECT_ID}"

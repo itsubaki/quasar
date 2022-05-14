@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"mime/multipart"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -95,6 +96,30 @@ func (a *apiFeature) SetRequestBody(body *godog.DocString) error {
 	return nil
 }
 
+func (a *apiFeature) SetUploadFile(path string) error {
+	file, err := os.Open(path)
+	if err != nil {
+		return fmt.Errorf("file open: %v", err)
+	}
+	defer file.Close()
+
+	body := &bytes.Buffer{}
+	mw := multipart.NewWriter(body)
+
+	fw, err := mw.CreateFormFile("file", file.Name())
+	if _, err := io.Copy(fw, file); err != nil {
+		return fmt.Errorf("io copy: %v", err)
+	}
+
+	a.body = body
+	a.header.Add("Content-Type", mw.FormDataContentType())
+	if err := mw.Close(); err != nil {
+		return fmt.Errorf("multipart writer close: %v", err)
+	}
+
+	return nil
+}
+
 func InitializeTestSuite(ctx *godog.TestSuiteContext) {
 	ctx.BeforeSuite(func() {
 		gin.SetMode(gin.ReleaseMode)
@@ -109,6 +134,7 @@ func InitializeScenario(ctx *godog.ScenarioContext) {
 
 	ctx.Step(`^I set "([^"]*)" header with "([^"]*)"$`, api.SetHeader)
 	ctx.Step(`^I set request body:$`, api.SetRequestBody)
+	ctx.Step(`^I set upload file "([^"]*)"$`, api.SetUploadFile)
 	ctx.Step(`^I send "([^"]*)" request to "([^"]*)"$`, api.Request)
 	ctx.Step(`^the response code should be (\d+)$`, api.ResponseCodeShouldBe)
 	ctx.Step(`^the response should match json:$`, api.ResponseShouldMatchJSON)

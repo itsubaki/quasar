@@ -55,6 +55,11 @@ func Func(c *gin.Context) {
 		if err != nil {
 			return nil, nil, fmt.Errorf("file open: %v", err)
 		}
+		defer func() {
+			if err := f.Close(); err != nil {
+				log.Span(s).ErrorReport("file close: %v", err)
+			}
+		}()
 
 		r, err := io.ReadAll(f)
 		if err != nil {

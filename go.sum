@@ -298,8 +298,8 @@ github.com/ianlancetaylor/demangle v0.0.0-20181102032728-5e5cf60278f6/go.mod h1:
 github.com/ianlancetaylor/demangle v0.0.0-20200824232613-28f6c0f3b639/go.mod h1:aSSvb/t6k1mPoxDqO4vJh6VOCGPwU4O0C2/Eqndh1Sc=
 github.com/ianlancetaylor/demangle v0.0.0-20210905161508-09a460cdf81d/go.mod h1:aYm2/VgdVmcIU8iMfdMvDMsRAQjcfZSKFby6HOFvi/w=
 github.com/inconshreveable/mousetrap v1.0.0/go.mod h1:PxqpIevigyE2G7u3NXJIT2ANytuPF1OarO4DADm73n8=
-github.com/itsubaki/q v1.1.5-0.20220505141859-b17cd14c17cf h1:mAYfh6bmnkEU1IKhGaS3jaM78v8pf/STs1aeiizyzJk=
-github.com/itsubaki/q v1.1.5-0.20220505141859-b17cd14c17cf/go.mod h1:p37X1D0ObvLcJ+26P1wRBbEBkIw3jZA/2q85LniQ6Ic=
+github.com/itsubaki/q v1.1.5-0.20220515132824-e67e928d16b6 h1:fZvfyCDN7ivCzyQV/IGcOCinUUR7UURvz4KDzEV1GpA=
+github.com/itsubaki/q v1.1.5-0.20220515132824-e67e928d16b6/go.mod h1:p37X1D0ObvLcJ+26P1wRBbEBkIw3jZA/2q85LniQ6Ic=
 github.com/itsubaki/qasm v0.0.3 h1:OUeI1IibxSggz0iQG4fP7y6xtZfBY9Whxsh81JrslzQ=
 github.com/itsubaki/qasm v0.0.3/go.mod h1:Tc2NRpxHAKp13+5oAjgaNdZToBt/9Nl5JNPGJpI2nRM=
 github.com/jfilipczyk/gomatch v1.2.1 h1:1apWwM4OrVl/avoaY9sInZJqioA6HOSOc/Mg8VzQueY=

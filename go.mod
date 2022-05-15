@@ -8,7 +8,7 @@ require (
 	github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/trace v1.6.1
 	github.com/cucumber/godog v0.12.5
 	github.com/gin-gonic/gin v1.7.7
-	github.com/itsubaki/q v1.1.5-0.20220505141859-b17cd14c17cf
+	github.com/itsubaki/q v1.1.5-0.20220515132824-e67e928d16b6
 	github.com/itsubaki/qasm v0.0.3
 	github.com/jfilipczyk/gomatch v1.2.1
 	go.opentelemetry.io/otel v1.7.0

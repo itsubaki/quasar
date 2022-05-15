@@ -4,12 +4,12 @@ go 1.18
 
 require (
 	cloud.google.com/go/errorreporting v0.2.0
-	cloud.google.com/go/profiler v0.2.0
 	github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/trace v1.6.1
 	github.com/cucumber/godog v0.12.5
+	github.com/gin-contrib/pprof v1.3.0
 	github.com/gin-gonic/gin v1.7.7
-	github.com/itsubaki/q v1.1.5-0.20220515132824-e67e928d16b6
-	github.com/itsubaki/qasm v0.0.3
+	github.com/itsubaki/q v1.1.5
+	github.com/itsubaki/qasm v0.0.4
 	github.com/jfilipczyk/gomatch v1.2.1
 	go.opentelemetry.io/otel v1.7.0
 	go.opentelemetry.io/otel/sdk v1.7.0
@@ -33,7 +33,6 @@ require (
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/go-cmp v0.5.8 // indirect
-	github.com/google/pprof v0.0.0-20220509035851-59ca7ad80af3 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/googleapis/gax-go/v2 v2.4.0 // indirect
 	github.com/hashicorp/go-immutable-radix v1.3.1 // indirect

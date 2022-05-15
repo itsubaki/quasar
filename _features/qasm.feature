@@ -1,5 +1,5 @@
 Feature:
-    In order to run openqasm
+    In order to run quantum algorithm with openqasm
     As an API User
 
     Scenario: should run bell.qasm

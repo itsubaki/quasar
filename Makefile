@@ -11,7 +11,7 @@ test:
 	GOOGLE_APPLICATION_CREDENTIALS=./credentials.json GOOGLE_CLOUD_PROJECT=${PROJECT_ID} go test --godog.format=pretty -v -coverprofile=coverage.out -covermode=atomic -coverpkg ./...
 
 run:
-	GOOGLE_APPLICATION_CREDENTIALS=./credentials.json GOOGLE_CLOUD_PROJECT=${PROJECT_ID} go run main.go
+	GOOGLE_APPLICATION_CREDENTIALS=./credentials.json GOOGLE_CLOUD_PROJECT=${PROJECT_ID} USE_PPROF=true go run main.go
 
 merge:
 	echo "" > coverage.txt

@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/gin-contrib/pprof"
 	"github.com/gin-gonic/gin"
 	"github.com/itsubaki/quasar/pkg/handler/qasm"
 	"github.com/itsubaki/quasar/pkg/handler/shor"
@@ -32,6 +33,10 @@ func New() *gin.Engine {
 	g.POST("/", qasm.Func)
 
 	return g
+}
+
+func UsePProf(g *gin.Engine) {
+	pprof.Register(g)
 }
 
 func Root(g *gin.Engine) {

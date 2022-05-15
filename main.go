@@ -7,10 +7,10 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 	"time"
 
-	"cloud.google.com/go/profiler"
 	"github.com/itsubaki/quasar/pkg/handler"
 	"github.com/itsubaki/quasar/pkg/logger"
 	"github.com/itsubaki/quasar/pkg/tracer"
@@ -18,39 +18,35 @@ import (
 
 var (
 	timeout = 5 * time.Second
+	pprof   = os.Getenv("USE_PPROF")
 	port    = os.Getenv("PORT")
-	gae     = os.Getenv("GAE_APPLICATION") // https://cloud.google.com/appengine/docs/standard/go/runtime#environment_variables
 )
 
 func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
-	// logger, tracer, profiler
+	// logger, tracer
 	defer logger.Factory.Close()
 	defer tracer.Must(tracer.Setup(timeout))()
 
-	if len(gae) > 0 {
-		// enable profiler on Google AppEngine
-		// https://cloud.google.com/profiler/docs/about-profiler#environment_and_languages
-		if err := profiler.Start(profiler.Config{
-			MutexProfiling: true,
-		}); err != nil {
-			log.Fatalf("profiler start: %v", err)
-		}
-	}
-
-	// http handler
+	// handler
 	if port == "" {
 		port = "8080"
 	}
 
+	h := handler.New()
+	if strings.ToLower(pprof) == "true" {
+		// profiler
+		handler.UsePProf(h)
+	}
+
 	s := &http.Server{
 		Addr:    fmt.Sprintf(":%s", port),
-		Handler: handler.New(),
+		Handler: h,
 	}
 
 	go func() {
-		log.Println("http server listen and serve")
+		log.Printf("http server listen and serve. port: %v\n", port)
 		if err := s.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			log.Fatalf("listen: %s", err)
 		}

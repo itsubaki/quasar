@@ -108,9 +108,10 @@ func Func(c *gin.Context) {
 		}
 
 		// quantum state for json encoding
-		state := make([]State, 0, len(e.Q.Raw().State()))
-		for _, s := range e.Q.Raw().State(index...) {
-			state = append(state, State{
+		state := e.Q.Raw().State(index...)
+		out := make([]State, 0, len(state))
+		for _, s := range state {
+			out = append(out, State{
 				Amplitude: Amplitude{
 					Real: real(s.Amplitude),
 					Imag: imag(s.Amplitude),
@@ -121,7 +122,7 @@ func Func(c *gin.Context) {
 			})
 		}
 
-		return state, nil
+		return out, nil
 	}()
 	if err != nil {
 		log.SpanOf(spanID).ErrorReport("compute: %v", err)

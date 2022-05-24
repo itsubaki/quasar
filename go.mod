@@ -9,7 +9,7 @@ require (
 	github.com/gin-contrib/pprof v1.3.0
 	github.com/gin-gonic/gin v1.7.7
 	github.com/itsubaki/q v1.1.6
-	github.com/itsubaki/qasm v0.0.4
+	github.com/itsubaki/qasm v0.0.5
 	github.com/jfilipczyk/gomatch v1.2.1
 	go.opentelemetry.io/otel v1.7.0
 	go.opentelemetry.io/otel/sdk v1.7.0
@@ -54,7 +54,7 @@ require (
 	golang.org/x/text v0.3.7 // indirect
 	google.golang.org/api v0.80.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
-	google.golang.org/genproto v0.0.0-20220519153652-3a47de7e79bd // indirect
+	google.golang.org/genproto v0.0.0-20220524023933-508584e28198 // indirect
 	google.golang.org/grpc v1.46.2 // indirect
 	google.golang.org/protobuf v1.28.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect

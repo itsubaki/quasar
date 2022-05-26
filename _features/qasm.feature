@@ -10,7 +10,7 @@ Feature:
             """
             {
                 "filename": "bell.qasm",
-                "content": "OPENQASM 3.0;\n\ngate h q { U(pi/2.0, 0, pi) q; }\ngate cx c, t { ctrl @ U(pi, 0, pi) c, t; }\n\nqubit[2] q;\nreset q;\n\nh q[0];\ncx q[0], q[1];\n",
+                "content": "OPENQASM 3.0;\n\ngate h q { U(pi/2.0, 0, pi) q; }\ngate x q { U(pi, 0, pi) q; }\ngate cx c, t { ctrl @ x c, t; }\n\nqubit[2] q;\nreset q;\n\nh q[0];\ncx q[0], q[1];\n",
                 "state": [
                     {
                         "amplitude": {

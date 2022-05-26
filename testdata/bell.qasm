@@ -1,7 +1,8 @@
 OPENQASM 3.0;
 
 gate h q { U(pi/2.0, 0, pi) q; }
-gate cx c, t { ctrl @ U(pi, 0, pi) c, t; }
+gate x q { U(pi, 0, pi) q; }
+gate cx c, t { ctrl @ x c, t; }
 
 qubit[2] q;
 reset q;

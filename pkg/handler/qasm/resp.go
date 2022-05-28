@@ -13,7 +13,5 @@ type Amplitude struct {
 }
 
 type Response struct {
-	Filename string  `json:"filename"`
-	Content  string  `json:"content"`
-	State    []State `json:"state"`
+	State []State `json:"state"`
 }

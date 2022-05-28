@@ -42,7 +42,7 @@ func Func(c *gin.Context) {
 	}
 
 	// file read
-	file, r, err := func() (*multipart.FileHeader, []byte, error) {
+	_, r, err := func() (*multipart.FileHeader, []byte, error) {
 		_, s := tra.Start(parent, "file read")
 		defer s.End()
 
@@ -135,8 +135,6 @@ func Func(c *gin.Context) {
 
 	// response
 	c.JSON(http.StatusOK, Response{
-		Filename: file.Filename,
-		Content:  string(r),
-		State:    state,
+		State: state,
 	})
 }

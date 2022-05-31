@@ -17,3 +17,6 @@
 
 # Google Cloud
 credentials.json
+
+# GitHub codespaces
+oryxBuildBinary

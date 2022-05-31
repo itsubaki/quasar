@@ -16,10 +16,7 @@ import (
 	"github.com/jfilipczyk/gomatch"
 )
 
-var (
-	projectID = os.Getenv("GOOGLE_CLOUD_PROJECT")
-	api       = &apiFeature{}
-)
+var api = &apiFeature{}
 
 type apiFeature struct {
 	header http.Header

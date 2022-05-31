@@ -8,7 +8,7 @@ update:
 	go mod tidy
 
 test:
-	GOOGLE_APPLICATION_CREDENTIALS=./credentials.json GOOGLE_CLOUD_PROJECT=${PROJECT_ID} go test --godog.format=pretty -v -coverprofile=coverage.out -covermode=atomic -coverpkg ./...
+	GOOGLE_APPLICATION_CREDENTIALS=./credentials.json GOOGLE_CLOUD_PROJECT=${PROJECT_ID} go test -v -coverprofile=coverage.out -covermode=atomic -coverpkg ./...
 
 run:
 	GOOGLE_APPLICATION_CREDENTIALS=./credentials.json GOOGLE_CLOUD_PROJECT=${PROJECT_ID} USE_PPROF=true go run main.go

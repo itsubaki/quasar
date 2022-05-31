@@ -2,6 +2,7 @@ package main_test
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"io"
 	"mime/multipart"
@@ -32,10 +33,12 @@ func (a *apiFeature) start() {
 	a.keep = make(map[string]interface{})
 }
 
-func (a *apiFeature) reset(sc *godog.Scenario) {
+func (a *apiFeature) reset(ctx context.Context, sc *godog.Scenario) (context.Context, error) {
 	a.header = make(http.Header)
 	a.body = nil
 	a.resp = httptest.NewRecorder()
+
+	return ctx, nil
 }
 
 func (a *apiFeature) replace(str string) string {
@@ -104,6 +107,10 @@ func (a *apiFeature) SetUploadFile(path string) error {
 	mw := multipart.NewWriter(body)
 
 	fw, err := mw.CreateFormFile("file", file.Name())
+	if err != nil {
+		return fmt.Errorf("create form file: %v", err)
+	}
+
 	if _, err := io.Copy(fw, file); err != nil {
 		return fmt.Errorf("io copy: %v", err)
 	}
@@ -127,7 +134,7 @@ func InitializeTestSuite(ctx *godog.TestSuiteContext) {
 }
 
 func InitializeScenario(ctx *godog.ScenarioContext) {
-	ctx.BeforeScenario(api.reset)
+	ctx.Before(api.reset)
 
 	ctx.Step(`^I set "([^"]*)" header with "([^"]*)"$`, api.SetHeader)
 	ctx.Step(`^I set request body:$`, api.SetRequestBody)

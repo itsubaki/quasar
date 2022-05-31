@@ -28,7 +28,7 @@ func Func(c *gin.Context) {
 
 	// logger, tracer
 	log := logf.New(traceID, c.Request)
-	parent, err := tracer.NewContext(context.Background(), traceID, spanID, traceTrue)
+	parent, err := tracer.NewContext(c.Request.Context(), traceID, spanID, traceTrue)
 	if err != nil {
 		log.SpanOf(spanID).ErrorReport("new context: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{

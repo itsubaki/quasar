@@ -30,8 +30,8 @@ qasm:
 	curl -s -H "Authorization: Bearer $(shell gcloud auth print-identity-token)" $(shell gcloud run services describe ${SERVICE_NAME} --project ${PROJECT_ID} --format 'value(status.url)') -X POST -F file=@testdata/shor.qasm | jq .
 
 build:
-	docker build -t ghcr.io/itsubaki/quasar .
-	docker push ghcr.io/itsubaki/quasar
+	docker build -t ghcr.io/itsubaki/${SERVICE_NAME} .
+	docker push ghcr.io/itsubaki/${SERVICE_NAME}
 
 up:
 	echo "PROJECT_ID: ${PROJECT_ID}"

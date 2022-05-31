@@ -289,10 +289,10 @@ github.com/hashicorp/serf v0.8.2/go.mod h1:6hOLApaqBFA1NXqRQAsxw9QxuDEvNxSQRwA/J
 github.com/ianlancetaylor/demangle v0.0.0-20181102032728-5e5cf60278f6/go.mod h1:aSSvb/t6k1mPoxDqO4vJh6VOCGPwU4O0C2/Eqndh1Sc=
 github.com/ianlancetaylor/demangle v0.0.0-20200824232613-28f6c0f3b639/go.mod h1:aSSvb/t6k1mPoxDqO4vJh6VOCGPwU4O0C2/Eqndh1Sc=
 github.com/inconshreveable/mousetrap v1.0.0/go.mod h1:PxqpIevigyE2G7u3NXJIT2ANytuPF1OarO4DADm73n8=
-github.com/itsubaki/q v1.1.6 h1:Jh13m530tRi9hHXUnDvelFqZedGLs4yIMF1q3NXeuiA=
-github.com/itsubaki/q v1.1.6/go.mod h1:p37X1D0ObvLcJ+26P1wRBbEBkIw3jZA/2q85LniQ6Ic=
-github.com/itsubaki/qasm v0.0.6 h1:B5F+PNwVNpsbNbP5HeZUxxsRoDmJWv0S0wkoJ0E88oU=
-github.com/itsubaki/qasm v0.0.6/go.mod h1:Zrn/a9rtTd9gFONG7grOOSA/NzcstSQh1nGHAMy9XB8=
+github.com/itsubaki/q v1.1.7-0.20220528102915-67040605e590 h1:rpemHHKBZWXFrdGFG90h4HtemijIGO79u8Livhu//qo=
+github.com/itsubaki/q v1.1.7-0.20220528102915-67040605e590/go.mod h1:p37X1D0ObvLcJ+26P1wRBbEBkIw3jZA/2q85LniQ6Ic=
+github.com/itsubaki/qasm v0.0.7 h1:skZnZ6rvkBToU8/8E4gc8PINU1kme9gfFDnp5IRS0C4=
+github.com/itsubaki/qasm v0.0.7/go.mod h1:tUGtUpY6VeYUMoZrT37/zOMDwSrCraqIiEXwXi3dSPE=
 github.com/jfilipczyk/gomatch v1.2.1 h1:1apWwM4OrVl/avoaY9sInZJqioA6HOSOc/Mg8VzQueY=
 github.com/jfilipczyk/gomatch v1.2.1/go.mod h1:uD5cJG0I8GB0lhwg8dq8DspFqtF1Si+n9sPEe1iBgWc=
 github.com/jonboulle/clockwork v0.1.0/go.mod h1:Ii8DK3G1RaLaWxj9trq07+26W01tbo22gdxWY5EU2bo=

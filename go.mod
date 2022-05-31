@@ -8,8 +8,8 @@ require (
 	github.com/cucumber/godog v0.12.5
 	github.com/gin-contrib/pprof v1.3.0
 	github.com/gin-gonic/gin v1.8.0
-	github.com/itsubaki/q v1.1.6
-	github.com/itsubaki/qasm v0.0.6
+	github.com/itsubaki/q v1.1.7-0.20220528102915-67040605e590
+	github.com/itsubaki/qasm v0.0.7
 	github.com/jfilipczyk/gomatch v1.2.1
 	go.opentelemetry.io/otel v1.7.0
 	go.opentelemetry.io/otel/sdk v1.7.0

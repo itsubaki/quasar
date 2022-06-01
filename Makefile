@@ -19,7 +19,7 @@ merge:
 build:
 	# gcloud builds submit --project ${PROJECT_ID} --tag ${IMAGE}
 
-	gcloud auth configure-docker --quiet
+	gcloud auth configure-docker gcr.io --quiet
 	docker build -t ${IMAGE} .
 	docker push ${IMAGE}
 

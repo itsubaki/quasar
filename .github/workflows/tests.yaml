@@ -36,15 +36,6 @@ jobs:
           echo "::add-mask::${{ secrets.PROJECT_ID }}"
           echo "::add-mask::${{ secrets.SERVICE_URL }}"
 
-      - name: Integration Tests
-        env:
-          PROJECT_ID: ${{ secrets.PROJECT_ID }}
-          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
-        run: |
-          echo ${GOOGLE_APPLICATION_CREDENTIALS} > ./credentials.json
-          make test
-          rm -rf ./credentials/json
-
       - name: Auth Google Cloud
         uses: "google-github-actions/auth@v0"
         with:
@@ -54,6 +45,19 @@ jobs:
         uses: google-github-actions/setup-gcloud@v0.6.0
         with:
           project_id: ${{ secrets.PROJECT_ID }}
+
+      - name: Integration Tests
+        env:
+          PROJECT_ID: ${{ secrets.PROJECT_ID }}
+        run: |
+          make test
+
+      - name: Build image
+        env:
+          PROJECT_ID: ${{ secrets.PROJECT_ID }}
+          IMAGE: gcr.io/${{ secrets.PROJECT_ID }}/quasar
+        run: |
+          make build
 
       - name: Deploy to Google Cloud Run
         env:

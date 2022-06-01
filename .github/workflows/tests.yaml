@@ -38,9 +38,8 @@ jobs:
       - name: Integration Tests
         env:
           PROJECT_ID: ${{ secrets.PROJECT_ID }}
-          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
         run: |
-          echo ${GOOGLE_APPLICATION_CREDENTIALS} > ./credentials.json
+          echo ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }} > ./credentials.json
           make test
           rm -rf ./credentials/json
 
@@ -49,11 +48,14 @@ jobs:
         with:
           credentials_json: "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}"
 
+      - name: Setup Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0.6.0
+        with:
+          project_id: ${{ secrets.PROJECT_ID }}
+
       - name: Deploy to Google Cloud Run
         env:
           PROJECT_ID: ${{ secrets.PROJECT_ID }}
-        uses: "google-github-actions/deploy-cloudrun@v0"
-        with:
-          service: "quasar"
-          image: "gcr.io/${{ env.PROJECT_ID }}/quasar"
-          region: "asia-northeast1"
+          IMAGE: gcr.io/${{ secrets.PROJECT_ID }}/quasar
+        run: |
+          make deploy

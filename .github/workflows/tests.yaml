@@ -49,10 +49,11 @@ jobs:
         with:
           credentials_json: "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}"
 
-      - name: Deploying to Google Cloud Run
+      - name: Deploy to Google Cloud Run
         env:
           PROJECT_ID: ${{ secrets.PROJECT_ID }}
         uses: "google-github-actions/deploy-cloudrun@v0"
         with:
-          service: "fourkeys"
-          image: "gcr.io/${PROJECT_ID}/quasar"
+          service: "quasar"
+          image: "gcr.io/${{ env.PROJECT_ID }}/quasar"
+          region: "asia-northeast1"

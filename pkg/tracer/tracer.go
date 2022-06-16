@@ -17,10 +17,10 @@ import (
 
 var (
 	// https://cloud.google.com/appengine/docs/standard/go/runtime#environment_variables
+	// https://cloud.google.com/run/docs/container-contract?hl=ja#services-env-vars
 	projectID    = os.Getenv("GOOGLE_CLOUD_PROJECT")
-	serviceName  = os.Getenv("GAE_SERVICE")
-	version      = os.Getenv("GAE_VERSION")
-	deploymentID = os.Getenv("GAE_DEPLOYMENT_ID")
+	serviceName  = os.Getenv("K_SERVICE")
+	revision     = os.Getenv("K_REVISION")
 )
 
 func Must(f func(), err error) func() {
@@ -43,7 +43,7 @@ func Setup(timeout time.Duration) (func(), error) {
 			resource.NewWithAttributes(
 				semconv.SchemaURL,
 				semconv.ServiceNameKey.String(serviceName),
-				semconv.ServiceVersionKey.String(fmt.Sprintf("%v.%v", version, deploymentID)),
+				semconv.ServiceVersionKey.String(revision),
 			),
 		),
 	)

@@ -6,6 +6,7 @@ Quantum Computation Simulator as a Service
 
 ```shell
 $ export PROJECT_ID=YOUR_GOOGLE_CLOUD_PROJECT_ID
+$
 $ gcloud builds submit --tag gcr.io/${PROJECT_ID}/quasar
 $ gcloud run deploy --image gcr.io/${PROJECT_ID}/quasar --set-env-vars=GOOGLE_CLOUD_PROJECT=${PROJECT_ID} quasar
 ```
@@ -25,7 +26,9 @@ reset q;
 
 h q[0];
 cx q[0], q[1];
+```
 
+```shell
 $ curl -s $(gcloud run services describe quasar --format 'value(status.url)') -X POST -F file=@testdata/bell.qasm | jq .
 {
   "state": [

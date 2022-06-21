@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -18,29 +17,13 @@ import (
 )
 
 var (
-	timeout   = 5 * time.Second
-	pprof     = os.Getenv("USE_PPROF")
-	port      = os.Getenv("PORT")
-	projectID = func() string {
-		url := "http://metadata.google.internal/computeMetadata/v1/project/project-id"
-		resp, err := http.Get(url)
-		if err != nil {
-			panic(fmt.Sprintf("get %v: %v", url, err))
-		}
-		defer resp.Body.Close()
-
-		body, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			panic(fmt.Sprintf("read resp.Body: %v", err))
-		}
-
-		return string(body)
-	}()
+	timeout = 5 * time.Second
+	pprof   = os.Getenv("USE_PPROF")
+	port    = os.Getenv("PORT")
 )
 
 func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
-	log.Printf("projectID=%v", projectID)
 
 	// logger, tracer
 	defer logger.Factory.Close()

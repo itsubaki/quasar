@@ -27,8 +27,11 @@ const (
 
 var (
 	// https://cloud.google.com/appengine/docs/standard/go/runtime#environment_variables
-	projectID = os.Getenv("GOOGLE_CLOUD_PROJECT")
-	Factory   = Must(New(context.Background(), projectID))
+	// https://cloud.google.com/run/docs/container-contract?hl=ja#services-env-vars
+	projectID   = os.Getenv("GOOGLE_CLOUD_PROJECT")
+	serviceName = os.Getenv("K_SERVICE")
+	revision    = os.Getenv("K_REVISION")
+	Factory     = Must(New(context.Background(), projectID))
 )
 
 type LoggerFactory struct {
@@ -45,7 +48,10 @@ func Must(f *LoggerFactory, err error) *LoggerFactory {
 }
 
 func New(ctx context.Context, projectID string) (*LoggerFactory, error) {
-	c, err := errorreporting.NewClient(ctx, projectID, errorreporting.Config{})
+	c, err := errorreporting.NewClient(ctx, projectID, errorreporting.Config{
+		ServiceName:    serviceName,
+		ServiceVersion: revision,
+	})
 	if err != nil {
 		return nil, fmt.Errorf("new error reporting client: %v", err)
 	}

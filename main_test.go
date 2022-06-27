@@ -12,7 +12,7 @@ import (
 var opts = godog.Options{
 	Output: colors.Colored(os.Stdout),
 	Format: "pretty",
-	Paths:  []string{"features"},
+	Paths:  []string{"_features"},
 }
 
 func init() {

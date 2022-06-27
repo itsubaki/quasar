@@ -11,9 +11,9 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/itsubaki/quasar/pkg/handler"
-	"github.com/itsubaki/quasar/pkg/logger"
-	"github.com/itsubaki/quasar/pkg/tracer"
+	"github.com/itsubaki/quasar/handler"
+	"github.com/itsubaki/quasar/logger"
+	"github.com/itsubaki/quasar/tracer"
 )
 
 var (

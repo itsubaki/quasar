@@ -13,7 +13,7 @@ import (
 
 	"github.com/cucumber/godog"
 	"github.com/gin-gonic/gin"
-	"github.com/itsubaki/quasar/pkg/handler"
+	"github.com/itsubaki/quasar/handler"
 	"github.com/jfilipczyk/gomatch"
 )
 

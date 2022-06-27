@@ -17,6 +17,7 @@
 
 # Google Cloud
 credentials.json
+setenv.sh
 
 # GitHub codespaces
 oryxBuildBinary

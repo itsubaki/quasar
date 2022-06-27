@@ -8,11 +8,11 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/itsubaki/q"
-	"github.com/itsubaki/q/pkg/math/number"
-	"github.com/itsubaki/q/pkg/math/rand"
-	"github.com/itsubaki/q/pkg/quantum/qubit"
-	"github.com/itsubaki/quasar/pkg/logger"
-	"github.com/itsubaki/quasar/pkg/tracer"
+	"github.com/itsubaki/q/math/number"
+	"github.com/itsubaki/q/math/rand"
+	"github.com/itsubaki/q/quantum/qubit"
+	"github.com/itsubaki/quasar/logger"
+	"github.com/itsubaki/quasar/tracer"
 	"go.opentelemetry.io/otel"
 )
 

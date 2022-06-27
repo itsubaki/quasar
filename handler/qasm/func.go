@@ -9,12 +9,12 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/itsubaki/q"
-	"github.com/itsubaki/qasm/pkg/ast"
-	"github.com/itsubaki/qasm/pkg/evaluator"
-	"github.com/itsubaki/qasm/pkg/lexer"
-	"github.com/itsubaki/qasm/pkg/parser"
-	"github.com/itsubaki/quasar/pkg/logger"
-	"github.com/itsubaki/quasar/pkg/tracer"
+	"github.com/itsubaki/qasm/ast"
+	"github.com/itsubaki/qasm/evaluator"
+	"github.com/itsubaki/qasm/lexer"
+	"github.com/itsubaki/qasm/parser"
+	"github.com/itsubaki/quasar/logger"
+	"github.com/itsubaki/quasar/tracer"
 	"go.opentelemetry.io/otel"
 )
 

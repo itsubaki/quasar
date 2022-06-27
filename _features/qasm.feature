@@ -3,7 +3,7 @@ Feature:
     As an API User
 
     Scenario: should run bell.qasm
-        Given I set upload file "testdata/bell.qasm"
+        Given I set upload file "_testdata/bell.qasm"
         When I send "POST" request to "/"
         Then the response code should be 200
         Then the response should match json:

@@ -17,7 +17,7 @@ require (
 )
 
 require (
-	cloud.google.com/go v0.102.1 // indirect
+	cloud.google.com/go v0.103.0 // indirect
 	cloud.google.com/go/compute v1.7.0 // indirect
 	cloud.google.com/go/trace v1.2.0 // indirect
 	github.com/GoogleCloudPlatform/opentelemetry-operations-go/internal/resourcemapping v0.32.2 // indirect
@@ -29,7 +29,7 @@ require (
 	github.com/go-playground/locales v0.14.0 // indirect
 	github.com/go-playground/universal-translator v0.18.0 // indirect
 	github.com/go-playground/validator/v10 v10.11.0 // indirect
-	github.com/goccy/go-json v0.9.7 // indirect
+	github.com/goccy/go-json v0.9.8 // indirect
 	github.com/gofrs/uuid v4.2.0+incompatible // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
@@ -53,13 +53,13 @@ require (
 	go.uber.org/multierr v1.8.0 // indirect
 	golang.org/x/crypto v0.0.0-20220622213112-05595931fe9d // indirect
 	golang.org/x/net v0.0.0-20220624214902-1bab6f366d9e // indirect
-	golang.org/x/oauth2 v0.0.0-20220622183110-fd043fe589d2 // indirect
+	golang.org/x/oauth2 v0.0.0-20220628200809-02e64fa58f26 // indirect
 	golang.org/x/sync v0.0.0-20220601150217-0de741cfad7f // indirect
-	golang.org/x/sys v0.0.0-20220624220833-87e55d714810 // indirect
+	golang.org/x/sys v0.0.0-20220627191245-f75cf1eec38b // indirect
 	golang.org/x/text v0.3.7 // indirect
-	google.golang.org/api v0.85.0 // indirect
+	google.golang.org/api v0.86.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
-	google.golang.org/genproto v0.0.0-20220624142145-8cd45d7dbd1f // indirect
+	google.golang.org/genproto v0.0.0-20220628213854-d9e0b6570c03 // indirect
 	google.golang.org/grpc v1.47.0 // indirect
 	google.golang.org/protobuf v1.28.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect

@@ -173,42 +173,36 @@ func Func(c *gin.Context) {
 
 	// find non-trivial factors (classical algorithm)
 	out, ok := func() (gin.H, bool) {
-		_, s := tra.Start(parent, "find non-trivial factors")
-		defer s.End()
+		_, span := tra.Start(parent, "find non-trivial factors")
+		defer span.End()
 
-		for _, state := range qs {
-			_, m := state.Value()
-			s, r, _, ok := number.FindOrder(a, N, fmt.Sprintf("0.%s", m))
-			if !ok || number.IsOdd(r) {
-				return gin.H{
-					"N": N, "a": a, "t": t,
-					"m":   fmt.Sprintf("0.%s", m),
-					"s/r": fmt.Sprintf("%v/%v", s, r),
-				}, false
-			}
-
-			p0 := number.GCD(number.Pow(a, r/2)-1, N)
-			p1 := number.GCD(number.Pow(a, r/2)+1, N)
-			if number.IsTrivial(N, p0, p1) {
-				return gin.H{
-					"N": N, "a": a, "t": t,
-					"m":   fmt.Sprintf("0.%s", m),
-					"s/r": fmt.Sprintf("%v/%v", s, r),
-				}, false
-			}
-
+		_, m := qs[0].Value()
+		s, r, _, ok := number.FindOrder(a, N, fmt.Sprintf("0.%s", m))
+		if !ok || number.IsOdd(r) {
 			return gin.H{
 				"N": N, "a": a, "t": t,
 				"m":   fmt.Sprintf("0.%s", m),
 				"s/r": fmt.Sprintf("%v/%v", s, r),
-				"p":   p0,
-				"q":   p1,
-			}, true
+			}, false
+		}
+
+		p0 := number.GCD(number.Pow(a, r/2)-1, N)
+		p1 := number.GCD(number.Pow(a, r/2)+1, N)
+		if number.IsTrivial(N, p0, p1) {
+			return gin.H{
+				"N": N, "a": a, "t": t,
+				"m":   fmt.Sprintf("0.%s", m),
+				"s/r": fmt.Sprintf("%v/%v", s, r),
+			}, false
 		}
 
 		return gin.H{
 			"N": N, "a": a, "t": t,
-		}, false
+			"m":   fmt.Sprintf("0.%s", m),
+			"s/r": fmt.Sprintf("%v/%v", s, r),
+			"p":   p0,
+			"q":   p1,
+		}, true
 	}()
 
 	log.SpanOf(spanID).Debug("out: %v, ok: %v", out, ok)

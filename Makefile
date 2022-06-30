@@ -11,6 +11,9 @@ update:
 test:
 	GOOGLE_CLOUD_PROJECT=${PROJECT_ID} go test -v -coverprofile=coverage.out -covermode=atomic -coverpkg ./...
 
+testpkg:
+	GOOGLE_CLOUD_PROJECT=${PROJECT_ID} go test -v -cover $(shell go list ./... | grep -v /vendor/ | grep -v /build/ | grep -v -E "quasar$$") -coverprofile=coverage-pkg.out -covermode=atomic
+
 merge:
 	echo "" > coverage.txt
 	cat coverage.out     >> coverage.txt

@@ -14,7 +14,7 @@ $ gcloud run deploy --image gcr.io/${PROJECT_ID}/quasar --set-env-vars=GOOGLE_CL
 ## Example
 
 ```shell
-$ cat _testdata/bell.qasm
+$ cat testdata/bell.qasm
 OPENQASM 3.0;
 
 gate h q { U(pi/2.0, 0, pi) q; }
@@ -29,7 +29,7 @@ cx q[0], q[1];
 ```
 
 ```shell
-$ curl -s $(gcloud run services describe quasar --format 'value(status.url)') -X POST -F file=@_testdata/bell.qasm | jq .
+$ curl -s $(gcloud run services describe quasar --format 'value(status.url)') -X POST -F file=@testdata/bell.qasm | jq .
 {
   "state": [
     {

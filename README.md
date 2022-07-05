@@ -8,7 +8,7 @@ Quantum Computation Simulator as a Service
 $ export PROJECT_ID=YOUR_GOOGLE_CLOUD_PROJECT_ID
 $
 $ gcloud builds submit --tag gcr.io/${PROJECT_ID}/quasar
-$ gcloud run deploy --image gcr.io/${PROJECT_ID}/quasar --set-env-vars=GOOGLE_CLOUD_PROJECT=${PROJECT_ID} quasar
+$ gcloud run deploy --image gcr.io/${PROJECT_ID}/quasar --set-env-vars=PROJECT_ID=${PROJECT_ID} quasar
 ```
 
 ## Example

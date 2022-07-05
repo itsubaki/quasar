@@ -7,7 +7,7 @@ services:
       - "8080:8080"
     environment:
       - GIN_MODE=debug
-      - GOOGLE_CLOUD_PROJECT=${PROJECT_ID}
+      - PROJECT_ID=${PROJECT_ID}
       - GOOGLE_APPLICATION_CREDENTIALS=/credentials.json
     volumes:
       - ${GOOGLE_APPLICATION_CREDENTIALS}:/credentials.json:ro

@@ -16,11 +16,10 @@ import (
 )
 
 var (
-	// https://cloud.google.com/appengine/docs/standard/go/runtime#environment_variables
 	// https://cloud.google.com/run/docs/container-contract?hl=ja#services-env-vars
-	projectID    = os.Getenv("GOOGLE_CLOUD_PROJECT")
-	serviceName  = os.Getenv("K_SERVICE")
-	revision     = os.Getenv("K_REVISION")
+	projectID   = os.Getenv("PROJECT_ID")
+	serviceName = os.Getenv("K_SERVICE")
+	revision    = os.Getenv("K_REVISION")
 )
 
 func Must(f func(), err error) func() {

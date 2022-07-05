@@ -9,25 +9,21 @@ update:
 	go mod tidy
 
 test:
-	GOOGLE_CLOUD_PROJECT=${PROJECT_ID} go test -v -coverprofile=coverage.out -covermode=atomic -coverpkg ./...
+	PROJECT_ID=${PROJECT_ID} go test -v -coverprofile=coverage.out -covermode=atomic -coverpkg ./...
 
 testpkg:
-	GOOGLE_CLOUD_PROJECT=${PROJECT_ID} go test -v -cover $(shell go list ./... | grep -v /vendor/ | grep -v /build/ | grep -v -E "quasar$$") -coverprofile=coverage-pkg.out -covermode=atomic
+	PROJECT_ID=${PROJECT_ID} go test -v -cover $(shell go list ./... | grep -v /vendor/ | grep -v /build/ | grep -v -E "quasar$$") -coverprofile=coverage-pkg.out -covermode=atomic
 
-merge:
-	echo "" > coverage.txt
-	cat coverage.out     >> coverage.txt
-	cat coverage-pkg.out >> coverage.txt
+cloudbuild:
+	gcloud builds submit --project ${PROJECT_ID} --tag ${IMAGE}
 
 build:
-	# gcloud builds submit --project ${PROJECT_ID} --tag ${IMAGE}
-
 	gcloud auth configure-docker gcr.io --quiet
 	docker build -t ${IMAGE} .
 	docker push ${IMAGE}
 
 deploy:
-	gcloud run deploy --region ${REGION} --project ${PROJECT_ID} --image ${IMAGE} --set-env-vars=GOOGLE_CLOUD_PROJECT=${PROJECT_ID},GIN_MODE=release ${SERVICE_NAME} 
+	gcloud run deploy --region ${REGION} --project ${PROJECT_ID} --image ${IMAGE} --set-env-vars=PROJECT_ID=${PROJECT_ID},GIN_MODE=release ${SERVICE_NAME} 
 
 package:
 	docker tag ${IMAGE} ghcr.io/itsubaki/${SERVICE_NAME}
@@ -39,7 +35,7 @@ up:
 	docker-compose up
 
 run:
-	GOOGLE_CLOUD_PROJECT=${PROJECT_ID} USE_PPROF=true go run main.go
+	PROJECT_ID=${PROJECT_ID} USE_PPROF=true go run main.go
 
 shor:
 	@curl -s -H "Authorization: Bearer $(shell gcloud auth print-identity-token)" $(shell gcloud run services describe ${SERVICE_NAME} --project ${PROJECT_ID} --format 'value(status.url)')/shor/15 | jq .

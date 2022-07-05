@@ -9,10 +9,10 @@ update:
 	go mod tidy
 
 test:
-	PROJECT_ID=${PROJECT_ID} go test -v -coverprofile=coverage.out -covermode=atomic -coverpkg ./...
+	PROJECT_ID=${PROJECT_ID} go test -v -coverprofile=coverage.txt -covermode=atomic -coverpkg ./...
 
 testpkg:
-	PROJECT_ID=${PROJECT_ID} go test -v -cover $(shell go list ./... | grep -v /vendor/ | grep -v /build/ | grep -v -E "quasar$$") -coverprofile=coverage-pkg.out -covermode=atomic
+	PROJECT_ID=${PROJECT_ID} go test -v -cover $(shell go list ./... | grep -v /vendor/ | grep -v /build/ | grep -v -E "quasar$$") -coverprofile=coverage-pkg.txt -covermode=atomic
 
 cloudbuild:
 	gcloud builds submit --project ${PROJECT_ID} --tag ${IMAGE}

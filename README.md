@@ -71,6 +71,7 @@ $ curl -s -H $(gcloud run services describe quasar --format 'value(status.url)')
   "p": 3,
   "q": 5,
   "s/r": "1/4",
+  "seed": -1,
   "t": 3
 }
 ```

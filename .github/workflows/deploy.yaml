@@ -37,7 +37,7 @@ jobs:
       - name: Auth Google Cloud
         uses: "google-github-actions/auth@v0"
         with:
-          credentials_json: "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}"
+          credentials_json: "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_JSON }}"
 
       - name: Setup Cloud SDK
         uses: google-github-actions/setup-gcloud@v0.6.0
@@ -78,7 +78,7 @@ jobs:
       - name: Auth Google Cloud
         uses: "google-github-actions/auth@v0"
         with:
-          credentials_json: "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}"
+          credentials_json: "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_JSON }}"
 
       - name: Setup Cloud SDK
         uses: google-github-actions/setup-gcloud@v0.6.0

@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 
 	"cloud.google.com/go/errorreporting"
@@ -14,26 +15,35 @@ import (
 )
 
 const (
-	DEFAULT   = "Default"
-	DEBUG     = "Debug"
-	INFO      = "Info"
-	NOTICE    = "Notice"
-	WARNING   = "Warning"
-	ERROR     = "Error"
-	CRITICAL  = "Critical"
-	ALERT     = "Alert"
-	EMERGENCY = "Emergency"
+	DEFAULT = iota
+	DEBUG
+	INFO
+	NOTICE
+	WARNING
+	ERROR
+	CRITICAL
+	ALERT
+	EMERGENCY
 )
 
 var (
-	// https://cloud.google.com/run/docs/container-contract?hl=ja#services-env-vars
 	projectID   = os.Getenv("PROJECT_ID")
-	serviceName = os.Getenv("K_SERVICE")
-	revision    = os.Getenv("K_REVISION")
+	serviceName = os.Getenv("K_SERVICE")  // https://cloud.google.com/run/docs/container-contract?hl=ja#services-env-vars
+	revision    = os.Getenv("K_REVISION") // https://cloud.google.com/run/docs/container-contract?hl=ja#services-env-vars
+	loglevel    = LogLevel(os.Getenv("LOG_LEVEL"), "0")
 	Factory     = Must(New(context.Background(), projectID))
 )
 
+func LogLevel(v, w string) string {
+	if v == "" {
+		return w
+	}
+
+	return v
+}
+
 type LoggerFactory struct {
+	level     int
 	projectID string
 	errC      *errorreporting.Client
 }
@@ -55,7 +65,13 @@ func New(ctx context.Context, projectID string) (*LoggerFactory, error) {
 		return nil, fmt.Errorf("new error reporting client: %v", err)
 	}
 
+	l, err := strconv.Atoi(loglevel)
+	if err != nil {
+		return nil, fmt.Errorf("invalid log level=%v: %v", loglevel, err)
+	}
+
 	return &LoggerFactory{
+		level:     l,
 		projectID: projectID,
 		errC:      c,
 	}, nil
@@ -68,9 +84,10 @@ func (f *LoggerFactory) New(traceID string, req *http.Request) *Logger {
 	}
 
 	return &Logger{
-		errC:  f.errC,
-		trace: trace,
-		req:   req,
+		level:   f.level,
+		errC:    f.errC,
+		traceID: trace,
+		req:     req,
 	}
 }
 
@@ -82,9 +99,10 @@ func (f *LoggerFactory) Close() {
 }
 
 type Logger struct {
-	trace string
-	errC  *errorreporting.Client
-	req   *http.Request
+	level   int
+	traceID string
+	errC    *errorreporting.Client
+	req     *http.Request
 }
 
 type LogEntry struct {
@@ -99,33 +117,13 @@ func (l *Logger) Log(severity, format string, a ...interface{}) {
 		Severity: severity,
 		Time:     time.Now(),
 		Message:  fmt.Sprintf(format, a...),
-		Trace:    l.trace,
+		Trace:    l.traceID,
 	}); err != nil {
 		log.Printf("encode log entry: %v", err)
 	}
 }
 
-func (l *Logger) Debug(format string, a ...interface{}) {
-	l.Log(DEBUG, format, a...)
-}
-
-func (l *Logger) Info(format string, a ...interface{}) {
-	l.Log(INFO, format, a...)
-}
-
-func (l *Logger) Error(format string, a ...interface{}) {
-	l.Log(ERROR, format, a...)
-}
-
-func (l *Logger) LogReport(severity, format string, a ...interface{}) {
-	// logging
-	l.Log(severity, format, a...)
-
-	// error reporting
-	if l.errC == nil {
-		return
-	}
-
+func (l *Logger) Report(a ...interface{}) {
 	for _, aa := range a {
 		switch err := aa.(type) {
 		case error:
@@ -137,25 +135,56 @@ func (l *Logger) LogReport(severity, format string, a ...interface{}) {
 	}
 }
 
+func (l *Logger) Debug(format string, a ...interface{}) {
+	if l.level > DEBUG {
+		return
+	}
+
+	l.Log("Debug", format, a...)
+}
+
+func (l *Logger) Info(format string, a ...interface{}) {
+	if l.level > INFO {
+		return
+	}
+
+	l.Log("Info", format, a...)
+}
+
+func (l *Logger) Error(format string, a ...interface{}) {
+	if l.level > ERROR {
+		return
+	}
+
+	l.Log("Error", format, a...)
+}
+
 func (l *Logger) ErrorReport(format string, a ...interface{}) {
-	l.LogReport(ERROR, format, a...)
+	if l.level > ERROR {
+		return
+	}
+
+	l.Error(format, a...)
+	l.Report(a...)
 }
 
 func (l *Logger) SpanOf(spanID string) *SpanLogEntry {
 	return &SpanLogEntry{
-		Trace:  l.trace,
-		SpanID: spanID,
-		errC:   l.errC,
-		req:    l.req,
+		SpanID:  spanID,
+		TraceID: l.traceID,
+		level:   l.level,
+		errC:    l.errC,
+		req:     l.req,
 	}
 }
 
 func (l *Logger) Span(span trace.Span) *SpanLogEntry {
 	return &SpanLogEntry{
-		Trace:  l.trace,
-		SpanID: span.SpanContext().SpanID().String(),
-		errC:   l.errC,
-		req:    l.req,
+		SpanID:  span.SpanContext().SpanID().String(),
+		TraceID: l.traceID,
+		level:   l.level,
+		errC:    l.errC,
+		req:     l.req,
 	}
 }
 
@@ -163,21 +192,14 @@ type SpanLogEntry struct {
 	Severity string    `json:"severity"`
 	Message  string    `json:"message"`
 	Time     time.Time `json:"time"`
-	Trace    string    `json:"logging.googleapis.com/trace"`
+	TraceID  string    `json:"logging.googleapis.com/trace"`
 	SpanID   string    `json:"logging.googleapis.com/spanId"`
+	level    int
 	errC     *errorreporting.Client
 	req      *http.Request
 }
 
-func (e *SpanLogEntry) LogReport(severity, format string, a ...interface{}) {
-	// logging
-	e.Log(severity, format, a...)
-
-	// error reporting
-	if e.errC == nil {
-		return
-	}
-
+func (e *SpanLogEntry) Report(a ...interface{}) {
 	for _, aa := range a {
 		switch err := aa.(type) {
 		case error:
@@ -194,7 +216,7 @@ func (e *SpanLogEntry) Log(severity, format string, a ...interface{}) {
 		Severity: severity,
 		Time:     time.Now(),
 		Message:  fmt.Sprintf(format, a...),
-		Trace:    e.Trace,
+		TraceID:  e.TraceID,
 		SpanID:   e.SpanID,
 	}); err != nil {
 		log.Printf("encode log entry: %v", err)
@@ -202,13 +224,26 @@ func (e *SpanLogEntry) Log(severity, format string, a ...interface{}) {
 }
 
 func (e *SpanLogEntry) Debug(format string, a ...interface{}) {
-	e.Log(DEBUG, format, a...)
+	if e.level > DEBUG {
+		return
+	}
+
+	e.Log("Debug", format, a...)
 }
 
 func (e *SpanLogEntry) Error(format string, a ...interface{}) {
-	e.Log(ERROR, format, a...)
+	if e.level > ERROR {
+		return
+	}
+
+	e.Log("Error", format, a...)
 }
 
 func (e *SpanLogEntry) ErrorReport(format string, a ...interface{}) {
-	e.LogReport(ERROR, format, a...)
+	if e.level > ERROR {
+		return
+	}
+
+	e.Error(format, a...)
+	e.Report(a...)
 }

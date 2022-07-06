@@ -16,10 +16,9 @@ import (
 )
 
 var (
-	// https://cloud.google.com/run/docs/container-contract?hl=ja#services-env-vars
 	projectID   = os.Getenv("PROJECT_ID")
-	serviceName = os.Getenv("K_SERVICE")
-	revision    = os.Getenv("K_REVISION")
+	serviceName = os.Getenv("K_SERVICE")  // https://cloud.google.com/run/docs/container-contract?hl=ja#services-env-vars
+	revision    = os.Getenv("K_REVISION") // https://cloud.google.com/run/docs/container-contract?hl=ja#services-env-vars
 )
 
 func Must(f func(), err error) func() {

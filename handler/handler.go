@@ -72,7 +72,7 @@ func SetTraceID(c *gin.Context) {
 	// SPAN_ID is the decimal representation of the (unsigned) span ID.
 	i, err := strconv.ParseUint(ids[1], 10, 64)
 	if err != nil {
-		logf.New(ids[0], c.Request).ErrorReport("parse %v: %v", ids[1], err)
+		logf.New(c.Request, ids[0], "").ErrorReport("parse %v: %v", ids[1], err)
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}

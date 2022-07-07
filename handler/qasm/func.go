@@ -29,10 +29,10 @@ func Func(c *gin.Context) {
 	traceTrue := c.GetBool("trace_true")
 
 	// logger, tracer
-	log := logf.New(traceID, c.Request)
+	log := logf.New(c.Request, traceID, spanID)
 	parent, err := tracer.NewContext(c.Request.Context(), traceID, spanID, traceTrue)
 	if err != nil {
-		log.SpanOf(spanID).ErrorReport("new context: %v", err)
+		log.ErrorReport("new context: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message":  "something went wrong",
 			"trace_id": traceID,
@@ -68,7 +68,7 @@ func Func(c *gin.Context) {
 		return file, r, nil
 	}()
 	if err != nil {
-		log.SpanOf(spanID).ErrorReport("file read: %v", err)
+		log.ErrorReport("file read: %v", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message":  "something went wrong",
 			"trace_id": traceID,
@@ -124,7 +124,7 @@ func Func(c *gin.Context) {
 		return out, nil
 	}()
 	if err != nil {
-		log.SpanOf(spanID).ErrorReport("compute: %v", err)
+		log.ErrorReport("compute: %v", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message":  "something went wrong",
 			"trace_id": traceID,

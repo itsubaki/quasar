@@ -27,10 +27,10 @@ func Func(c *gin.Context) {
 	traceTrue := c.GetBool("trace_true")
 
 	// logger, tracer
-	log := logf.New(traceID, c.Request)
+	log := logf.New(c.Request, traceID, spanID)
 	parent, err := tracer.NewContext(c.Request.Context(), traceID, spanID, traceTrue)
 	if err != nil {
-		log.SpanOf(spanID).ErrorReport("new context: %v", err)
+		log.ErrorReport("new context: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message":  "something went wrong",
 			"trace_id": traceID,
@@ -44,7 +44,7 @@ func Func(c *gin.Context) {
 	aq := DefaultValue(c.Query("a"), "-1")
 	sq := DefaultValue(c.Query("seed"), "-1")
 
-	log.SpanOf(spanID).Debug("param(N)=%v, query(a)=%v, query(t)=%v, query(seed)=%v", Nq, aq, tq, sq)
+	log.Debug("param(N)=%v, query(a)=%v, query(t)=%v, query(seed)=%v", Nq, aq, tq, sq)
 
 	// validation
 	N, err := strconv.Atoi(Nq)
@@ -163,7 +163,7 @@ func Func(c *gin.Context) {
 		return s0, nil
 	}()
 	if err != nil {
-		log.SpanOf(spanID).ErrorReport("quantum algorithm: %v", err)
+		log.ErrorReport("quantum algorithm: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message":  "something went wrong",
 			"trace_id": traceID,
@@ -205,7 +205,7 @@ func Func(c *gin.Context) {
 		}, true
 	}()
 
-	log.SpanOf(spanID).Debug("out: %v, ok: %v", out, ok)
+	log.Debug("out: %v, ok: %v", out, ok)
 	c.JSON(http.StatusOK, out)
 }
 

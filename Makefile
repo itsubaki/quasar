@@ -1,5 +1,6 @@
 SHELL := /bin/bash
 
+OWNER := itsubaki
 SERVICE_NAME := quasar
 IMAGE := gcr.io/${PROJECT_ID}/${SERVICE_NAME}
 REGION := asia-northeast1
@@ -26,8 +27,9 @@ deploy:
 	gcloud run deploy --region ${REGION} --project ${PROJECT_ID} --image ${IMAGE} --set-env-vars=PROJECT_ID=${PROJECT_ID},GIN_MODE=release ${SERVICE_NAME} 
 
 package:
-	docker tag ${IMAGE} ghcr.io/itsubaki/${SERVICE_NAME}
-	docker push ghcr.io/itsubaki/${SERVICE_NAME}
+	@echo ${PAT} | docker login ghcr.io -u ${OWNER} --password-stdin
+	docker tag ${IMAGE} ghcr.io/${OWNER}/${SERVICE_NAME}
+	docker push ghcr.io/${OWNER}/${SERVICE_NAME}
 
 up:
 	echo "PROJECT_ID: ${PROJECT_ID}"

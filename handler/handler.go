@@ -60,6 +60,7 @@ func SetTraceID(c *gin.Context) {
 	if value == "" {
 		// new trace id, span id for test
 		value = fmt.Sprintf("%016x%016x/%d;o=0", rand.Int63(), rand.Int63(), rand.Int63())
+		c.Request.Header.Add("X-Cloud-Trace-Context", value)
 	}
 
 	// https://cloud.google.com/trace/docs/setup

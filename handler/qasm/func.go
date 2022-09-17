@@ -8,20 +8,17 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	"github.com/itsubaki/logger"
 	"github.com/itsubaki/q"
 	"github.com/itsubaki/qasm/ast"
 	"github.com/itsubaki/qasm/evaluator"
 	"github.com/itsubaki/qasm/lexer"
 	"github.com/itsubaki/qasm/parser"
-	"github.com/itsubaki/quasar/logger"
-	"github.com/itsubaki/quasar/tracer"
+	"github.com/itsubaki/tracer"
 	"go.opentelemetry.io/otel"
 )
 
-var (
-	logf = logger.Factory
-	tra  = otel.Tracer("handler/qasm")
-)
+var tra = otel.Tracer("handler/qasm")
 
 func Func(c *gin.Context) {
 	traceID := c.GetString("trace_id")
@@ -29,8 +26,8 @@ func Func(c *gin.Context) {
 	traceTrue := c.GetBool("trace_true")
 
 	// logger, tracer
-	log := logf.New(c.Request, traceID, spanID)
-	parent, err := tracer.NewContext(c.Request.Context(), traceID, spanID, traceTrue)
+	log := logger.New(c.Request, traceID, spanID)
+	parent, err := tracer.Context(c.Request.Context(), traceID, spanID, traceTrue)
 	if err != nil {
 		log.ErrorReport("new context: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{

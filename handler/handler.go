@@ -9,9 +9,9 @@ import (
 
 	"github.com/gin-contrib/pprof"
 	"github.com/gin-gonic/gin"
+	"github.com/itsubaki/logger"
 	"github.com/itsubaki/quasar/handler/qasm"
 	"github.com/itsubaki/quasar/handler/shor"
-	"github.com/itsubaki/quasar/logger"
 )
 
 var logf = logger.Factory

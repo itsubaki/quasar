@@ -11,9 +11,9 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/itsubaki/logger"
 	"github.com/itsubaki/quasar/handler"
-	"github.com/itsubaki/quasar/logger"
-	"github.com/itsubaki/quasar/tracer"
+	"github.com/itsubaki/tracer"
 )
 
 var (
@@ -25,9 +25,19 @@ var (
 func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
-	// logger, tracer
-	defer logger.Factory.Close()
-	defer tracer.Must(tracer.Setup(timeout))()
+	// tracer, logger
+	f := tracer.Must(tracer.Setup(timeout))
+	defer func() {
+		if err := f(); err != nil {
+			log.Printf("defer: %v", err)
+		}
+	}()
+
+	defer func() {
+		if err := logger.Factory.Close(); err != nil {
+			log.Printf("defer: %v", err)
+		}
+	}()
 
 	// handler
 	if port == "" {

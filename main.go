@@ -17,25 +17,27 @@ import (
 )
 
 var (
-	timeout = 5 * time.Second
-	pprof   = os.Getenv("USE_PPROF")
-	port    = os.Getenv("PORT")
+	projectID   = os.Getenv("PROJECT_ID")
+	serviceName = os.Getenv("K_SERVICE")  // https://cloud.google.com/run/docs/container-contract?hl=ja#services-env-vars
+	revision    = os.Getenv("K_REVISION") // https://cloud.google.com/run/docs/container-contract?hl=ja#services-env-vars
+	pprof       = os.Getenv("USE_PPROF")
+	port        = os.Getenv("PORT")
+	timeout     = 5 * time.Second
 )
 
 func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
 	// tracer, logger
-	f := tracer.Must(tracer.Setup(timeout))
+	close := []func() error{
+		logger.MustSetup(projectID, serviceName, revision),
+		tracer.MustSetup(projectID, serviceName, revision, timeout),
+	}
 	defer func() {
-		if err := f(); err != nil {
-			log.Printf("defer: %v", err)
-		}
-	}()
-
-	defer func() {
-		if err := logger.Factory.Close(); err != nil {
-			log.Printf("defer: %v", err)
+		for _, c := range close {
+			if err := c(); err != nil {
+				log.Printf("defer: %v", err)
+			}
 		}
 	}()
 

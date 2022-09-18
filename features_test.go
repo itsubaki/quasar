@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"log"
 	"mime/multipart"
 	"net/http"
 	"net/http/httptest"
@@ -26,6 +27,7 @@ type apiFeature struct {
 
 	server *gin.Engine
 	keep   map[string]interface{}
+	close  []func() error
 }
 
 func (a *apiFeature) start() {
@@ -127,10 +129,17 @@ func (a *apiFeature) SetUploadFile(path string) error {
 func InitializeTestSuite(ctx *godog.TestSuiteContext) {
 	ctx.BeforeSuite(func() {
 		gin.SetMode(gin.ReleaseMode)
+		api.close = []func() error{}
 		api.start()
 	})
 
-	ctx.AfterSuite(func() {})
+	ctx.AfterSuite(func() {
+		for _, c := range api.close {
+			if err := c(); err != nil {
+				log.Printf("defer: %v", err)
+			}
+		}
+	})
 }
 
 func InitializeScenario(ctx *godog.ScenarioContext) {

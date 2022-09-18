@@ -6,10 +6,10 @@ require (
 	github.com/cucumber/godog v0.12.5
 	github.com/gin-contrib/pprof v1.4.0
 	github.com/gin-gonic/gin v1.8.1
-	github.com/itsubaki/logger v0.0.0-20220918044505-cc58cf1daad9
+	github.com/itsubaki/logger v0.0.0-20220918075620-91b75a006c84
 	github.com/itsubaki/q v1.1.9
 	github.com/itsubaki/qasm v0.0.10
-	github.com/itsubaki/tracer v0.0.0-20220917105106-66f76dcc24a6
+	github.com/itsubaki/tracer v0.0.0-20220918075848-684b5580f092
 	github.com/jfilipczyk/gomatch v1.2.1
 	go.opentelemetry.io/otel v1.10.0
 )

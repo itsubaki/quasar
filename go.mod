@@ -6,7 +6,7 @@ require (
 	github.com/cucumber/godog v0.12.5
 	github.com/gin-contrib/pprof v1.4.0
 	github.com/gin-gonic/gin v1.8.1
-	github.com/itsubaki/logger v0.0.0-20220917104515-cca5e2092935
+	github.com/itsubaki/logger v0.0.0-20220918044505-cc58cf1daad9
 	github.com/itsubaki/q v1.1.9
 	github.com/itsubaki/qasm v0.0.10
 	github.com/itsubaki/tracer v0.0.0-20220917105106-66f76dcc24a6

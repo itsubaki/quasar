@@ -297,10 +297,10 @@ github.com/ianlancetaylor/demangle v0.0.0-20200824232613-28f6c0f3b639/go.mod h1:
 github.com/inconshreveable/mousetrap v1.0.0/go.mod h1:PxqpIevigyE2G7u3NXJIT2ANytuPF1OarO4DADm73n8=
 github.com/itsubaki/logger v0.0.0-20220918075620-91b75a006c84 h1:5JBhCXfDtNmXJ+9yM8BOl4szQMaA0W1IScQybF9ZS4w=
 github.com/itsubaki/logger v0.0.0-20220918075620-91b75a006c84/go.mod h1:yH4JzIQ15ln0diy/b8Fz1w5082Xe46md+cRasZdv9+8=
-github.com/itsubaki/q v1.1.9 h1:jZ42Vf2Ubf6fEtmG0mRYDqGwkLhdSUWnmd+4MVVhsPs=
-github.com/itsubaki/q v1.1.9/go.mod h1:6vV2liKqlHeYSzHAq3ktjODu4AZWFz77zQAZjk7wkCg=
-github.com/itsubaki/qasm v0.0.10 h1:tFsVitavLkPSyGMIL50ropcIzFSczgNXUs9rw5eJodY=
-github.com/itsubaki/qasm v0.0.10/go.mod h1:B9RX7I6dQxdZUoA3S9KWKOPXLo66MnmXcSQ1hmWiUEQ=
+github.com/itsubaki/q v1.1.11-0.20230117115706-91bd7709fa4a h1:AO5HWKDe7tAjeON1IkRPoEAmRrHFBVDGVX9bsXQs8xc=
+github.com/itsubaki/q v1.1.11-0.20230117115706-91bd7709fa4a/go.mod h1:6vV2liKqlHeYSzHAq3ktjODu4AZWFz77zQAZjk7wkCg=
+github.com/itsubaki/qasm v0.0.11-0.20230119111132-d85219d9376c h1:7ahoDryFrAQaEsrABu8XMen8pskQxwm7kqor4WAhwuE=
+github.com/itsubaki/qasm v0.0.11-0.20230119111132-d85219d9376c/go.mod h1:1hDXkrWhudW2hwdsmHAlmPU110jjyrKm3jQypccenUI=
 github.com/itsubaki/tracer v0.0.0-20220918075848-684b5580f092 h1:9akK50Xj9FnbAWfqd/9LPj74B6kOb/3IdgATnKHrEIQ=
 github.com/itsubaki/tracer v0.0.0-20220918075848-684b5580f092/go.mod h1:2iUSqWu7Q9IVoz+rbJZwDv3gBd8tXpXTbeS0y8xOQwo=
 github.com/jfilipczyk/gomatch v1.2.1 h1:1apWwM4OrVl/avoaY9sInZJqioA6HOSOc/Mg8VzQueY=

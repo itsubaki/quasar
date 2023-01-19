@@ -7,8 +7,8 @@ require (
 	github.com/gin-contrib/pprof v1.4.0
 	github.com/gin-gonic/gin v1.8.1
 	github.com/itsubaki/logger v0.0.0-20220918075620-91b75a006c84
-	github.com/itsubaki/q v1.1.9
-	github.com/itsubaki/qasm v0.0.10
+	github.com/itsubaki/q v1.1.11-0.20230117115706-91bd7709fa4a
+	github.com/itsubaki/qasm v0.0.11-0.20230119111132-d85219d9376c
 	github.com/itsubaki/tracer v0.0.0-20220918075848-684b5580f092
 	github.com/jfilipczyk/gomatch v1.2.1
 	go.opentelemetry.io/otel v1.10.0

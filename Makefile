@@ -34,7 +34,7 @@ package:
 up:
 	echo "PROJECT_ID: ${PROJECT_ID}"
 	echo "GOOGLE_APPLICATION_CREDENTIALS: ${GOOGLE_APPLICATION_CREDENTIALS}"
-	docker-compose up
+	docker compose up
 
 run:
 	PROJECT_ID=${PROJECT_ID} USE_PPROF=true go run main.go

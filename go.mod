@@ -7,8 +7,8 @@ require (
 	github.com/gin-contrib/pprof v1.4.0
 	github.com/gin-gonic/gin v1.8.1
 	github.com/itsubaki/logger v0.0.0-20220918075620-91b75a006c84
-	github.com/itsubaki/q v1.1.11-0.20230117115706-91bd7709fa4a
-	github.com/itsubaki/qasm v0.0.11-0.20230119111132-d85219d9376c
+	github.com/itsubaki/q v0.0.0-20230117115706-91bd7709fa4a
+	github.com/itsubaki/qasm v0.0.11-0.20230204062521-c29ac2ee1ad8
 	github.com/itsubaki/tracer v0.0.0-20220918075848-684b5580f092
 	github.com/jfilipczyk/gomatch v1.2.1
 	go.opentelemetry.io/otel v1.10.0
@@ -21,6 +21,7 @@ require (
 	cloud.google.com/go/trace v1.2.0 // indirect
 	github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/trace v1.8.8 // indirect
 	github.com/GoogleCloudPlatform/opentelemetry-operations-go/internal/resourcemapping v0.32.8 // indirect
+	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
 	github.com/cucumber/gherkin-go/v19 v19.0.3 // indirect
 	github.com/cucumber/messages-go/v16 v16.0.1 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
@@ -46,8 +47,11 @@ require (
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.5 // indirect
+	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/ugorji/go/codec v1.2.7 // indirect
+	github.com/urfave/cli/v2 v2.14.0 // indirect
+	github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673 // indirect
 	go.opencensus.io v0.23.0 // indirect
 	go.opentelemetry.io/otel/sdk v1.10.0 // indirect
 	go.opentelemetry.io/otel/trace v1.10.0 // indirect

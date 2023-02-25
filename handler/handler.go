@@ -14,8 +14,6 @@ import (
 	"github.com/itsubaki/quasar/handler/shor"
 )
 
-var logf = logger.Factory
-
 func New() *gin.Engine {
 	g := gin.New()
 
@@ -73,7 +71,7 @@ func SetTraceID(c *gin.Context) {
 	// SPAN_ID is the decimal representation of the (unsigned) span ID.
 	i, err := strconv.ParseUint(ids[1], 10, 64)
 	if err != nil {
-		logf.New(c.Request, ids[0], "").ErrorReport("parse %v: %v", ids[1], err)
+		logger.New(c.Request, ids[0], "").ErrorReport("parse %v: %v", ids[1], err)
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}

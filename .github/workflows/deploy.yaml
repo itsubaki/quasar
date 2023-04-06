@@ -35,7 +35,7 @@ jobs:
           echo "::add-mask::${{ secrets.SERVICE_URL }}"
 
       - name: Auth Google Cloud
-        uses: "google-github-actions/auth@v0"
+        uses: "google-github-actions/auth@v1"
         with:
           credentials_json: "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_JSON }}"
 
@@ -76,7 +76,7 @@ jobs:
           echo "::add-mask::${{ secrets.SERVICE_URL }}"
 
       - name: Auth Google Cloud
-        uses: "google-github-actions/auth@v0"
+        uses: "google-github-actions/auth@v1"
         with:
           credentials_json: "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_JSON }}"
 

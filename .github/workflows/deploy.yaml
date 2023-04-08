@@ -35,12 +35,12 @@ jobs:
           echo "::add-mask::${{ secrets.SERVICE_URL }}"
 
       - name: Auth Google Cloud
-        uses: "google-github-actions/auth@v0"
+        uses: "google-github-actions/auth@v1"
         with:
           credentials_json: "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_JSON }}"
 
       - name: Setup Cloud SDK
-        uses: google-github-actions/setup-gcloud@v0.6.0
+        uses: google-github-actions/setup-gcloud@v1.1.0
         with:
           project_id: ${{ secrets.PROJECT_ID }}
 
@@ -76,12 +76,12 @@ jobs:
           echo "::add-mask::${{ secrets.SERVICE_URL }}"
 
       - name: Auth Google Cloud
-        uses: "google-github-actions/auth@v0"
+        uses: "google-github-actions/auth@v1"
         with:
           credentials_json: "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_JSON }}"
 
       - name: Setup Cloud SDK
-        uses: google-github-actions/setup-gcloud@v0.6.0
+        uses: google-github-actions/setup-gcloud@v1.1.0
         with:
           project_id: ${{ secrets.PROJECT_ID }}
 

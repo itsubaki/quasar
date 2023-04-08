@@ -18,7 +18,7 @@ import (
 	"go.opentelemetry.io/otel"
 )
 
-var tra = otel.Tracer("handler/qasm")
+var tr = otel.Tracer("handler/qasm")
 
 func Func(c *gin.Context) {
 	traceID := c.GetString("trace_id")
@@ -39,7 +39,7 @@ func Func(c *gin.Context) {
 
 	// file read
 	_, r, err := func() (*multipart.FileHeader, []byte, error) {
-		_, s := tra.Start(parent, "file read")
+		_, s := tr.Start(parent, "file read")
 		defer s.End()
 
 		file, err := c.FormFile("file")
@@ -75,7 +75,7 @@ func Func(c *gin.Context) {
 
 	// compute
 	state, err := func() ([]State, error) {
-		_, s := tra.Start(parent, "compute")
+		_, s := tr.Start(parent, "compute")
 		defer s.End()
 
 		// eval

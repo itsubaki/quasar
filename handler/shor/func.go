@@ -16,7 +16,7 @@ import (
 	"go.opentelemetry.io/otel"
 )
 
-var tra = otel.Tracer("handler/shor")
+var tr = otel.Tracer("handler/shor")
 
 func Func(c *gin.Context) {
 	traceID := c.GetString("trace_id")
@@ -78,7 +78,7 @@ func Func(c *gin.Context) {
 
 	// primality test
 	if msg, ok := func() (string, bool) {
-		_, s := tra.Start(parent, "primality test")
+		_, s := tr.Start(parent, "primality test")
 		defer s.End()
 
 		if N < 2 {
@@ -120,7 +120,7 @@ func Func(c *gin.Context) {
 
 	// quantum algorithm
 	qs, err := func() ([]qubit.State, error) {
-		qa, s := tra.Start(parent, "quantum algorithm")
+		qa, s := tr.Start(parent, "quantum algorithm")
 		defer s.End()
 
 		log.Span(s).Debug("N=%v, a=%v, t=%v, seed=%v", N, a, t, seed)
@@ -132,14 +132,14 @@ func Func(c *gin.Context) {
 		}
 
 		r0 := func() []q.Qubit {
-			_, s := tra.Start(qa, "qsim.ZeroWith(t)")
+			_, s := tr.Start(qa, "qsim.ZeroWith(t)")
 			defer s.End()
 
 			return qsim.ZeroWith(t)
 		}()
 
 		r1 := func() []q.Qubit {
-			_, s := tra.Start(qa, "qsim.ZeroLog2(N)")
+			_, s := tr.Start(qa, "qsim.ZeroLog2(N)")
 			defer s.End()
 
 			return qsim.ZeroLog2(N)
@@ -169,7 +169,7 @@ func Func(c *gin.Context) {
 
 	// find non-trivial factors (classical algorithm)
 	out, ok := func() (gin.H, bool) {
-		_, span := tra.Start(parent, "find non-trivial factors")
+		_, span := tr.Start(parent, "find non-trivial factors")
 		defer span.End()
 
 		_, m := qs[0].Value()
@@ -214,7 +214,7 @@ func DefaultValue(v, w string) string {
 }
 
 func Span(parent context.Context, spanName string, f func()) {
-	_, s := tra.Start(parent, spanName)
+	_, s := tr.Start(parent, spanName)
 	defer s.End()
 
 	f()

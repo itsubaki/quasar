@@ -11,6 +11,7 @@ import (
 	"syscall"
 	"time"
 
+	"cloud.google.com/go/profiler"
 	"github.com/itsubaki/logger"
 	"github.com/itsubaki/quasar/handler"
 	"github.com/itsubaki/tracer"
@@ -21,6 +22,7 @@ var (
 	serviceName = os.Getenv("K_SERVICE")  // https://cloud.google.com/run/docs/container-contract?hl=ja#services-env-vars
 	revision    = os.Getenv("K_REVISION") // https://cloud.google.com/run/docs/container-contract?hl=ja#services-env-vars
 	pprof       = os.Getenv("USE_PPROF")
+	cprof       = os.Getenv("USE_CPROF")
 	port        = os.Getenv("PORT")
 	timeout     = 5 * time.Second
 )
@@ -41,6 +43,18 @@ func main() {
 		}
 	}()
 
+	// profiler
+	if strings.ToLower(cprof) == "true" {
+		if err := profiler.Start(profiler.Config{
+			ProjectID:         projectID,
+			Service:           serviceName,
+			ServiceVersion:    revision,
+			EnableOCTelemetry: true,
+		}); err != nil {
+			log.Fatalf("profiler: %v", err)
+		}
+	}
+
 	// handler
 	if port == "" {
 		port = "8080"
@@ -60,7 +74,7 @@ func main() {
 	go func() {
 		log.Printf("http server listen and serve. port: %v\n", port)
 		if err := s.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			log.Fatalf("listen: %s", err)
+			log.Fatalf("listen: %v", err)
 		}
 	}()
 

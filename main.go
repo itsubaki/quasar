@@ -49,7 +49,6 @@ func main() {
 			ProjectID:         projectID,
 			Service:           serviceName,
 			ServiceVersion:    revision,
-			EnableOCTelemetry: true,
 		}); err != nil {
 			log.Fatalf("profiler: %v", err)
 		}

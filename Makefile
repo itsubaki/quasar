@@ -24,7 +24,7 @@ build:
 	docker push ${IMAGE}
 
 deploy:
-	gcloud run deploy --region ${REGION} --project ${PROJECT_ID} --image ${IMAGE} --set-env-vars=PROJECT_ID=${PROJECT_ID},GIN_MODE=release ${SERVICE_NAME} 
+	gcloud run deploy --region ${REGION} --project ${PROJECT_ID} --image ${IMAGE} --set-env-vars=PROJECT_ID=${PROJECT_ID},USE_CPROF=true,GIN_MODE=release ${SERVICE_NAME}
 
 package:
 	@echo ${PAT} | docker login ghcr.io -u ${OWNER} --password-stdin

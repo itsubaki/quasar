@@ -1,9 +1,8 @@
 SHELL := /bin/bash
 
-OWNER := itsubaki
 SERVICE_NAME := quasar
-IMAGE := gcr.io/${PROJECT_ID}/${SERVICE_NAME}
-REGION := asia-northeast1
+LOCATION := asia-northeast1
+IMAGE := ${LOCATION}-docker.pkg.dev/${PROJECT_ID}/${SERVICE_NAME}/app
 
 update:
 	go get -u
@@ -15,21 +14,25 @@ test:
 testpkg:
 	PROJECT_ID=${PROJECT_ID} LOG_LEVEL=5 go test -v -cover $(shell go list ./... | grep -v /vendor/ | grep -v /build/ | grep -v -E "quasar$$") -coverprofile=coverage-pkg.txt -covermode=atomic
 
+artifact:
+	gcloud artifacts repositories create ${SERVICE_NAME} --repository-format=docker --location=${LOCATION} --project=${PROJECT_ID}
+
 cloudbuild:
 	gcloud builds submit --project ${PROJECT_ID} --tag ${IMAGE}
 
 build:
-	gcloud auth configure-docker gcr.io --quiet
+	gcloud auth configure-docker ${LOCATION}-docker.pkg.dev --quiet
 	docker build -t ${IMAGE} .
 	docker push ${IMAGE}
 
 deploy:
-	gcloud run deploy --region ${REGION} --project ${PROJECT_ID} --image ${IMAGE} --set-env-vars=PROJECT_ID=${PROJECT_ID},USE_CPROF=true,GIN_MODE=release ${SERVICE_NAME}
+	gcloud artifacts docker images describe ${IMAGE}
+	gcloud run deploy --region ${LOCATION} --project ${PROJECT_ID} --image ${IMAGE} --set-env-vars=PROJECT_ID=${PROJECT_ID},USE_CPROF=true,GIN_MODE=release ${SERVICE_NAME}
 
 package:
-	@echo ${PAT} | docker login ghcr.io -u ${OWNER} --password-stdin
-	docker tag ${IMAGE} ghcr.io/${OWNER}/${SERVICE_NAME}
-	docker push ghcr.io/${OWNER}/${SERVICE_NAME}
+	@echo ${PAT} | docker login ghcr.io -u itsubaki --password-stdin
+	docker tag ${IMAGE} ghcr.io/itsubaki/${SERVICE_NAME}
+	docker push ghcr.io/itsubaki/${SERVICE_NAME}
 
 up:
 	echo "PROJECT_ID: ${PROJECT_ID}"

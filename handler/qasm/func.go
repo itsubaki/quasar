@@ -92,8 +92,11 @@ func Func(c *gin.Context) {
 		}
 
 		// quantum state index
-		index := q.Index(e.Env.Qubit.All()...)
-		state := e.Q.Raw().State(index)
+		qb, err := e.Env.Qubit.All()
+		if err != nil {
+			return nil, fmt.Errorf("get all qubits: %v", err)
+		}
+		state := e.Q.Raw().State(q.Index(qb...))
 
 		// quantum state for json encoding
 		out := make([]State, 0, len(state))

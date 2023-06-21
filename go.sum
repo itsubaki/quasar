@@ -225,8 +225,8 @@ github.com/itsubaki/logger v0.0.0-20230302111514-9ad23bf3f41f h1:0Y4XTaPiLC6sQXa
 github.com/itsubaki/logger v0.0.0-20230302111514-9ad23bf3f41f/go.mod h1:5lY/KmKcSuJXJUOLUsgQW8jOf0HyCqlIUOjpWCwc1oU=
 github.com/itsubaki/q v0.0.3-0.20230605133313-1dd51522be4e h1:T1MX2UCLxxsNPHGn8cLxKXrYjhEyjxzWuCkumuqy2Ao=
 github.com/itsubaki/q v0.0.3-0.20230605133313-1dd51522be4e/go.mod h1:rFAVpm4Mn5+RIb5U/TYq5dDx1jPeTI5NLOtCqLsxf6I=
-github.com/itsubaki/qasm v0.0.11-0.20230620131136-cee567f875f7 h1:LgfjRqs6YDzT3S1gfvTkw6hUHbv7Z7sIL9ZKziTntQI=
-github.com/itsubaki/qasm v0.0.11-0.20230620131136-cee567f875f7/go.mod h1:2VOhsHlWUopKJxFurPrU7iyyNqDICZ7yTuiZChr1XYw=
+github.com/itsubaki/qasm v0.0.11-0.20230621114926-b4fbe680e364 h1:fDJ0uTg1gfY86vejf1zowrn8eT1FQxW8JpNCQ+W6UKU=
+github.com/itsubaki/qasm v0.0.11-0.20230621114926-b4fbe680e364/go.mod h1:2VOhsHlWUopKJxFurPrU7iyyNqDICZ7yTuiZChr1XYw=
 github.com/itsubaki/tracer v0.0.0-20230225005520-3416f63958e7 h1:KEjyDmqc0pToc1k33Tr2zI7FcpM3+tZfnNmH8LRry0Q=
 github.com/itsubaki/tracer v0.0.0-20230225005520-3416f63958e7/go.mod h1:SQxXngvdhtDCst3/QmGzpqF87fSWg4DnL7L+ecnC4Yo=
 github.com/jfilipczyk/gomatch v1.2.1 h1:1apWwM4OrVl/avoaY9sInZJqioA6HOSOc/Mg8VzQueY=

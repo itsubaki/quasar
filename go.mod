@@ -9,7 +9,7 @@ require (
 	github.com/gin-gonic/gin v1.9.1
 	github.com/itsubaki/logger v0.0.0-20230302111514-9ad23bf3f41f
 	github.com/itsubaki/q v0.0.3-0.20230605133313-1dd51522be4e
-	github.com/itsubaki/qasm v0.0.11-0.20230620131136-cee567f875f7
+	github.com/itsubaki/qasm v0.0.11-0.20230621114926-b4fbe680e364
 	github.com/itsubaki/tracer v0.0.0-20230225005520-3416f63958e7
 	github.com/jfilipczyk/gomatch v1.2.1
 	go.opentelemetry.io/otel v1.16.0

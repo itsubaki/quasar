@@ -88,13 +88,11 @@ jobs:
       - name: Build image
         env:
           PROJECT_ID: ${{ secrets.PROJECT_ID }}
-          IMAGE: gcr.io/${{ secrets.PROJECT_ID }}/quasar
         run: |
           make build
 
       - name: Deploy to Google Cloud Run
         env:
           PROJECT_ID: ${{ secrets.PROJECT_ID }}
-          IMAGE: gcr.io/${{ secrets.PROJECT_ID }}/quasar
         run: |
           make deploy

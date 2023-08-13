@@ -3,6 +3,7 @@ SHELL := /bin/bash
 SERVICE_NAME := quasar
 LOCATION := asia-northeast1
 IMAGE := ${LOCATION}-docker.pkg.dev/${PROJECT_ID}/${SERVICE_NAME}/app
+TAG := latest
 
 update:
 	go get -u
@@ -18,10 +19,11 @@ artifact:
 	gcloud artifacts repositories create ${SERVICE_NAME} --repository-format=docker --location=${LOCATION} --project=${PROJECT_ID}
 
 cloudbuild:
-	gcloud builds submit --project ${PROJECT_ID} --tag ${IMAGE}
+	gcloud builds submit --config cloudbuild.yaml --substitutions=_IMAGE=${IMAGE},_TAG=${TAG} .
 
 build:
 	gcloud auth configure-docker ${LOCATION}-docker.pkg.dev --quiet
+	gcloud artifacts repositories list
 	docker build -t ${IMAGE} .
 	docker push ${IMAGE}
 

@@ -4,12 +4,12 @@ go 1.21
 
 require (
 	cloud.google.com/go/profiler v0.3.1
-	github.com/cucumber/godog v0.12.5
+	github.com/cucumber/godog v0.12.6
 	github.com/gin-contrib/pprof v1.4.0
 	github.com/gin-gonic/gin v1.9.1
 	github.com/itsubaki/logger v0.0.0-20230302111514-9ad23bf3f41f
-	github.com/itsubaki/q v0.0.2
-	github.com/itsubaki/qasm v0.0.11-0.20230204062521-c29ac2ee1ad8
+	github.com/itsubaki/q v0.0.3-0.20230605133313-1dd51522be4e
+	github.com/itsubaki/qasm v0.0.11-0.20230729060109-9e42934585ae
 	github.com/itsubaki/tracer v0.0.0-20230706115035-a95bf32b27cb
 	github.com/jfilipczyk/gomatch v1.2.1
 	go.opentelemetry.io/otel v1.16.0

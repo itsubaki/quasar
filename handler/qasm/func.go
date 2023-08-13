@@ -10,7 +10,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/itsubaki/logger"
 	"github.com/itsubaki/q"
-	"github.com/itsubaki/qasm/ast"
 	"github.com/itsubaki/qasm/evaluator"
 	"github.com/itsubaki/qasm/lexer"
 	"github.com/itsubaki/qasm/parser"
@@ -93,18 +92,13 @@ func Func(c *gin.Context) {
 		}
 
 		// quantum state index
-		var index [][]int
-		for _, n := range e.Env.Qubit.Name {
-			qb, ok := e.Env.Qubit.Get(&ast.IdentExpr{Name: n})
-			if !ok {
-				return nil, fmt.Errorf("qubit(%v) not found", n)
-			}
-
-			index = append(index, q.Index(qb...))
+		qb, err := e.Env.Qubit.All()
+		if err != nil {
+			return nil, fmt.Errorf("get all qubits: %v", err)
 		}
+		state := e.Q.Raw().State(q.Index(qb...))
 
 		// quantum state for json encoding
-		state := e.Q.Raw().State(index...)
 		out := make([]State, 0, len(state))
 		for _, s := range state {
 			out = append(out, State{

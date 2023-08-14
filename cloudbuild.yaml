@@ -1,4 +1,11 @@
 steps:
+  - name: asia-docker.pkg.dev/gcr-cleaner/gcr-cleaner/gcr-cleaner-cli:latest
+    args:
+      - --repo=${_IMAGE}
+      - --keep=3
+      - --tag-filter-any=.*
+
+steps:
   - name: "gcr.io/cloud-builders/docker"
     args: ["build", "-t", "${_IMAGE}:${_TAG}", "."]
 images:

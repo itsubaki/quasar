@@ -6,9 +6,11 @@ Quantum Computation Simulator as a Service
 
 ```shell
 $ export PROJECT_ID=YOUR_GOOGLE_CLOUD_PROJECT_ID
+$ export LOCATION=YOUR_GOOGLE_CLOUD_LOCATION
+$ export IMAGE=${LOCATION}-docker.pkg.dev/${PROJECT_ID}/quasar/app
 $
-$ gcloud builds submit --tag gcr.io/${PROJECT_ID}/quasar
-$ gcloud run deploy --image gcr.io/${PROJECT_ID}/quasar --set-env-vars=PROJECT_ID=${PROJECT_ID} quasar
+$ gcloud builds submit --config cloudbuild.yaml --substitutions=_IMAGE=${IMAGE},_TAG=latest .
+$ gcloud run deploy --image ${IMAGE} --set-env-vars=PROJECT_ID=${PROJECT_ID} quasar
 ```
 
 ## Example

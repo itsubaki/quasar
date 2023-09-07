@@ -151,8 +151,8 @@ github.com/itsubaki/q v0.0.3-0.20230605133313-1dd51522be4e h1:T1MX2UCLxxsNPHGn8c
 github.com/itsubaki/q v0.0.3-0.20230605133313-1dd51522be4e/go.mod h1:rFAVpm4Mn5+RIb5U/TYq5dDx1jPeTI5NLOtCqLsxf6I=
 github.com/itsubaki/qasm v0.0.11-0.20230729060109-9e42934585ae h1:eWg9+PHVOluAQNnQBXtYYuvcx0Gd9QKK5/QDhIUJik8=
 github.com/itsubaki/qasm v0.0.11-0.20230729060109-9e42934585ae/go.mod h1:2VOhsHlWUopKJxFurPrU7iyyNqDICZ7yTuiZChr1XYw=
-github.com/itsubaki/tracer v0.0.0-20230907135341-32152d66cdd3 h1:9unN4LMlYQZ7kuz6qzfTTIpIJu0fyTkc3Ujwts48cwg=
-github.com/itsubaki/tracer v0.0.0-20230907135341-32152d66cdd3/go.mod h1:6QFt1Lgvc9ISwPTmtpSPiS0m3hjda9BH9xH/CeIvJMM=
+github.com/itsubaki/tracer v0.0.0-20230907142610-45325f2aa151 h1:ESBJ3VoI8ZOURFMm0YpBA497FcwOWc/sKSio0Te/4mU=
+github.com/itsubaki/tracer v0.0.0-20230907142610-45325f2aa151/go.mod h1:Ybs/b9ZcNJY9gMrECJH92D0TSIgPEe9UleWck0SvFjc=
 github.com/jfilipczyk/gomatch v1.2.1 h1:1apWwM4OrVl/avoaY9sInZJqioA6HOSOc/Mg8VzQueY=
 github.com/jfilipczyk/gomatch v1.2.1/go.mod h1:uD5cJG0I8GB0lhwg8dq8DspFqtF1Si+n9sPEe1iBgWc=
 github.com/json-iterator/go v1.1.12 h1:PV8peI4a0ysnczrg+LtxykD8LfKY9ML6u2jnxaEnrnM=

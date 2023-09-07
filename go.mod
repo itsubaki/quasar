@@ -1,6 +1,6 @@
 module github.com/itsubaki/quasar
 
-go 1.21.1
+go 1.21
 
 require (
 	cloud.google.com/go/profiler v0.3.1
@@ -10,7 +10,7 @@ require (
 	github.com/itsubaki/logger v0.0.0-20230302111514-9ad23bf3f41f
 	github.com/itsubaki/q v0.0.3-0.20230605133313-1dd51522be4e
 	github.com/itsubaki/qasm v0.0.11-0.20230729060109-9e42934585ae
-	github.com/itsubaki/tracer v0.0.0-20230907135341-32152d66cdd3
+	github.com/itsubaki/tracer v0.0.0-20230907142610-45325f2aa151
 	github.com/jfilipczyk/gomatch v1.2.1
 	go.opentelemetry.io/otel v1.17.0
 )

@@ -4,9 +4,8 @@ steps:
       - --repo=${_IMAGE}
       - --keep=3
       - --tag-filter-any=.*
-
-steps:
   - name: "gcr.io/cloud-builders/docker"
     args: ["build", "-t", "${_IMAGE}:${_TAG}", "."]
+
 images:
   - "${_IMAGE}:${_TAG}"

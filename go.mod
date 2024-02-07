@@ -1,6 +1,6 @@
 module github.com/itsubaki/quasar
 
-go 1.21
+go 1.22
 
 require (
 	cloud.google.com/go/profiler v0.4.0

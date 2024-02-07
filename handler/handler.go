@@ -2,7 +2,7 @@ package handler
 
 import (
 	"fmt"
-	"math/rand"
+	"math/rand/v2"
 	"net/http"
 
 	"github.com/gin-contrib/pprof"
@@ -56,7 +56,7 @@ func SetTraceID(c *gin.Context) {
 	value := c.GetHeader("X-Cloud-Trace-Context")
 	if value == "" {
 		// new trace id, span id for test
-		value = fmt.Sprintf("%016x%016x/%d;o=0", rand.Int63(), rand.Int63(), rand.Int63())
+		value = fmt.Sprintf("%016x%016x/%d;o=0", rand.Int64(), rand.Int64(), rand.Int64())
 		c.Request.Header.Add("X-Cloud-Trace-Context", value)
 	}
 

@@ -85,16 +85,16 @@ func Func(c *gin.Context) {
 			return fmt.Sprintf("N=%d. N must be greater than 1.", N), true
 		}
 
-		if number.IsPrime(N) {
-			return fmt.Sprintf("N=%d is prime.", N), true
-		}
-
 		if number.IsEven(N) {
 			return fmt.Sprintf("N=%d is even. p=%d, q=%d.", N, 2, N/2), true
 		}
 
 		if a, b, ok := number.BaseExp(N); ok {
 			return fmt.Sprintf("N=%d. N is exponentiation. %d^%d.", N, a, b), true
+		}
+
+		if number.IsPrime(N) {
+			return fmt.Sprintf("N=%d is prime.", N), true
 		}
 
 		if a < 0 {

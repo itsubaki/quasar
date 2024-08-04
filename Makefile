@@ -9,6 +9,16 @@ update:
 	go get -u
 	go mod tidy
 
+install:
+	go install github.com/bufbuild/buf/cmd/buf@latest
+	go install github.com/fullstorydev/grpcurl/cmd/grpcurl@latest
+	go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+	go install connectrpc.com/connect/cmd/protoc-gen-connect-go@latest
+
+bufgen:
+	buf lint
+	buf generate
+
 test:
 	PROJECT_ID=${PROJECT_ID} LOG_LEVEL=5 go test -v -coverprofile=coverage.txt -covermode=atomic -coverpkg ./...
 

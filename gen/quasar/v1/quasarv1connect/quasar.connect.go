@@ -8,7 +8,7 @@ import (
 	connect "connectrpc.com/connect"
 	context "context"
 	errors "errors"
-	v1 "gen/quasar/v1"
+	v1 "github.com/itsubaki/quasar/gen/quasar/v1"
 	http "net/http"
 	strings "strings"
 )
@@ -35,17 +35,21 @@ const (
 const (
 	// QuasarServiceShorProcedure is the fully-qualified name of the QuasarService's Shor RPC.
 	QuasarServiceShorProcedure = "/quasar.v1.QuasarService/Shor"
+	// QuasarServiceSimulateProcedure is the fully-qualified name of the QuasarService's Simulate RPC.
+	QuasarServiceSimulateProcedure = "/quasar.v1.QuasarService/Simulate"
 )
 
 // These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
 var (
-	quasarServiceServiceDescriptor    = v1.File_quasar_v1_quasar_proto.Services().ByName("QuasarService")
-	quasarServiceShorMethodDescriptor = quasarServiceServiceDescriptor.Methods().ByName("Shor")
+	quasarServiceServiceDescriptor        = v1.File_quasar_v1_quasar_proto.Services().ByName("QuasarService")
+	quasarServiceShorMethodDescriptor     = quasarServiceServiceDescriptor.Methods().ByName("Shor")
+	quasarServiceSimulateMethodDescriptor = quasarServiceServiceDescriptor.Methods().ByName("Simulate")
 )
 
 // QuasarServiceClient is a client for the quasar.v1.QuasarService service.
 type QuasarServiceClient interface {
 	Shor(context.Context, *connect.Request[v1.ShorRequest]) (*connect.Response[v1.ShorResponse], error)
+	Simulate(context.Context, *connect.Request[v1.SimulateRequest]) (*connect.Response[v1.SimulateResponse], error)
 }
 
 // NewQuasarServiceClient constructs a client for the quasar.v1.QuasarService service. By default,
@@ -64,12 +68,19 @@ func NewQuasarServiceClient(httpClient connect.HTTPClient, baseURL string, opts 
 			connect.WithSchema(quasarServiceShorMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
+		simulate: connect.NewClient[v1.SimulateRequest, v1.SimulateResponse](
+			httpClient,
+			baseURL+QuasarServiceSimulateProcedure,
+			connect.WithSchema(quasarServiceSimulateMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
 // quasarServiceClient implements QuasarServiceClient.
 type quasarServiceClient struct {
-	shor *connect.Client[v1.ShorRequest, v1.ShorResponse]
+	shor     *connect.Client[v1.ShorRequest, v1.ShorResponse]
+	simulate *connect.Client[v1.SimulateRequest, v1.SimulateResponse]
 }
 
 // Shor calls quasar.v1.QuasarService.Shor.
@@ -77,9 +88,15 @@ func (c *quasarServiceClient) Shor(ctx context.Context, req *connect.Request[v1.
 	return c.shor.CallUnary(ctx, req)
 }
 
+// Simulate calls quasar.v1.QuasarService.Simulate.
+func (c *quasarServiceClient) Simulate(ctx context.Context, req *connect.Request[v1.SimulateRequest]) (*connect.Response[v1.SimulateResponse], error) {
+	return c.simulate.CallUnary(ctx, req)
+}
+
 // QuasarServiceHandler is an implementation of the quasar.v1.QuasarService service.
 type QuasarServiceHandler interface {
 	Shor(context.Context, *connect.Request[v1.ShorRequest]) (*connect.Response[v1.ShorResponse], error)
+	Simulate(context.Context, *connect.Request[v1.SimulateRequest]) (*connect.Response[v1.SimulateResponse], error)
 }
 
 // NewQuasarServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -94,10 +111,18 @@ func NewQuasarServiceHandler(svc QuasarServiceHandler, opts ...connect.HandlerOp
 		connect.WithSchema(quasarServiceShorMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
+	quasarServiceSimulateHandler := connect.NewUnaryHandler(
+		QuasarServiceSimulateProcedure,
+		svc.Simulate,
+		connect.WithSchema(quasarServiceSimulateMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/quasar.v1.QuasarService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case QuasarServiceShorProcedure:
 			quasarServiceShorHandler.ServeHTTP(w, r)
+		case QuasarServiceSimulateProcedure:
+			quasarServiceSimulateHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -109,4 +134,8 @@ type UnimplementedQuasarServiceHandler struct{}
 
 func (UnimplementedQuasarServiceHandler) Shor(context.Context, *connect.Request[v1.ShorRequest]) (*connect.Response[v1.ShorResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("quasar.v1.QuasarService.Shor is not implemented"))
+}
+
+func (UnimplementedQuasarServiceHandler) Simulate(context.Context, *connect.Request[v1.SimulateRequest]) (*connect.Response[v1.SimulateResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("quasar.v1.QuasarService.Simulate is not implemented"))
 }

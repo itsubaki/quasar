@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package quasar.v1;
 
-option go_package = "gen/quasar/v1;quasarv1";
+option go_package = "github.com/itsubaki/quasar/gen/quasar/v1;quasarv1";
 
 message ShorRequest {
     uint64 n = 1;
@@ -23,6 +23,27 @@ message ShorResponse {
     uint64 q = 9;
 }
 
+message SimulateRequest {
+  string qasm = 1;
+}
+
+message SimulateResponse {
+  message Amplitude {
+    double real = 1;
+    double imag = 2;
+  }
+
+  message State {
+    Amplitude amplitude = 1;
+    double probability = 2;
+    repeated uint64 int = 3;
+    repeated string bin = 4;
+  }
+
+  repeated State state = 1;
+}
+
 service QuasarService {
   rpc Shor(ShorRequest) returns (ShorResponse) {};
+  rpc Simulate(SimulateRequest) returns (SimulateResponse) {};
 }

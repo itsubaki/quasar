@@ -4,6 +4,7 @@ go 1.22
 
 require (
 	cloud.google.com/go/profiler v0.4.0
+	connectrpc.com/connect v1.16.2
 	github.com/cucumber/godog v0.12.6
 	github.com/gin-contrib/pprof v1.4.0
 	github.com/gin-gonic/gin v1.9.1
@@ -13,6 +14,7 @@ require (
 	github.com/itsubaki/tracer v0.0.0-20231219031431-5a5ad820c7fe
 	github.com/jfilipczyk/gomatch v1.2.1
 	go.opentelemetry.io/otel v1.23.0
+	google.golang.org/protobuf v1.33.0
 )
 
 require (
@@ -78,6 +80,5 @@ require (
 	google.golang.org/genproto/googleapis/api v0.0.0-20240205150955-31a09d347014 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240205150955-31a09d347014 // indirect
 	google.golang.org/grpc v1.61.0 // indirect
-	google.golang.org/protobuf v1.33.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

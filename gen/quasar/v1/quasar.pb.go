@@ -202,6 +202,226 @@ func (x *ShorResponse) GetQ() uint64 {
 	return 0
 }
 
+type SimulateRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Qasm string `protobuf:"bytes,1,opt,name=qasm,proto3" json:"qasm,omitempty"`
+}
+
+func (x *SimulateRequest) Reset() {
+	*x = SimulateRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_quasar_v1_quasar_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *SimulateRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SimulateRequest) ProtoMessage() {}
+
+func (x *SimulateRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_quasar_v1_quasar_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SimulateRequest.ProtoReflect.Descriptor instead.
+func (*SimulateRequest) Descriptor() ([]byte, []int) {
+	return file_quasar_v1_quasar_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *SimulateRequest) GetQasm() string {
+	if x != nil {
+		return x.Qasm
+	}
+	return ""
+}
+
+type SimulateResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	State []*SimulateResponse_State `protobuf:"bytes,1,rep,name=state,proto3" json:"state,omitempty"`
+}
+
+func (x *SimulateResponse) Reset() {
+	*x = SimulateResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_quasar_v1_quasar_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *SimulateResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SimulateResponse) ProtoMessage() {}
+
+func (x *SimulateResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_quasar_v1_quasar_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SimulateResponse.ProtoReflect.Descriptor instead.
+func (*SimulateResponse) Descriptor() ([]byte, []int) {
+	return file_quasar_v1_quasar_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *SimulateResponse) GetState() []*SimulateResponse_State {
+	if x != nil {
+		return x.State
+	}
+	return nil
+}
+
+type SimulateResponse_Amplitude struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Real float64 `protobuf:"fixed64,1,opt,name=real,proto3" json:"real,omitempty"`
+	Imag float64 `protobuf:"fixed64,2,opt,name=imag,proto3" json:"imag,omitempty"`
+}
+
+func (x *SimulateResponse_Amplitude) Reset() {
+	*x = SimulateResponse_Amplitude{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_quasar_v1_quasar_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *SimulateResponse_Amplitude) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SimulateResponse_Amplitude) ProtoMessage() {}
+
+func (x *SimulateResponse_Amplitude) ProtoReflect() protoreflect.Message {
+	mi := &file_quasar_v1_quasar_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SimulateResponse_Amplitude.ProtoReflect.Descriptor instead.
+func (*SimulateResponse_Amplitude) Descriptor() ([]byte, []int) {
+	return file_quasar_v1_quasar_proto_rawDescGZIP(), []int{3, 0}
+}
+
+func (x *SimulateResponse_Amplitude) GetReal() float64 {
+	if x != nil {
+		return x.Real
+	}
+	return 0
+}
+
+func (x *SimulateResponse_Amplitude) GetImag() float64 {
+	if x != nil {
+		return x.Imag
+	}
+	return 0
+}
+
+type SimulateResponse_State struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Amplitude   *SimulateResponse_Amplitude `protobuf:"bytes,1,opt,name=amplitude,proto3" json:"amplitude,omitempty"`
+	Probability float64                     `protobuf:"fixed64,2,opt,name=probability,proto3" json:"probability,omitempty"`
+	Int         []uint64                    `protobuf:"varint,3,rep,packed,name=int,proto3" json:"int,omitempty"`
+	Bin         []string                    `protobuf:"bytes,4,rep,name=bin,proto3" json:"bin,omitempty"`
+}
+
+func (x *SimulateResponse_State) Reset() {
+	*x = SimulateResponse_State{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_quasar_v1_quasar_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *SimulateResponse_State) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SimulateResponse_State) ProtoMessage() {}
+
+func (x *SimulateResponse_State) ProtoReflect() protoreflect.Message {
+	mi := &file_quasar_v1_quasar_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SimulateResponse_State.ProtoReflect.Descriptor instead.
+func (*SimulateResponse_State) Descriptor() ([]byte, []int) {
+	return file_quasar_v1_quasar_proto_rawDescGZIP(), []int{3, 1}
+}
+
+func (x *SimulateResponse_State) GetAmplitude() *SimulateResponse_Amplitude {
+	if x != nil {
+		return x.Amplitude
+	}
+	return nil
+}
+
+func (x *SimulateResponse_State) GetProbability() float64 {
+	if x != nil {
+		return x.Probability
+	}
+	return 0
+}
+
+func (x *SimulateResponse_State) GetInt() []uint64 {
+	if x != nil {
+		return x.Int
+	}
+	return nil
+}
+
+func (x *SimulateResponse_State) GetBin() []string {
+	if x != nil {
+		return x.Bin
+	}
+	return nil
+}
+
 var File_quasar_v1_quasar_proto protoreflect.FileDescriptor
 
 var file_quasar_v1_quasar_proto_rawDesc = []byte{
@@ -223,14 +443,40 @@ var file_quasar_v1_quasar_proto_rawDesc = []byte{
 	0x6d, 0x12, 0x0c, 0x0a, 0x01, 0x73, 0x18, 0x06, 0x20, 0x01, 0x28, 0x04, 0x52, 0x01, 0x73, 0x12,
 	0x0c, 0x0a, 0x01, 0x72, 0x18, 0x07, 0x20, 0x01, 0x28, 0x04, 0x52, 0x01, 0x72, 0x12, 0x0c, 0x0a,
 	0x01, 0x70, 0x18, 0x08, 0x20, 0x01, 0x28, 0x04, 0x52, 0x01, 0x70, 0x12, 0x0c, 0x0a, 0x01, 0x71,
-	0x18, 0x09, 0x20, 0x01, 0x28, 0x04, 0x52, 0x01, 0x71, 0x32, 0x4a, 0x0a, 0x0d, 0x51, 0x75, 0x61,
+	0x18, 0x09, 0x20, 0x01, 0x28, 0x04, 0x52, 0x01, 0x71, 0x22, 0x25, 0x0a, 0x0f, 0x53, 0x69, 0x6d,
+	0x75, 0x6c, 0x61, 0x74, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x12, 0x0a, 0x04,
+	0x71, 0x61, 0x73, 0x6d, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x71, 0x61, 0x73, 0x6d,
+	0x22, 0x95, 0x02, 0x0a, 0x10, 0x53, 0x69, 0x6d, 0x75, 0x6c, 0x61, 0x74, 0x65, 0x52, 0x65, 0x73,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x37, 0x0a, 0x05, 0x73, 0x74, 0x61, 0x74, 0x65, 0x18, 0x01,
+	0x20, 0x03, 0x28, 0x0b, 0x32, 0x21, 0x2e, 0x71, 0x75, 0x61, 0x73, 0x61, 0x72, 0x2e, 0x76, 0x31,
+	0x2e, 0x53, 0x69, 0x6d, 0x75, 0x6c, 0x61, 0x74, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x2e, 0x53, 0x74, 0x61, 0x74, 0x65, 0x52, 0x05, 0x73, 0x74, 0x61, 0x74, 0x65, 0x1a, 0x33,
+	0x0a, 0x09, 0x41, 0x6d, 0x70, 0x6c, 0x69, 0x74, 0x75, 0x64, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x72,
+	0x65, 0x61, 0x6c, 0x18, 0x01, 0x20, 0x01, 0x28, 0x01, 0x52, 0x04, 0x72, 0x65, 0x61, 0x6c, 0x12,
+	0x12, 0x0a, 0x04, 0x69, 0x6d, 0x61, 0x67, 0x18, 0x02, 0x20, 0x01, 0x28, 0x01, 0x52, 0x04, 0x69,
+	0x6d, 0x61, 0x67, 0x1a, 0x92, 0x01, 0x0a, 0x05, 0x53, 0x74, 0x61, 0x74, 0x65, 0x12, 0x43, 0x0a,
+	0x09, 0x61, 0x6d, 0x70, 0x6c, 0x69, 0x74, 0x75, 0x64, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b,
+	0x32, 0x25, 0x2e, 0x71, 0x75, 0x61, 0x73, 0x61, 0x72, 0x2e, 0x76, 0x31, 0x2e, 0x53, 0x69, 0x6d,
+	0x75, 0x6c, 0x61, 0x74, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x2e, 0x41, 0x6d,
+	0x70, 0x6c, 0x69, 0x74, 0x75, 0x64, 0x65, 0x52, 0x09, 0x61, 0x6d, 0x70, 0x6c, 0x69, 0x74, 0x75,
+	0x64, 0x65, 0x12, 0x20, 0x0a, 0x0b, 0x70, 0x72, 0x6f, 0x62, 0x61, 0x62, 0x69, 0x6c, 0x69, 0x74,
+	0x79, 0x18, 0x02, 0x20, 0x01, 0x28, 0x01, 0x52, 0x0b, 0x70, 0x72, 0x6f, 0x62, 0x61, 0x62, 0x69,
+	0x6c, 0x69, 0x74, 0x79, 0x12, 0x10, 0x0a, 0x03, 0x69, 0x6e, 0x74, 0x18, 0x03, 0x20, 0x03, 0x28,
+	0x04, 0x52, 0x03, 0x69, 0x6e, 0x74, 0x12, 0x10, 0x0a, 0x03, 0x62, 0x69, 0x6e, 0x18, 0x04, 0x20,
+	0x03, 0x28, 0x09, 0x52, 0x03, 0x62, 0x69, 0x6e, 0x32, 0x91, 0x01, 0x0a, 0x0d, 0x51, 0x75, 0x61,
 	0x73, 0x61, 0x72, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x39, 0x0a, 0x04, 0x53, 0x68,
 	0x6f, 0x72, 0x12, 0x16, 0x2e, 0x71, 0x75, 0x61, 0x73, 0x61, 0x72, 0x2e, 0x76, 0x31, 0x2e, 0x53,
 	0x68, 0x6f, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x17, 0x2e, 0x71, 0x75, 0x61,
 	0x73, 0x61, 0x72, 0x2e, 0x76, 0x31, 0x2e, 0x53, 0x68, 0x6f, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f,
-	0x6e, 0x73, 0x65, 0x22, 0x00, 0x42, 0x18, 0x5a, 0x16, 0x67, 0x65, 0x6e, 0x2f, 0x71, 0x75, 0x61,
-	0x73, 0x61, 0x72, 0x2f, 0x76, 0x31, 0x3b, 0x71, 0x75, 0x61, 0x73, 0x61, 0x72, 0x76, 0x31, 0x62,
-	0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x45, 0x0a, 0x08, 0x53, 0x69, 0x6d, 0x75, 0x6c, 0x61, 0x74,
+	0x65, 0x12, 0x1a, 0x2e, 0x71, 0x75, 0x61, 0x73, 0x61, 0x72, 0x2e, 0x76, 0x31, 0x2e, 0x53, 0x69,
+	0x6d, 0x75, 0x6c, 0x61, 0x74, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1b, 0x2e,
+	0x71, 0x75, 0x61, 0x73, 0x61, 0x72, 0x2e, 0x76, 0x31, 0x2e, 0x53, 0x69, 0x6d, 0x75, 0x6c, 0x61,
+	0x74, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x42, 0x33, 0x5a, 0x31,
+	0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x69, 0x74, 0x73, 0x75, 0x62,
+	0x61, 0x6b, 0x69, 0x2f, 0x71, 0x75, 0x61, 0x73, 0x61, 0x72, 0x2f, 0x67, 0x65, 0x6e, 0x2f, 0x71,
+	0x75, 0x61, 0x73, 0x61, 0x72, 0x2f, 0x76, 0x31, 0x3b, 0x71, 0x75, 0x61, 0x73, 0x61, 0x72, 0x76,
+	0x31, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -245,19 +491,27 @@ func file_quasar_v1_quasar_proto_rawDescGZIP() []byte {
 	return file_quasar_v1_quasar_proto_rawDescData
 }
 
-var file_quasar_v1_quasar_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_quasar_v1_quasar_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_quasar_v1_quasar_proto_goTypes = []any{
-	(*ShorRequest)(nil),  // 0: quasar.v1.ShorRequest
-	(*ShorResponse)(nil), // 1: quasar.v1.ShorResponse
+	(*ShorRequest)(nil),                // 0: quasar.v1.ShorRequest
+	(*ShorResponse)(nil),               // 1: quasar.v1.ShorResponse
+	(*SimulateRequest)(nil),            // 2: quasar.v1.SimulateRequest
+	(*SimulateResponse)(nil),           // 3: quasar.v1.SimulateResponse
+	(*SimulateResponse_Amplitude)(nil), // 4: quasar.v1.SimulateResponse.Amplitude
+	(*SimulateResponse_State)(nil),     // 5: quasar.v1.SimulateResponse.State
 }
 var file_quasar_v1_quasar_proto_depIdxs = []int32{
-	0, // 0: quasar.v1.QuasarService.Shor:input_type -> quasar.v1.ShorRequest
-	1, // 1: quasar.v1.QuasarService.Shor:output_type -> quasar.v1.ShorResponse
-	1, // [1:2] is the sub-list for method output_type
-	0, // [0:1] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	5, // 0: quasar.v1.SimulateResponse.state:type_name -> quasar.v1.SimulateResponse.State
+	4, // 1: quasar.v1.SimulateResponse.State.amplitude:type_name -> quasar.v1.SimulateResponse.Amplitude
+	0, // 2: quasar.v1.QuasarService.Shor:input_type -> quasar.v1.ShorRequest
+	2, // 3: quasar.v1.QuasarService.Simulate:input_type -> quasar.v1.SimulateRequest
+	1, // 4: quasar.v1.QuasarService.Shor:output_type -> quasar.v1.ShorResponse
+	3, // 5: quasar.v1.QuasarService.Simulate:output_type -> quasar.v1.SimulateResponse
+	4, // [4:6] is the sub-list for method output_type
+	2, // [2:4] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_quasar_v1_quasar_proto_init() }
@@ -290,6 +544,54 @@ func file_quasar_v1_quasar_proto_init() {
 				return nil
 			}
 		}
+		file_quasar_v1_quasar_proto_msgTypes[2].Exporter = func(v any, i int) any {
+			switch v := v.(*SimulateRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_quasar_v1_quasar_proto_msgTypes[3].Exporter = func(v any, i int) any {
+			switch v := v.(*SimulateResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_quasar_v1_quasar_proto_msgTypes[4].Exporter = func(v any, i int) any {
+			switch v := v.(*SimulateResponse_Amplitude); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_quasar_v1_quasar_proto_msgTypes[5].Exporter = func(v any, i int) any {
+			switch v := v.(*SimulateResponse_State); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	file_quasar_v1_quasar_proto_msgTypes[0].OneofWrappers = []any{}
 	type x struct{}
@@ -298,7 +600,7 @@ func file_quasar_v1_quasar_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_quasar_v1_quasar_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

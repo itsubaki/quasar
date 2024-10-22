@@ -46,9 +46,9 @@ func main() {
 	// profiler
 	if strings.ToLower(cprof) == "true" {
 		if err := profiler.Start(profiler.Config{
-			ProjectID:         projectID,
-			Service:           serviceName,
-			ServiceVersion:    revision,
+			ProjectID:      projectID,
+			Service:        serviceName,
+			ServiceVersion: revision,
 		}); err != nil {
 			log.Fatalf("profiler: %v", err)
 		}

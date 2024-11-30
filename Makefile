@@ -12,6 +12,9 @@ update:
 test:
 	PROJECT_ID=${PROJECT_ID} LOG_LEVEL=5 go test -v -coverprofile=coverage.txt -covermode=atomic -coverpkg ./...
 
+testwip:
+	PROJECT_ID=${PROJECT_ID} LOG_LEVEL=5 go test -v -godog.tags=wip -coverprofile=coverage.txt -covermode=atomic -coverpkg ./...
+
 testpkg:
 	PROJECT_ID=${PROJECT_ID} LOG_LEVEL=5 go test -v -cover $(shell go list ./... | grep -v /vendor/ | grep -v /build/ | grep -v -E "quasar$$") -coverprofile=coverage-pkg.txt -covermode=atomic
 

@@ -127,7 +127,7 @@ func Func(c *gin.Context) {
 
 		qsim := q.New()
 		if seed > 0 {
-			qsim.Rand = rand.Const(seed)
+			qsim.Rand = rand.Const(uint64(seed))
 			log.Span(s).Debug("set seed=%v", seed)
 		}
 

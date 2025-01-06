@@ -5,14 +5,13 @@ import (
 	"io"
 	"mime/multipart"
 	"net/http"
-	"strings"
 
+	"github.com/antlr4-go/antlr/v4"
 	"github.com/gin-gonic/gin"
 	"github.com/itsubaki/logger"
 	"github.com/itsubaki/q"
-	"github.com/itsubaki/qasm/evaluator"
-	"github.com/itsubaki/qasm/lexer"
-	"github.com/itsubaki/qasm/parser"
+	"github.com/itsubaki/qasm/gen/parser"
+	"github.com/itsubaki/qasm/visitor"
 	"github.com/itsubaki/tracer"
 	"go.opentelemetry.io/otel"
 )
@@ -77,38 +76,38 @@ func Func(c *gin.Context) {
 		_, s := tr.Start(parent, "compute")
 		defer s.End()
 
-		// eval
-		l := lexer.New(strings.NewReader(string(r)))
-		p := parser.New(l)
+		lexer := parser.Newqasm3Lexer(antlr.NewInputStream(string(r)))
+		p := parser.Newqasm3Parser(antlr.NewCommonTokenStream(lexer, antlr.TokenDefaultChannel))
+		tree := p.Program()
 
-		a := p.Parse()
-		if errs := p.Errors(); len(errs) != 0 {
-			return nil, fmt.Errorf("parse: %v", err)
+		qsim := q.New()
+		env := visitor.NewEnviron()
+		v := visitor.New(qsim, env)
+
+		switch ret := v.Visit(tree).(type) {
+		case error:
+			return nil, fmt.Errorf("visit: %v", ret)
 		}
 
-		e := evaluator.Default()
-		if err := e.Eval(a); err != nil {
-			return nil, fmt.Errorf("eval: %v", err)
+		var qb []q.Qubit
+		for _, q := range env.Qubit {
+			qb = append(qb, q...)
 		}
 
 		// quantum state index
-		qb, err := e.Env.Qubit.All()
-		if err != nil {
-			return nil, fmt.Errorf("get all qubits: %v", err)
-		}
-		state := e.Q.Raw().State(q.Index(qb...))
+		state := qsim.Raw().State(q.Index(qb...))
 
 		// quantum state for json encoding
 		out := make([]State, 0, len(state))
 		for _, s := range state {
 			out = append(out, State{
+				BinaryString: s.BinaryString(),
+				Int:          s.Int(),
+				Probability:  s.Probability(),
 				Amplitude: Amplitude{
-					Real: real(s.Amplitude),
-					Imag: imag(s.Amplitude),
+					Real: real(s.Amplitude()),
+					Imag: imag(s.Amplitude()),
 				},
-				Probability:  s.Probability,
-				Int:          s.Int,
-				BinaryString: s.BinaryString,
 			})
 		}
 

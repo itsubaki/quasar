@@ -172,7 +172,7 @@ func Func(c *gin.Context) {
 		_, span := tr.Start(parent, "find non-trivial factors")
 		defer span.End()
 
-		_, m := qs[0].Value()
+		m := qs[0].BinaryString()
 		s, r, _, ok := number.FindOrder(a, N, fmt.Sprintf("0.%s", m))
 		if !ok || number.IsOdd(r) {
 			return gin.H{

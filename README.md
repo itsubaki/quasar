@@ -21,7 +21,7 @@ OPENQASM 3.0;
 
 gate h q { U(pi/2.0, 0, pi) q; }
 gate x q { U(pi, 0, pi) q; }
-gate cx c, t { ctrl @ x c, t; }
+gate cx c, t { ctrl @ U(pi, 0, pi) c, t; }
 
 qubit[2] q;
 reset q;
@@ -40,12 +40,8 @@ $ curl -s $(gcloud run services describe quasar --format 'value(status.url)') -X
         "imag": 0
       },
       "probability": 0.5000000000000001,
-      "int": [
-        0
-      ],
-      "binary_string": [
-        "00"
-      ]
+      "int": 0,
+      "binary_string": "00"
     },
     {
       "amplitude": {
@@ -53,12 +49,8 @@ $ curl -s $(gcloud run services describe quasar --format 'value(status.url)') -X
         "imag": 0
       },
       "probability": 0.4999999999999999,
-      "int": [
-        3
-      ],
-      "binary_string": [
-        "11"
-      ]
+      "int": 3,
+      "binary_string": "11"
     }
   ]
 }

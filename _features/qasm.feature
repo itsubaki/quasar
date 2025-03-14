@@ -21,10 +21,10 @@ Feature:
                     },
                     {
                         "amplitude": {
-                            "real": 0.7071067811865475,
+                            "real": 0.7071067811865476,
                             "imag": 0
                         },
-                        "probability": 0.4999999999999999,
+                        "probability": 0.5000000000000001,
                         "int": 3,
                         "binary_string": "11"
                     }

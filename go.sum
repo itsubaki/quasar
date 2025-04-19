@@ -130,6 +130,8 @@ github.com/itsubaki/q v0.0.6-0.20250212150435-1a0a96f8e796 h1:YkQxVpo4shbD+eZugm
 github.com/itsubaki/q v0.0.6-0.20250212150435-1a0a96f8e796/go.mod h1:iu/YVKAxGQ9h/xxmcVveJqPfJ0yR4N3u6krgXEUC3J4=
 github.com/itsubaki/qasm v0.1.1 h1:EJvt3Q3AfIKipaC7HvjhalCNW5ZImXLqZAVkHWinSF4=
 github.com/itsubaki/qasm v0.1.1/go.mod h1:w6S2Tn211yGcg2l6dUWwEoXDnarUKkFc29vtmvYplUk=
+github.com/itsubaki/qasm v0.1.2-0.20250212150846-6be8661900da h1:ZrTY6Uyse+7EcCO84DD9ebsU6MUG/k9HHL+iCvf2QZY=
+github.com/itsubaki/qasm v0.1.2-0.20250212150846-6be8661900da/go.mod h1:pLd4XjSz3puIpUYlsB3ciKa8VJ/LuF7xSjQh8q9fSzk=
 github.com/itsubaki/tracer v0.0.0-20250417022656-912764753f94 h1:xDuoR60cYoXx+MuBwrJhGZcxRbUoAbbonuQXJG1SJa4=
 github.com/itsubaki/tracer v0.0.0-20250417022656-912764753f94/go.mod h1:+XBA6D45rlBtO0/nnHamwRmmu10trYDOS66w98+fMBs=
 github.com/jfilipczyk/gomatch v1.2.1 h1:1apWwM4OrVl/avoaY9sInZJqioA6HOSOc/Mg8VzQueY=

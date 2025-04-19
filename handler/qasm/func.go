@@ -95,7 +95,7 @@ func Func(c *gin.Context) {
 		}
 
 		// quantum state index
-		state := qsim.Raw().State(q.Index(qb...))
+		state := qsim.Underlying().State(q.Index(qb...))
 
 		// quantum state for json encoding
 		out := make([]State, 0, len(state))

@@ -132,10 +132,10 @@ func Func(c *gin.Context) {
 		}
 
 		r0 := func() []q.Qubit {
-			_, s := tr.Start(qa, "qsim.ZeroWith(t)")
+			_, s := tr.Start(qa, "qsim.Zeros(t)")
 			defer s.End()
 
-			return qsim.ZeroWith(t)
+			return qsim.Zeros(t)
 		}()
 
 		r1 := func() []q.Qubit {

@@ -24,8 +24,9 @@ func main() {
 	flag.Uint64Var(&seed, "seed", 0, "PRNG seed for measurements")
 	flag.Parse()
 
-	c := client.New(BaseURL, IdentityToken)
-	resp, err := c.Factorize(context.Background(), N, t, a, seed)
+	resp, err := client.
+		New(BaseURL, IdentityToken).
+		Factorize(context.Background(), N, t, a, seed)
 	if err != nil {
 		panic(err)
 	}

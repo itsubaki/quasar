@@ -1,15 +1,18 @@
 package client
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
 	"io"
+	"mime/multipart"
 	"net/http"
 	"net/url"
+	"strings"
 )
 
-type Response struct {
+type FactorizeResponse struct {
 	// parameters
 	N    int    `json:"N"`
 	T    int    `json:"t"`
@@ -21,6 +24,22 @@ type Response struct {
 	Q  int    `json:"q,omitempty"`
 	M  string `json:"m"`
 	SR string `json:"s/r"`
+}
+
+type RunResponse struct {
+	State []State `json:"state"`
+}
+
+type State struct {
+	Amplitude    Amplitude `json:"amplitude"`
+	Probability  float64   `json:"probability"`
+	Int          []int     `json:"int"`
+	BinaryString []string  `json:"binary_string"`
+}
+
+type Amplitude struct {
+	Real float64 `json:"real"`
+	Imag float64 `json:"imag"`
 }
 
 type Client struct {
@@ -35,7 +54,7 @@ func New(baseURL, identityToken string) *Client {
 	}
 }
 
-func (c *Client) Factorize(ctx context.Context, N, t, a int, seed uint64) (*Response, error) {
+func (c *Client) Factorize(ctx context.Context, N, t, a int, seed uint64) (*FactorizeResponse, error) {
 	// new request
 	reqURL, err := url.JoinPath(c.BaseURL, "shor", fmt.Sprintf("%d", N))
 	if err != nil {
@@ -74,7 +93,60 @@ func (c *Client) Factorize(ctx context.Context, N, t, a int, seed uint64) (*Resp
 	}
 
 	// unmarshal
-	var res Response
+	var res FactorizeResponse
+	if err := json.Unmarshal(body, &res); err != nil {
+		return nil, fmt.Errorf("unmarshal: %w", err)
+	}
+
+	return &res, nil
+}
+
+func (c *Client) Run(ctx context.Context, content string) (*RunResponse, error) {
+	// body
+	var buf bytes.Buffer
+	writer := multipart.NewWriter(&buf)
+
+	part, err := writer.CreateFormFile("file", "request.qasm")
+	if err != nil {
+		return nil, fmt.Errorf("create form file: %w", err)
+	}
+
+	if _, err = io.Copy(part, strings.NewReader(content)); err != nil {
+		return nil, fmt.Errorf("copy: %w", err)
+	}
+
+	if err := writer.Close(); err != nil {
+		return nil, fmt.Errorf("close writer: %w", err)
+	}
+
+	// new request
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, c.BaseURL, &buf)
+	if err != nil {
+		return nil, fmt.Errorf("new request: %w", err)
+	}
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", c.IdentityToken))
+	req.Header.Set("Content-Type", writer.FormDataContentType())
+
+	// do
+	resp, err := (&http.Client{}).Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("http post: %w", err)
+	}
+	defer resp.Body.Close()
+
+	// check status
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("status code=%v", resp.StatusCode)
+	}
+
+	// read body
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("read body: %w", err)
+	}
+
+	// unmarshal
+	var res RunResponse
 	if err := json.Unmarshal(body, &res); err != nil {
 		return nil, fmt.Errorf("unmarshal: %w", err)
 	}

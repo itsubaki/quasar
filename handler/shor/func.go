@@ -39,7 +39,7 @@ func Func(c *gin.Context) {
 	Nq := c.Param("N")
 	tq := DefaultValue(c.Query("t"), "3")
 	aq := DefaultValue(c.Query("a"), "-1")
-	sq := DefaultValue(c.Query("seed"), "-1")
+	sq := DefaultValue(c.Query("seed"), "0")
 
 	log.Debug("param(N)=%v, query(a)=%v, query(t)=%v, query(seed)=%v", Nq, aq, tq, sq)
 

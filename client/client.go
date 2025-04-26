@@ -24,6 +24,9 @@ type FactorizeResponse struct {
 	Q  int    `json:"q,omitempty"`
 	M  string `json:"m"`
 	SR string `json:"s/r"`
+
+	// message
+	Message string `json:"message,omitempty"`
 }
 
 type RunResponse struct {

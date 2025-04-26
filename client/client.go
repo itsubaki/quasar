@@ -14,16 +14,16 @@ import (
 
 type FactorizeResponse struct {
 	// parameters
-	N    int    `json:"N"`
-	T    int    `json:"t"`
-	A    int    `json:"a"`
-	Seed uint64 `json:"seed"`
+	N    int    `json:"N,omitempty"`
+	T    int    `json:"t,omitempty"`
+	A    int    `json:"a,omitempty"`
+	Seed uint64 `json:"seed,omitempty"`
 
 	// results
 	P  int    `json:"p,omitempty"`
 	Q  int    `json:"q,omitempty"`
-	M  string `json:"m"`
-	SR string `json:"s/r"`
+	M  string `json:"m,omitempty"`
+	SR string `json:"s/r,omitempty"`
 
 	// message
 	Message string `json:"message,omitempty"`

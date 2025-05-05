@@ -100,12 +100,16 @@ func Func(c *gin.Context) {
 		out := make([]State, 0, len(state))
 		for _, s := range state {
 			out = append(out, State{
-				BinaryString: s.BinaryString(),
-				Int:          s.Int(),
-				Probability:  s.Probability(),
+				Probability: s.Probability(),
 				Amplitude: Amplitude{
 					Real: real(s.Amplitude()),
 					Imag: imag(s.Amplitude()),
+				},
+				Int: []int64{
+					s.Int(),
+				},
+				BinaryString: []string{
+					s.BinaryString(),
 				},
 			})
 		}

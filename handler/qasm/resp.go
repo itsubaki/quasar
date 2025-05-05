@@ -3,8 +3,8 @@ package qasm
 type State struct {
 	Amplitude    Amplitude `json:"amplitude"`
 	Probability  float64   `json:"probability"`
-	Int          int64     `json:"int"`
-	BinaryString string    `json:"binary_string"`
+	Int          []int64   `json:"int"`
+	BinaryString []string  `json:"binary_string"`
 }
 
 type Amplitude struct {

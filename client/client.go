@@ -36,7 +36,7 @@ type RunResponse struct {
 type State struct {
 	Amplitude    Amplitude `json:"amplitude"`
 	Probability  float64   `json:"probability"`
-	Int          []int     `json:"int"`
+	Int          []int64   `json:"int"`
 	BinaryString []string  `json:"binary_string"`
 }
 

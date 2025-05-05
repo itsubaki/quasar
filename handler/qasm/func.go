@@ -82,10 +82,10 @@ func Func(c *gin.Context) {
 
 		qsim := q.New()
 		env := visitor.NewEnviron()
-		v := visitor.New(qsim, env)
 
-		if err, ok := v.Visit(tree).(error); ok && err != nil {
-			return nil, fmt.Errorf("visit: %w", err)
+		v := visitor.New(qsim, env)
+		if err := v.Run(tree); err != nil {
+			return nil, fmt.Errorf("run: %w", err)
 		}
 
 		var qb []q.Qubit

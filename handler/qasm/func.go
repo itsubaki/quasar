@@ -84,9 +84,8 @@ func Func(c *gin.Context) {
 		env := visitor.NewEnviron()
 		v := visitor.New(qsim, env)
 
-		switch ret := v.Visit(tree).(type) {
-		case error:
-			return nil, fmt.Errorf("visit: %v", ret)
+		if err, ok := v.Visit(tree).(error); ok && err != nil {
+			return nil, fmt.Errorf("visit: %w", err)
 		}
 
 		var qb []q.Qubit

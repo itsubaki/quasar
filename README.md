@@ -44,8 +44,12 @@ $ curl -s $(gcloud run services describe quasar --format 'value(status.url)') -X
         "imag": 0
       },
       "probability": 0.5000000000000001,
-      "int": 0,
-      "binary_string": "00"
+      "int": [
+        0
+      ],
+      "binary_string": [
+        "00"
+      ]
     },
     {
       "amplitude": {
@@ -53,8 +57,12 @@ $ curl -s $(gcloud run services describe quasar --format 'value(status.url)') -X
         "imag": 0
       },
       "probability": 0.4999999999999999,
-      "int": 3,
-      "binary_string": "11"
+      "int": [
+        3
+      ],
+      "binary_string": [
+        "11"
+      ]
     }
   ]
 }

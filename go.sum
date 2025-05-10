@@ -126,10 +126,12 @@ github.com/hashicorp/golang-lru v0.5.4/go.mod h1:iADmTwqILo4mZ8BN3D2Q6+9jd8WM5uG
 github.com/inconshreveable/mousetrap v1.1.0/go.mod h1:vpF70FUmC8bwa3OWnCshd2FqLfsEA9PFc4w1p2J65bw=
 github.com/itsubaki/logger v0.0.0-20250417023023-3f074a6bb2b4 h1:BNXb+lG0NWklRDnBh1yQZTlnU6xYd59Opwnf9GisDJk=
 github.com/itsubaki/logger v0.0.0-20250417023023-3f074a6bb2b4/go.mod h1:9pN7fBYZe9CUqZ7/V0vSTiJaqg3Y+XI+M8AA+n8bV1U=
-github.com/itsubaki/q v0.0.6-0.20250510130448-17bab97f7355 h1:5Pur3K/wqtn6J85NhvOsEdev4GQo6F9v3UCRgJAtomE=
-github.com/itsubaki/q v0.0.6-0.20250510130448-17bab97f7355/go.mod h1:iu/YVKAxGQ9h/xxmcVveJqPfJ0yR4N3u6krgXEUC3J4=
+github.com/itsubaki/q v0.0.6 h1:Jd3B2lV5lH+Ih8HYZg7srlPkMabs1OTzOwvsK/BwYWk=
+github.com/itsubaki/q v0.0.6/go.mod h1:iu/YVKAxGQ9h/xxmcVveJqPfJ0yR4N3u6krgXEUC3J4=
 github.com/itsubaki/qasm v0.1.2-0.20250510131115-01beec454557 h1:DZrsRIalkgRq4nQ/XLYfyzllxtZDlo70dUwovPo2Um8=
 github.com/itsubaki/qasm v0.1.2-0.20250510131115-01beec454557/go.mod h1:K/ZnhRqupSdZaOxONBOw9BH/E4XO8ZYTJQn0dl9S1nw=
+github.com/itsubaki/qasm v0.1.2-0.20250510132432-05261edbad1e h1:z9f+molu3Xpcai+o07eKifsTfNsbuQlBE+vkHq3p1mg=
+github.com/itsubaki/qasm v0.1.2-0.20250510132432-05261edbad1e/go.mod h1:f/ix86ggoZKl9dX97YryWCp0p8lhkqLOWYG1gs2gRjs=
 github.com/itsubaki/tracer v0.0.0-20250417022656-912764753f94 h1:xDuoR60cYoXx+MuBwrJhGZcxRbUoAbbonuQXJG1SJa4=
 github.com/itsubaki/tracer v0.0.0-20250417022656-912764753f94/go.mod h1:+XBA6D45rlBtO0/nnHamwRmmu10trYDOS66w98+fMBs=
 github.com/jfilipczyk/gomatch v1.2.1 h1:1apWwM4OrVl/avoaY9sInZJqioA6HOSOc/Mg8VzQueY=

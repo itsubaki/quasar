@@ -11,8 +11,8 @@ require (
 	github.com/gin-contrib/pprof v1.5.3
 	github.com/gin-gonic/gin v1.10.0
 	github.com/itsubaki/logger v0.0.0-20250417023023-3f074a6bb2b4
-	github.com/itsubaki/q v0.0.6-0.20250510130448-17bab97f7355
-	github.com/itsubaki/qasm v0.1.2-0.20250510131115-01beec454557
+	github.com/itsubaki/q v0.0.6
+	github.com/itsubaki/qasm v0.1.2-0.20250510132432-05261edbad1e
 	github.com/itsubaki/tracer v0.0.0-20250417022656-912764753f94
 	github.com/jfilipczyk/gomatch v1.2.1
 	go.opentelemetry.io/otel v1.35.0

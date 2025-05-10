@@ -1,3 +1,7 @@
+[![PkgGoDev](https://pkg.go.dev/badge/github.com/itsubaki/quasar)](https://pkg.go.dev/github.com/itsubaki/quasar)
+[![Go Report Card](https://goreportcard.com/badge/github.com/itsubaki/quasar?style=flat-square)](https://goreportcard.com/report/github.com/itsubaki/quasar)
+[![deploy](https://github.com/itsubaki/quasar/workflows/deploy/badge.svg)](https://github.com/itsubaki/quasar/actions)
+
 # quasar
 
 Quantum Computation Simulator as a Service

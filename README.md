@@ -17,7 +17,7 @@ $ gcloud builds submit --config cloudbuild.yaml --substitutions=_IMAGE=${IMAGE},
 $ gcloud run deploy --image ${IMAGE} --set-env-vars=PROJECT_ID=${PROJECT_ID} quasar
 ```
 
-## Example
+## Examples
 
 ```shell
 $ cat testdata/bell.qasm

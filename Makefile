@@ -1,5 +1,7 @@
 SHELL := /bin/bash
 
+PROJECT_ID := $(shell gcloud config get-value project)
+TARGET_URL := $(shell gcloud run services describe quasar --region asia-northeast1 --format 'value(status.url)' --project ${PROJECT_ID})
 SERVICE_NAME := quasar
 LOCATION := asia-northeast1
 IMAGE := ${LOCATION}-docker.pkg.dev/${PROJECT_ID}/${SERVICE_NAME}/app

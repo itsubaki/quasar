@@ -48,12 +48,20 @@ type Amplitude struct {
 type Client struct {
 	BaseURL       string
 	IdentityToken string
+	HTTPClient    HTTPClient
 }
 
 func New(baseURL, identityToken string) *Client {
 	return &Client{
 		BaseURL:       baseURL,
 		IdentityToken: identityToken,
+	}
+}
+
+func NewWithClient(baseURL string, client HTTPClient) *Client {
+	return &Client{
+		BaseURL:    baseURL,
+		HTTPClient: client,
 	}
 }
 
@@ -78,7 +86,13 @@ func (c *Client) Factorize(ctx context.Context, N, t, a int, seed uint64) (*Fact
 	req.URL.RawQuery = query.Encode()
 
 	// do
-	resp, err := (&http.Client{}).Do(req)
+	var client HTTPClient = c.HTTPClient
+	if c.IdentityToken != "" {
+		client = &http.Client{}
+		req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", c.IdentityToken))
+	}
+
+	resp, err := client.Do(req)
 	if err != nil {
 		return nil, fmt.Errorf("http get: %w", err)
 	}
@@ -127,11 +141,16 @@ func (c *Client) Run(ctx context.Context, content string) (*RunResponse, error) 
 	if err != nil {
 		return nil, fmt.Errorf("new request: %w", err)
 	}
-	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", c.IdentityToken))
 	req.Header.Set("Content-Type", writer.FormDataContentType())
 
 	// do
-	resp, err := (&http.Client{}).Do(req)
+	var client HTTPClient = c.HTTPClient
+	if c.IdentityToken != "" {
+		client = &http.Client{}
+		req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", c.IdentityToken))
+	}
+
+	resp, err := client.Do(req)
 	if err != nil {
 		return nil, fmt.Errorf("http post: %w", err)
 	}

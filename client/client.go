@@ -46,28 +46,53 @@ type Amplitude struct {
 }
 
 type Client struct {
-	BaseURL       string
-	IdentityToken string
-	HTTPClient    *http.Client
+	TargetURL  string
+	HTTPClient *http.Client
 }
 
-func New(baseURL, identityToken string) *Client {
+func New(targetURL string, client *http.Client) *Client {
 	return &Client{
-		BaseURL:       baseURL,
-		IdentityToken: identityToken,
-	}
-}
-
-func NewWithClient(baseURL string, client *http.Client) *Client {
-	return &Client{
-		BaseURL:    baseURL,
+		TargetURL:  targetURL,
 		HTTPClient: client,
 	}
 }
 
+func NewWithIdentityToken(targetURL, token string) *Client {
+	return &Client{
+		TargetURL: targetURL,
+		HTTPClient: &http.Client{
+			Transport: &HeaderTransport{
+				Header: http.Header{
+					"Authorization": []string{fmt.Sprintf("Bearer %s", token)},
+				},
+				RoundTripper: http.DefaultTransport.(*http.Transport).Clone(),
+			},
+		},
+	}
+}
+
+func (c *Client) do(req *http.Request) ([]byte, error) {
+	resp, err := c.HTTPClient.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("http get: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("status code=%v", resp.StatusCode)
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("read body: %w", err)
+	}
+
+	return body, nil
+}
+
 func (c *Client) Factorize(ctx context.Context, N, t, a int, seed uint64) (*FactorizeResponse, error) {
 	// new request
-	reqURL, err := url.JoinPath(c.BaseURL, "shor", fmt.Sprintf("%d", N))
+	reqURL, err := url.JoinPath(c.TargetURL, "shor", fmt.Sprintf("%d", N))
 	if err != nil {
 		return nil, fmt.Errorf("join path: %w", err)
 	}
@@ -76,7 +101,6 @@ func (c *Client) Factorize(ctx context.Context, N, t, a int, seed uint64) (*Fact
 	if err != nil {
 		return nil, fmt.Errorf("new request: %w", err)
 	}
-	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", c.IdentityToken))
 
 	// add query parameters
 	query := req.URL.Query()
@@ -86,27 +110,9 @@ func (c *Client) Factorize(ctx context.Context, N, t, a int, seed uint64) (*Fact
 	req.URL.RawQuery = query.Encode()
 
 	// do
-	httpClient := c.HTTPClient
-	if c.IdentityToken != "" {
-		httpClient = &http.Client{}
-		req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", c.IdentityToken))
-	}
-
-	resp, err := httpClient.Do(req)
+	body, err := c.do(req)
 	if err != nil {
-		return nil, fmt.Errorf("http get: %w", err)
-	}
-	defer resp.Body.Close()
-
-	// check status
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("status code=%v", resp.StatusCode)
-	}
-
-	// read body
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, fmt.Errorf("read body: %w", err)
+		return nil, fmt.Errorf("do request: %w", err)
 	}
 
 	// unmarshal
@@ -137,34 +143,16 @@ func (c *Client) Run(ctx context.Context, content string) (*RunResponse, error) 
 	}
 
 	// new request
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, c.BaseURL, &buf)
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, c.TargetURL, &buf)
 	if err != nil {
 		return nil, fmt.Errorf("new request: %w", err)
 	}
 	req.Header.Set("Content-Type", writer.FormDataContentType())
 
 	// do
-	httpClient := c.HTTPClient
-	if c.IdentityToken != "" {
-		httpClient = &http.Client{}
-		req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", c.IdentityToken))
-	}
-
-	resp, err := httpClient.Do(req)
+	body, err := c.do(req)
 	if err != nil {
-		return nil, fmt.Errorf("http post: %w", err)
-	}
-	defer resp.Body.Close()
-
-	// check status
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("status code=%v", resp.StatusCode)
-	}
-
-	// read body
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, fmt.Errorf("read body: %w", err)
+		return nil, fmt.Errorf("do request: %w", err)
 	}
 
 	// unmarshal

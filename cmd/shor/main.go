@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	BaseURL       = os.Getenv("BASE_URL")
+	TargetURL     = os.Getenv("TARGET_URL")
 	IdentityToken = os.Getenv("IDENTITY_TOKEN")
 )
 
@@ -25,7 +25,7 @@ func main() {
 	flag.Parse()
 
 	resp, err := client.
-		New(BaseURL, IdentityToken).
+		NewWithIdentityToken(TargetURL, IdentityToken).
 		Factorize(context.Background(), N, t, a, seed)
 	if err != nil {
 		panic(err)

@@ -1,9 +1,21 @@
 package client
 
 import (
+	"fmt"
 	"maps"
 	"net/http"
 )
+
+func NewWithIdentityToken(token string) *http.Client {
+	return &http.Client{
+		Transport: &HeaderTransport{
+			Header: http.Header{
+				"Authorization": []string{fmt.Sprintf("Bearer %s", token)},
+			},
+			RoundTripper: http.DefaultTransport.(*http.Transport).Clone(),
+		},
+	}
+}
 
 type HeaderTransport struct {
 	Header       http.Header

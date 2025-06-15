@@ -57,20 +57,6 @@ func New(targetURL string, client *http.Client) *Client {
 	}
 }
 
-func NewWithIdentityToken(targetURL, token string) *Client {
-	return &Client{
-		TargetURL: targetURL,
-		HTTPClient: &http.Client{
-			Transport: &HeaderTransport{
-				Header: http.Header{
-					"Authorization": []string{fmt.Sprintf("Bearer %s", token)},
-				},
-				RoundTripper: http.DefaultTransport.(*http.Transport).Clone(),
-			},
-		},
-	}
-}
-
 func (c *Client) do(req *http.Request) ([]byte, error) {
 	resp, err := c.HTTPClient.Do(req)
 	if err != nil {

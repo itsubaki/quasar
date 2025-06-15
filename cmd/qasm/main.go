@@ -31,7 +31,7 @@ func main() {
 	}
 
 	resp, err := client.
-		NewWithIdentityToken(TargetURL, IdentityToken).
+		New(TargetURL, client.NewWithIdentityToken(IdentityToken)).
 		Run(context.Background(), string(text))
 	if err != nil {
 		panic(err)

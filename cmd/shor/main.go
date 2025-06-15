@@ -25,7 +25,7 @@ func main() {
 	flag.Parse()
 
 	resp, err := client.
-		NewWithIdentityToken(TargetURL, IdentityToken).
+		New(TargetURL, client.NewWithIdentityToken(IdentityToken)).
 		Factorize(context.Background(), N, t, a, seed)
 	if err != nil {
 		panic(err)

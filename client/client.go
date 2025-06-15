@@ -113,8 +113,9 @@ func (c *Client) Factorize(ctx context.Context, N, t, a int, seed uint64) (*Fact
 func (c *Client) Run(ctx context.Context, content string) (*RunResponse, error) {
 	// body
 	var buf bytes.Buffer
-	writer := multipart.NewWriter(&buf)
 
+	// create form file
+	writer := multipart.NewWriter(&buf)
 	part, err := writer.CreateFormFile("file", "request.qasm")
 	if err != nil {
 		return nil, fmt.Errorf("create form file: %w", err)

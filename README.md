@@ -69,7 +69,7 @@ $ curl -s $(gcloud run services describe quasar --format 'value(status.url)') -X
 ```
 
 ```shell
-$ curl -s -H $(gcloud run services describe quasar --format 'value(status.url)')/shor/15 | jq .
+$ curl -s -H $(gcloud run services describe quasar --format 'value(status.url)')/factorize/15 | jq .
 {
   "N": 15,
   "a": 13,

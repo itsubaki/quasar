@@ -1,4 +1,4 @@
-package shor
+package factorize
 
 import (
 	"context"
@@ -16,7 +16,7 @@ import (
 	"go.opentelemetry.io/otel"
 )
 
-var tr = otel.Tracer("handler/shor")
+var tr = otel.Tracer("handler/factorize")
 
 func Func(c *gin.Context) {
 	traceID := c.GetString("trace_id")

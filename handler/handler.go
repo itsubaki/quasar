@@ -8,8 +8,8 @@ import (
 	"github.com/gin-contrib/pprof"
 	"github.com/gin-gonic/gin"
 	"github.com/itsubaki/logger"
+	"github.com/itsubaki/quasar/handler/factorize"
 	"github.com/itsubaki/quasar/handler/qasm"
-	"github.com/itsubaki/quasar/handler/shor"
 	"github.com/itsubaki/tracer"
 )
 
@@ -26,7 +26,7 @@ func New() *gin.Engine {
 	Root(g)
 	Status(g)
 
-	g.GET("/shor/:N", shor.Func)
+	g.GET("/factorize/:N", factorize.Func)
 	g.POST("/", qasm.Func)
 
 	return g

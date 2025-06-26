@@ -128,8 +128,8 @@ func (s *QuasarService) Factorize(
 	_, span := tr.Start(parent, "find non-trivial factor")
 	defer span.End()
 
-	m := qs[0].BinaryString()
-	ss, r, _, ok := number.FindOrder(a, N, fmt.Sprintf("0.%s", m))
+	m := fmt.Sprintf("0.%s", qs[0].BinaryString())
+	ss, r, _, ok := number.FindOrder(a, N, m)
 	if !ok || number.IsOdd(r) {
 		return connect.NewResponse(&quasarv1.FactorizeResponse{
 			N:    uint64(N),

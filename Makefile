@@ -46,7 +46,7 @@ build:
 
 deploy:
 	gcloud artifacts docker images describe ${IMAGE}
-	gcloud run deploy --region ${LOCATION} --project ${PROJECT_ID} --image ${IMAGE} --set-env-vars=PROJECT_ID=${PROJECT_ID},USE_CPROF=true,GIN_MODE=release ${SERVICE_NAME}
+	gcloud run deploy --region ${LOCATION} --project ${PROJECT_ID} --image ${IMAGE} --set-env-vars=PROJECT_ID=${PROJECT_ID},USE_CPROF=true ${SERVICE_NAME}
 	gcloud run services update-traffic ${SERVICE_NAME} --to-latest --region ${LOCATION} --project ${PROJECT_ID}
 
 package:
@@ -63,10 +63,18 @@ run:
 	PROJECT_ID=${PROJECT_ID} USE_PPROF=true go run main.go
 
 factorize:
-	@curl -s -H "Authorization: Bearer $(shell gcloud auth print-identity-token)" $(shell gcloud run services describe ${SERVICE_NAME} --project ${PROJECT_ID} --format 'value(status.url)')/factorize/15 | jq .
+	@curl -s \
+		-H "Authorization: Bearer $(shell gcloud auth print-identity-token)" \
+		-H "Content-Type: application/json" \
+		-d '{"n": 15}' \
+		$(shell gcloud run services describe ${SERVICE_NAME} --project ${PROJECT_ID} --format 'value(status.url)')/quasar.v1.QuasarService/Factorize | jq .
 
 qasm:
-	@curl -s -H "Authorization: Bearer $(shell gcloud auth print-identity-token)" $(shell gcloud run services describe ${SERVICE_NAME} --project ${PROJECT_ID} --format 'value(status.url)') -X POST -F file=@testdata/qft.qasm | jq .
+	@curl -s \
+		-H "Authorization: Bearer $(shell gcloud auth print-identity-token)" \
+		-H "Content-Type: application/json" \
+		-d '{"code": "OPENQASM 3.0; gate h q { U(pi/2.0, 0, pi) q; } gate x q { U(pi, 0, pi) q; } gate cx c, t { ctrl @ U(pi, 0, pi) c, t; } qubit[2] q; reset q; h q[0]; cx q[0], q[1];"}' \
+		$(shell gcloud run services describe ${SERVICE_NAME} --project ${PROJECT_ID} --format 'value(status.url)')/quasar.v1.QuasarService/Simulate | jq .
 
 curl:
-	@curl -X POST localhost:8080/quasar.v1.QuasarService/Factorize -H 'content-type: application/json' -d '{"n": 15}' 
+	@curl -s -X POST localhost:8080/quasar.v1.QuasarService/Factorize -H 'content-type: application/json' -d '{"n": 15}' 

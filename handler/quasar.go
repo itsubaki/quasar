@@ -140,8 +140,7 @@ func (s *QuasarService) Factorize(
 			T:    uint64(t),
 			Seed: uint64(seed),
 			M:    m,
-			S:    uint64(ss),
-			R:    uint64(r),
+			Sr:   fmt.Sprintf("%v/%v", ss, r),
 		}), nil
 	}
 
@@ -154,8 +153,7 @@ func (s *QuasarService) Factorize(
 			T:    uint64(t),
 			Seed: uint64(seed),
 			M:    m,
-			S:    uint64(ss),
-			R:    uint64(r),
+			Sr:   fmt.Sprintf("%v/%v", ss, r),
 		}), nil
 	}
 
@@ -165,8 +163,7 @@ func (s *QuasarService) Factorize(
 		T:    uint64(t),
 		Seed: uint64(seed),
 		M:    m,
-		S:    uint64(ss),
-		R:    uint64(r),
+		Sr:   fmt.Sprintf("%v/%v", ss, r),
 		P:    uint64(p0),
 		Q:    uint64(p1),
 	}), nil

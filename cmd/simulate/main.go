@@ -25,14 +25,14 @@ func main() {
 		return
 	}
 
-	text, err := os.ReadFile(filepath)
+	code, err := os.ReadFile(filepath)
 	if err != nil {
 		panic(err)
 	}
 
 	resp, err := client.
 		New(TargetURL, client.NewWithIdentityToken(IdentityToken)).
-		Run(context.Background(), string(text))
+		Simulate(context.Background(), string(code))
 	if err != nil {
 		panic(err)
 	}

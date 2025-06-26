@@ -12,9 +12,7 @@ import (
 	"time"
 
 	"cloud.google.com/go/profiler"
-	"github.com/itsubaki/logger"
 	"github.com/itsubaki/quasar/handler"
-	"github.com/itsubaki/tracer"
 )
 
 var (
@@ -28,19 +26,6 @@ var (
 
 func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
-
-	// tracer, logger
-	close := []func() error{
-		logger.MustSetup(projectID, serviceName, revision),
-		tracer.MustSetup(projectID, serviceName, revision, timeout),
-	}
-	defer func() {
-		for _, c := range close {
-			if err := c(); err != nil {
-				log.Printf("defer: %v", err)
-			}
-		}
-	}()
 
 	// profiler
 	if strings.ToLower(cprof) == "true" {

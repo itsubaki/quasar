@@ -91,6 +91,7 @@ jobs:
         env:
           PROJECT_ID: ${{ secrets.PROJECT_ID }}
         run: |
+          make gen
           make build
 
       - name: Deploy to Google Cloud Run

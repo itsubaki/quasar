@@ -49,6 +49,7 @@ jobs:
         env:
           PROJECT_ID: ${{ secrets.PROJECT_ID }}
         run: |
+          make install
           make gen
           make test
 
@@ -92,6 +93,7 @@ jobs:
         env:
           PROJECT_ID: ${{ secrets.PROJECT_ID }}
         run: |
+          make install
           make gen
           make build
 

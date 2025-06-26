@@ -7,10 +7,10 @@ Feature:
         Given I set request body:
             """
             {
-                "n": 15,
-                "a": 7,
-                "t": 3,
-                "seed": 1
+                "n": "15",
+                "a": "7",
+                "t": "3",
+                "seed": "1"
             }
             """
         When I send "POST" request to "/quasar.v1.QuasarService/Factorize"

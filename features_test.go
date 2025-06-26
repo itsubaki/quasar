@@ -13,7 +13,6 @@ import (
 	"strings"
 
 	"github.com/cucumber/godog"
-	"github.com/gin-gonic/gin"
 	"github.com/itsubaki/quasar/handler"
 	"github.com/jfilipczyk/gomatch"
 )
@@ -24,21 +23,25 @@ type apiFeature struct {
 	header http.Header
 	body   io.Reader
 	resp   *httptest.ResponseRecorder
-
-	server *gin.Engine
-	keep   map[string]interface{}
+	server http.Handler
+	keep   map[string]any
 	close  []func() error
 }
 
 func (a *apiFeature) start() {
-	a.server = handler.New()
-	a.keep = make(map[string]interface{})
+	h, err := handler.New()
+	if err != nil {
+		log.Fatalf("new handler: %v", err)
+	}
+
+	a.server = h
+	a.keep = make(map[string]any)
 }
 
 func (a *apiFeature) reset(ctx context.Context, sc *godog.Scenario) (context.Context, error) {
 	a.header = make(http.Header)
-	a.body = nil
 	a.resp = httptest.NewRecorder()
+	a.body = nil
 
 	return ctx, nil
 }
@@ -47,7 +50,7 @@ func (a *apiFeature) replace(str string) string {
 	for k, v := range a.keep {
 		switch val := v.(type) {
 		case string:
-			str = strings.Replace(str, k, val, -1)
+			str = strings.ReplaceAll(str, k, val)
 		}
 	}
 
@@ -128,7 +131,6 @@ func (a *apiFeature) SetUploadFile(path string) error {
 
 func InitializeTestSuite(ctx *godog.TestSuiteContext) {
 	ctx.BeforeSuite(func() {
-		gin.SetMode(gin.ReleaseMode)
 		api.close = []func() error{}
 		api.start()
 	})

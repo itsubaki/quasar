@@ -67,3 +67,6 @@ factorize:
 
 qasm:
 	@curl -s -H "Authorization: Bearer $(shell gcloud auth print-identity-token)" $(shell gcloud run services describe ${SERVICE_NAME} --project ${PROJECT_ID} --format 'value(status.url)') -X POST -F file=@testdata/qft.qasm | jq .
+
+curl:
+	@curl -X POST localhost:8080/quasar.v1.QuasarService/Factorize -H 'content-type: application/json' -d '{"n": 15}' 

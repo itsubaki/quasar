@@ -6,21 +6,22 @@ option go_package = "github.com/itsubaki/quasar/gen/quasar/v1;quasarv1";
 
 message FactorizeRequest {
     uint64 n = 1;
-    optional uint64 t = 2;
-    optional uint64 a = 3;
+    optional uint64 a = 2;
+    optional uint64 t = 3;
     optional uint64 seed = 4;
 }
 
 message FactorizeResponse {
     uint64 n = 1;
-    uint64 t = 2;
-    uint64 a = 3;
+    uint64 a = 2;
+    uint64 t = 3;
     uint64 seed = 4;
     string m = 5;
     uint64 s = 6; 
     uint64 r = 7;
     uint64 p = 8;
     uint64 q = 9;
+    optional string message = 10;
 }
 
 message SimulateRequest {

@@ -7,10 +7,13 @@ import (
 	"log/slog"
 
 	"connectrpc.com/connect"
+	"github.com/antlr4-go/antlr/v4"
 	"github.com/itsubaki/q"
 	"github.com/itsubaki/q/math/number"
 	"github.com/itsubaki/q/math/rand"
 	"github.com/itsubaki/q/quantum/qubit"
+	"github.com/itsubaki/qasm/gen/parser"
+	"github.com/itsubaki/qasm/visitor"
 	qctx "github.com/itsubaki/quasar/context"
 	quasarv1 "github.com/itsubaki/quasar/gen/quasar/v1"
 	"github.com/itsubaki/tracer"
@@ -173,7 +176,58 @@ func (s *QuasarService) Simulate(
 	ctx context.Context,
 	req *connect.Request[quasarv1.SimulateRequest],
 ) (*connect.Response[quasarv1.SimulateResponse], error) {
-	return connect.NewResponse(&quasarv1.SimulateResponse{}), nil
+	trace, _ := qctx.GetTrace(ctx)
+	parent, err := tracer.Context(ctx, trace.TraceID, trace.SpanID, trace.TraceTrue)
+	if err != nil {
+		slog.ErrorContext(ctx, "new context", slog.Any("trace", trace), slog.Any("error", err))
+		return nil, connect.NewError(connect.CodeInternal, ErrTraceNotFound)
+	}
+
+	var tr = otel.Tracer("handler/simulate")
+	_, span := tr.Start(parent, "compute")
+	defer span.End()
+
+	lexer := parser.Newqasm3Lexer(antlr.NewInputStream(req.Msg.Code))
+	p := parser.Newqasm3Parser(antlr.NewCommonTokenStream(lexer, antlr.TokenDefaultChannel))
+	tree := p.Program()
+
+	qsim := q.New()
+	env := visitor.NewEnviron()
+
+	v := visitor.New(qsim, env)
+	if err := v.Run(tree); err != nil {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("visitor run: %w", err))
+	}
+
+	var qb []q.Qubit
+	for _, q := range env.Qubit {
+		qb = append(qb, q...)
+	}
+
+	// quantum state index
+	qstate := qsim.Underlying().State(q.Index(qb...))
+
+	// quantum state for json encoding
+	state := make([]*quasarv1.SimulateResponse_State, len(qstate))
+	for i, s := range qstate {
+		state[i] = &quasarv1.SimulateResponse_State{
+			Probability: s.Probability(),
+			Amplitude: &quasarv1.SimulateResponse_Amplitude{
+				Real: real(s.Amplitude()),
+				Imag: imag(s.Amplitude()),
+			},
+			Int: []uint64{
+				uint64(s.Int()),
+			},
+			BinaryString: []string{
+				s.BinaryString(),
+			},
+		}
+	}
+
+	return connect.NewResponse(&quasarv1.SimulateResponse{
+		State: state,
+	}), nil
 }
 
 func defaultValue[T any](v *T, w T) T {

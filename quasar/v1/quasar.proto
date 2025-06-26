@@ -25,7 +25,7 @@ message FactorizeResponse {
 }
 
 message SimulateRequest {
-  string qasm = 1;
+  string code = 1;
 }
 
 message SimulateResponse {
@@ -38,7 +38,7 @@ message SimulateResponse {
     Amplitude amplitude = 1;
     double probability = 2;
     repeated uint64 int = 3;
-    repeated string bin = 4;
+    repeated string binary_string = 4;
   }
 
   repeated State state = 1;

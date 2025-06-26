@@ -7,6 +7,7 @@ toolchain go1.23.4
 require (
 	cloud.google.com/go/profiler v0.4.3
 	connectrpc.com/connect v1.18.1
+	github.com/antlr4-go/antlr v0.0.0-20230518091524-98b52378c522
 	github.com/antlr4-go/antlr/v4 v4.13.1
 	github.com/cucumber/godog v0.15.0
 	github.com/gin-gonic/gin v1.10.1

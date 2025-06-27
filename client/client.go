@@ -1,119 +1,77 @@
 package client
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
 	"fmt"
-	"io"
-	"mime/multipart"
 	"net/http"
-	"net/url"
-	"strings"
+
+	"connectrpc.com/connect"
+	quasarv1 "github.com/itsubaki/quasar/gen/quasar/v1"
+	"github.com/itsubaki/quasar/gen/quasar/v1/quasarv1connect"
 )
 
 type Client struct {
-	TargetURL  string
-	HTTPClient *http.Client
+	quasarClient quasarv1connect.QuasarServiceClient
 }
 
 func New(targetURL string, client *http.Client) *Client {
 	return &Client{
-		TargetURL:  targetURL,
-		HTTPClient: client,
+		quasarClient: quasarv1connect.NewQuasarServiceClient(
+			client,
+			targetURL,
+		),
 	}
-}
-
-func (c *Client) do(req *http.Request) ([]byte, error) {
-	resp, err := c.HTTPClient.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("http get: %w", err)
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("status code=%v", resp.StatusCode)
-	}
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, fmt.Errorf("read body: %w", err)
-	}
-
-	return body, nil
 }
 
 func (c *Client) Factorize(ctx context.Context, N, t, a int, seed uint64) (*FactorizeResponse, error) {
-	// new request
-	reqURL, err := url.JoinPath(c.TargetURL, "factorize", fmt.Sprintf("%d", N))
+	resp, err := c.quasarClient.Factorize(ctx, connect.NewRequest(&quasarv1.FactorizeRequest{
+		N:    uint64(N),
+		A:    ptr(uint64(a)),
+		T:    ptr(uint64(t)),
+		Seed: ptr(seed),
+	}))
 	if err != nil {
-		return nil, fmt.Errorf("join path: %w", err)
+		return nil, fmt.Errorf("factorize: %w", err)
 	}
 
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, reqURL, nil)
-	if err != nil {
-		return nil, fmt.Errorf("new request: %w", err)
-	}
-
-	// add query parameters
-	query := req.URL.Query()
-	query.Add("t", fmt.Sprintf("%d", t))
-	query.Add("a", fmt.Sprintf("%d", a))
-	query.Add("seed", fmt.Sprintf("%d", seed))
-	req.URL.RawQuery = query.Encode()
-
-	// do
-	body, err := c.do(req)
-	if err != nil {
-		return nil, fmt.Errorf("do request: %w", err)
-	}
-
-	// unmarshal
-	var res FactorizeResponse
-	if err := json.Unmarshal(body, &res); err != nil {
-		return nil, fmt.Errorf("unmarshal: %w", err)
-	}
-
-	return &res, nil
+	return &FactorizeResponse{
+		N:       resp.Msg.N,
+		T:       resp.Msg.T,
+		A:       resp.Msg.A,
+		Seed:    resp.Msg.Seed,
+		M:       resp.Msg.M,
+		SR:      resp.Msg.Sr,
+		P:       resp.Msg.P,
+		Q:       resp.Msg.Q,
+		Message: resp.Msg.Message,
+	}, nil
 }
 
-func (c *Client) Run(ctx context.Context, content string) (*RunResponse, error) {
-	// body
-	var buf bytes.Buffer
-
-	// create form file
-	writer := multipart.NewWriter(&buf)
-	part, err := writer.CreateFormFile("file", "request.qasm")
+func (c *Client) Simulate(ctx context.Context, code string) (*RunResponse, error) {
+	resp, err := c.quasarClient.Simulate(ctx, connect.NewRequest(&quasarv1.SimulateRequest{
+		Code: code,
+	}))
 	if err != nil {
-		return nil, fmt.Errorf("create form file: %w", err)
+		return nil, fmt.Errorf("simulate: %w", err)
 	}
 
-	if _, err = io.Copy(part, strings.NewReader(content)); err != nil {
-		return nil, fmt.Errorf("copy: %w", err)
+	state := make([]State, len(resp.Msg.State))
+	for i, s := range resp.Msg.State {
+		state[i] = State{
+			Probability: s.Probability,
+			Amplitude: Amplitude{
+				Real: s.Amplitude.Real,
+				Imag: s.Amplitude.Imag,
+			},
+			Int:          s.Int,
+			BinaryString: s.BinaryString,
+		}
 	}
 
-	if err := writer.Close(); err != nil {
-		return nil, fmt.Errorf("close writer: %w", err)
-	}
+	return &RunResponse{State: state}, nil
 
-	// new request
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, c.TargetURL, &buf)
-	if err != nil {
-		return nil, fmt.Errorf("new request: %w", err)
-	}
-	req.Header.Set("Content-Type", writer.FormDataContentType())
+}
 
-	// do
-	body, err := c.do(req)
-	if err != nil {
-		return nil, fmt.Errorf("do request: %w", err)
-	}
-
-	// unmarshal
-	var res RunResponse
-	if err := json.Unmarshal(body, &res); err != nil {
-		return nil, fmt.Errorf("unmarshal: %w", err)
-	}
-
-	return &res, nil
+func ptr[T any](v T) *T {
+	return &v
 }

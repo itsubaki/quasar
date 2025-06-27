@@ -20,22 +20,11 @@ $ gcloud run deploy --image ${IMAGE} --set-env-vars=PROJECT_ID=${PROJECT_ID} qua
 ## Examples
 
 ```shell
-$ cat testdata/bell.qasm
-OPENQASM 3.0;
-
-gate h q { U(pi/2.0, 0, pi) q; }
-gate x q { U(pi, 0, pi) q; }
-gate cx c, t { ctrl @ U(pi, 0, pi) c, t; }
-
-qubit[2] q;
-reset q;
-
-h q[0];
-cx q[0], q[1];
-```
-
-```shell
-$ curl -s $(gcloud run services describe quasar --format 'value(status.url)') -X POST -F file=@testdata/bell.qasm | jq .
+$ curl -s \
+    $(gcloud run services describe ${SERVICE_NAME} --project ${PROJECT_ID} --format 'value(status.url)')/quasar.v1.QuasarService/Simulate 
+    -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
+    -H "Content-Type: application/json" \
+    -d '{"code": "OPENQASM 3.0; gate h q { U(pi/2.0, 0, pi) q; } gate x q { U(pi, 0, pi) q; } gate cx c, t { ctrl @ U(pi, 0, pi) c, t; } qubit[2] q; reset q; h q[0]; cx q[0], q[1];"}' | jq .
 {
   "state": [
     {
@@ -69,14 +58,18 @@ $ curl -s $(gcloud run services describe quasar --format 'value(status.url)') -X
 ```
 
 ```shell
-$ curl -s -H $(gcloud run services describe quasar --format 'value(status.url)')/factorize/15 | jq .
+$ curl -s \
+    $(gcloud run services describe ${SERVICE_NAME} --project ${PROJECT_ID} --format 'value(status.url)')/quasar.v1.QuasarService/Factorize
+    -H "Authorization: Bearer $(shell gcloud auth print-identity-token)" \
+    -H "Content-Type: application/json" \
+    -d '{"n": 15}' | jq .
 {
-  "N": 15,
+  "n": 15,
   "a": 13,
   "m": "0.010",
   "p": 3,
   "q": 5,
-  "s/r": "1/4",
+  "sr": "1/4",
   "seed": -1,
   "t": 3
 }

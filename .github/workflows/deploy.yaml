@@ -49,6 +49,8 @@ jobs:
         env:
           PROJECT_ID: ${{ secrets.PROJECT_ID }}
         run: |
+          make install
+          make gen
           make test
 
       - name: Unit Tests
@@ -91,6 +93,8 @@ jobs:
         env:
           PROJECT_ID: ${{ secrets.PROJECT_ID }}
         run: |
+          make install
+          make gen
           make build
 
       - name: Deploy to Google Cloud Run

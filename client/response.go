@@ -2,19 +2,19 @@ package client
 
 type FactorizeResponse struct {
 	// parameters
-	N    int    `json:"N,omitempty"`
-	T    int    `json:"t,omitempty"`
-	A    int    `json:"a,omitempty"`
+	N    uint64 `json:"N,omitempty"`
+	T    uint64 `json:"t,omitempty"`
+	A    uint64 `json:"a,omitempty"`
 	Seed uint64 `json:"seed,omitempty"`
 
 	// results
-	P  int    `json:"p,omitempty"`
-	Q  int    `json:"q,omitempty"`
+	P  uint64 `json:"p,omitempty"`
+	Q  uint64 `json:"q,omitempty"`
 	M  string `json:"m,omitempty"`
 	SR string `json:"s/r,omitempty"`
 
 	// message
-	Message string `json:"message,omitempty"`
+	Message *string `json:"message,omitempty"`
 }
 
 type RunResponse struct {
@@ -24,7 +24,7 @@ type RunResponse struct {
 type State struct {
 	Amplitude    Amplitude `json:"amplitude"`
 	Probability  float64   `json:"probability"`
-	Int          []int64   `json:"int"`
+	Int          []uint64  `json:"int"`
 	BinaryString []string  `json:"binary_string"`
 }
 

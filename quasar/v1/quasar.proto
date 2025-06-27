@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+package quasar.v1;
+
+option go_package = "github.com/itsubaki/quasar/gen/quasar/v1;quasarv1";
+
+message FactorizeRequest {
+    uint64 n = 1;
+    optional uint64 a = 2;
+    optional uint64 t = 3;
+    optional uint64 seed = 4;
+}
+
+message FactorizeResponse {
+    uint64 n = 1;
+    uint64 a = 2;
+    uint64 t = 3;
+    uint64 seed = 4;
+    string m = 5;
+    string sr = 6; // s/r
+    uint64 p = 8;
+    uint64 q = 9;
+    optional string message = 10;
+}
+
+message SimulateRequest {
+  string code = 1;
+}
+
+message SimulateResponse {
+  message Amplitude {
+    double real = 1;
+    double imag = 2;
+  }
+
+  message State {
+    Amplitude amplitude = 1;
+    double probability = 2;
+    repeated uint64 int = 3;
+    repeated string binary_string = 4;
+  }
+
+  repeated State state = 1;
+}
+
+service QuasarService {
+  rpc Factorize(FactorizeRequest) returns (FactorizeResponse) {};
+  rpc Simulate(SimulateRequest) returns (SimulateResponse) {};
+}

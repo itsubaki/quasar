@@ -3,18 +3,28 @@ Feature:
     As an API User
 
     Scenario: should factorize 15
-        When I send "GET" request to "/factorize/15?a=7&seed=1"
+        Given I set "content-type" header with "application/json"
+        Given I set request body:
+            """
+            {
+                "n": "15",
+                "a": "7",
+                "t": "3",
+                "seed": "1"
+            }
+            """
+        When I send "POST" request to "/quasar.v1.QuasarService/Factorize"
         Then the response code should be 200
         Then the response should match json:
             """
             {
-                "N": 15,
-                "a": 7,
+                "n": "15",
+                "a": "7",
+                "t": "3",
+                "seed": "1",
                 "m": "0.010",
-                "p": 3,
-                "q": 5,
-                "s/r": "1/4",
-                "seed": 1,
-                "t": 3
+                "sr": "1/4",
+                "p": "3",
+                "q": "5"
             }
             """

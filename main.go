@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"log/slog"
 	"net/http"
 	"os"
 	"os/signal"
@@ -12,36 +13,22 @@ import (
 	"time"
 
 	"cloud.google.com/go/profiler"
-	"github.com/itsubaki/logger"
 	"github.com/itsubaki/quasar/handler"
-	"github.com/itsubaki/tracer"
 )
 
 var (
 	projectID   = os.Getenv("PROJECT_ID")
 	serviceName = os.Getenv("K_SERVICE")  // https://cloud.google.com/run/docs/container-contract?hl=ja#services-env-vars
 	revision    = os.Getenv("K_REVISION") // https://cloud.google.com/run/docs/container-contract?hl=ja#services-env-vars
-	pprof       = os.Getenv("USE_PPROF")
 	cprof       = os.Getenv("USE_CPROF")
 	port        = os.Getenv("PORT")
 	timeout     = 5 * time.Second
 )
 
 func main() {
-	log.SetFlags(log.LstdFlags | log.Lshortfile)
-
-	// tracer, logger
-	close := []func() error{
-		logger.MustSetup(projectID, serviceName, revision),
-		tracer.MustSetup(projectID, serviceName, revision, timeout),
-	}
-	defer func() {
-		for _, c := range close {
-			if err := c(); err != nil {
-				log.Printf("defer: %v", err)
-			}
-		}
-	}()
+	slog.SetDefault(slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
+		Level: slog.LevelDebug,
+	})))
 
 	// profiler
 	if strings.ToLower(cprof) == "true" {
@@ -50,28 +37,29 @@ func main() {
 			Service:        serviceName,
 			ServiceVersion: revision,
 		}); err != nil {
-			log.Fatalf("profiler: %v", err)
+			log.Fatalf("start profiler: %v", err)
 		}
 	}
 
 	// handler
-	if port == "" {
-		port = "8080"
+	h, err := handler.New()
+	if err != nil {
+		log.Fatalf("new handler: %v", err)
 	}
 
-	h := handler.New()
-	if strings.ToLower(pprof) == "true" {
-		// profiler
-		handler.UsePProf(h)
+	// server
+	addr := ":8080"
+	if port != "" {
+		addr = fmt.Sprintf(":%s", port)
 	}
 
 	s := &http.Server{
-		Addr:    fmt.Sprintf(":%s", port),
+		Addr:    addr,
 		Handler: h,
 	}
 
 	go func() {
-		log.Printf("http server listen and serve. port: %v\n", port)
+		log.Printf("http server listen and serve. addr=%v\n", addr)
 		if err := s.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			log.Fatalf("listen: %v", err)
 		}

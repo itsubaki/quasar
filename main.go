@@ -26,7 +26,9 @@ var (
 )
 
 func main() {
-	slog.SetDefault(slog.New(slog.NewJSONHandler(os.Stdout, nil)))
+	slog.SetDefault(slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
+		Level: slog.LevelDebug,
+	})))
 
 	// profiler
 	if strings.ToLower(cprof) == "true" {

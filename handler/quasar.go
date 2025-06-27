@@ -103,7 +103,7 @@ func (s *QuasarService) Factorize(
 			N:    uint64(N),
 			A:    uint64(a),
 			T:    uint64(t),
-			Seed: uint64(seed),
+			Seed: seed,
 			M:    m,
 			Sr:   fmt.Sprintf("%v/%v", ss, r),
 		}), nil
@@ -116,7 +116,7 @@ func (s *QuasarService) Factorize(
 			N:    uint64(N),
 			A:    uint64(a),
 			T:    uint64(t),
-			Seed: uint64(seed),
+			Seed: seed,
 			M:    m,
 			Sr:   fmt.Sprintf("%v/%v", ss, r),
 		}), nil
@@ -126,7 +126,7 @@ func (s *QuasarService) Factorize(
 		N:    uint64(N),
 		A:    uint64(a),
 		T:    uint64(t),
-		Seed: uint64(seed),
+		Seed: seed,
 		M:    m,
 		Sr:   fmt.Sprintf("%v/%v", ss, r),
 		P:    uint64(p0),
@@ -140,13 +140,12 @@ func (s *QuasarService) Simulate(
 ) (*connect.Response[quasarv1.SimulateResponse], error) {
 	lexer := parser.Newqasm3Lexer(antlr.NewInputStream(req.Msg.Code))
 	p := parser.Newqasm3Parser(antlr.NewCommonTokenStream(lexer, antlr.TokenDefaultChannel))
-	tree := p.Program()
 
 	qsim := q.New()
 	env := visitor.NewEnviron()
 
 	v := visitor.New(qsim, env)
-	if err := v.Run(tree); err != nil {
+	if err := v.Run(p.Program()); err != nil {
 		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("visitor run: %w", err))
 	}
 

@@ -37,7 +37,7 @@ func main() {
 			Service:        serviceName,
 			ServiceVersion: revision,
 		}); err != nil {
-			log.Fatalf("profiler: %v", err)
+			log.Fatalf("start profiler: %v", err)
 		}
 	}
 

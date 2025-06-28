@@ -16,17 +16,16 @@ var (
 )
 
 func main() {
-	var N, t, a int
-	var seed uint64
-	flag.IntVar(&N, "N", 15, "positive integer")
-	flag.IntVar(&t, "t", 3, "precision bits")
-	flag.IntVar(&a, "a", -1, "coprime number of N")
+	var N, t, a, seed uint64
+	flag.Uint64Var(&N, "N", 15, "positive integer")
+	flag.Uint64Var(&t, "t", 3, "precision bits")
+	flag.Uint64Var(&a, "a", 0, "coprime number of N")
 	flag.Uint64Var(&seed, "seed", 0, "PRNG seed for measurements")
 	flag.Parse()
 
 	resp, err := client.
 		New(TargetURL, client.NewWithIdentityToken(IdentityToken)).
-		Factorize(context.Background(), N, t, a, seed)
+		Factorize(context.Background(), N, &t, &a, &seed)
 	if err != nil {
 		panic(err)
 	}

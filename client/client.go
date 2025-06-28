@@ -23,12 +23,12 @@ func New(targetURL string, client *http.Client) *Client {
 	}
 }
 
-func (c *Client) Factorize(ctx context.Context, N, t, a int, seed uint64) (*FactorizeResponse, error) {
+func (c *Client) Factorize(ctx context.Context, N uint64, t, a, seed *uint64) (*FactorizeResponse, error) {
 	resp, err := c.quasarClient.Factorize(ctx, connect.NewRequest(&quasarv1.FactorizeRequest{
-		N:    uint64(N),
-		A:    ptr(uint64(a)),
-		T:    ptr(uint64(t)),
-		Seed: ptr(seed),
+		N:    N,
+		A:    a,
+		T:    t,
+		Seed: seed,
 	}))
 	if err != nil {
 		return nil, fmt.Errorf("factorize: %w", err)
@@ -70,8 +70,4 @@ func (c *Client) Simulate(ctx context.Context, code string) (*RunResponse, error
 
 	return &RunResponse{State: state}, nil
 
-}
-
-func ptr[T any](v T) *T {
-	return &v
 }

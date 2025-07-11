@@ -105,7 +105,8 @@ func (s *QuasarService) Factorize(
 			T:    uint64(t),
 			Seed: seed,
 			M:    m,
-			Sr:   fmt.Sprintf("%v/%v", ss, r),
+			S:    uint64(ss),
+			R:    uint64(r),
 		}), nil
 	}
 
@@ -118,7 +119,8 @@ func (s *QuasarService) Factorize(
 			T:    uint64(t),
 			Seed: seed,
 			M:    m,
-			Sr:   fmt.Sprintf("%v/%v", ss, r),
+			S:    uint64(ss),
+			R:    uint64(r),
 		}), nil
 	}
 
@@ -128,7 +130,8 @@ func (s *QuasarService) Factorize(
 		T:    uint64(t),
 		Seed: seed,
 		M:    m,
-		Sr:   fmt.Sprintf("%v/%v", ss, r),
+		S:    uint64(ss),
+		R:    uint64(r),
 		P:    uint64(p0),
 		Q:    uint64(p1),
 	}), nil
@@ -149,13 +152,13 @@ func (s *QuasarService) Simulate(
 		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("visitor run: %w", err))
 	}
 
-	var qb []q.Qubit
-	for _, q := range env.Qubit {
-		qb = append(qb, q...)
+	// quantum state
+	var index [][]int
+	for _, qb := range env.Qubit {
+		index = append(index, q.Index(qb...))
 	}
 
-	// quantum state index
-	qstate := qsim.Underlying().State(q.Index(qb...))
+	qstate := qsim.Underlying().State(index...)
 
 	// quantum state for json encoding
 	state := make([]*quasarv1.SimulateResponse_State, len(qstate))

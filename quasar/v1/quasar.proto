@@ -17,7 +17,8 @@ message FactorizeResponse {
     uint64 t = 3;
     uint64 seed = 4;
     string m = 5;
-    string sr = 6; // s/r
+    uint64 s = 6;
+    uint64 r = 7;
     uint64 p = 8;
     uint64 q = 9;
     optional string message = 10;

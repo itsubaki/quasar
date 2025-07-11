@@ -96,7 +96,8 @@ type FactorizeResponse struct {
 	T             uint64                 `protobuf:"varint,3,opt,name=t,proto3" json:"t,omitempty"`
 	Seed          uint64                 `protobuf:"varint,4,opt,name=seed,proto3" json:"seed,omitempty"`
 	M             string                 `protobuf:"bytes,5,opt,name=m,proto3" json:"m,omitempty"`
-	Sr            string                 `protobuf:"bytes,6,opt,name=sr,proto3" json:"sr,omitempty"` // s/r
+	S             uint64                 `protobuf:"varint,6,opt,name=s,proto3" json:"s,omitempty"`
+	R             uint64                 `protobuf:"varint,7,opt,name=r,proto3" json:"r,omitempty"`
 	P             uint64                 `protobuf:"varint,8,opt,name=p,proto3" json:"p,omitempty"`
 	Q             uint64                 `protobuf:"varint,9,opt,name=q,proto3" json:"q,omitempty"`
 	Message       *string                `protobuf:"bytes,10,opt,name=message,proto3,oneof" json:"message,omitempty"`
@@ -169,11 +170,18 @@ func (x *FactorizeResponse) GetM() string {
 	return ""
 }
 
-func (x *FactorizeResponse) GetSr() string {
+func (x *FactorizeResponse) GetS() uint64 {
 	if x != nil {
-		return x.Sr
+		return x.S
 	}
-	return ""
+	return 0
+}
+
+func (x *FactorizeResponse) GetR() uint64 {
+	if x != nil {
+		return x.R
+	}
+	return 0
 }
 
 func (x *FactorizeResponse) GetP() uint64 {
@@ -417,14 +425,15 @@ const file_quasar_v1_quasar_proto_rawDesc = "" +
 	"\x04seed\x18\x04 \x01(\x04H\x02R\x04seed\x88\x01\x01B\x04\n" +
 	"\x02_aB\x04\n" +
 	"\x02_tB\a\n" +
-	"\x05_seed\"\xb6\x01\n" +
+	"\x05_seed\"\xc2\x01\n" +
 	"\x11FactorizeResponse\x12\f\n" +
 	"\x01n\x18\x01 \x01(\x04R\x01n\x12\f\n" +
 	"\x01a\x18\x02 \x01(\x04R\x01a\x12\f\n" +
 	"\x01t\x18\x03 \x01(\x04R\x01t\x12\x12\n" +
 	"\x04seed\x18\x04 \x01(\x04R\x04seed\x12\f\n" +
-	"\x01m\x18\x05 \x01(\tR\x01m\x12\x0e\n" +
-	"\x02sr\x18\x06 \x01(\tR\x02sr\x12\f\n" +
+	"\x01m\x18\x05 \x01(\tR\x01m\x12\f\n" +
+	"\x01s\x18\x06 \x01(\x04R\x01s\x12\f\n" +
+	"\x01r\x18\a \x01(\x04R\x01r\x12\f\n" +
 	"\x01p\x18\b \x01(\x04R\x01p\x12\f\n" +
 	"\x01q\x18\t \x01(\x04R\x01q\x12\x1d\n" +
 	"\amessage\x18\n" +

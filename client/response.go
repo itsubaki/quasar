@@ -8,10 +8,11 @@ type FactorizeResponse struct {
 	Seed uint64 `json:"seed,omitempty"`
 
 	// results
-	P  uint64 `json:"p,omitempty"`
-	Q  uint64 `json:"q,omitempty"`
-	M  string `json:"m,omitempty"`
-	SR string `json:"s/r,omitempty"`
+	P uint64 `json:"p,omitempty"`
+	Q uint64 `json:"q,omitempty"`
+	M string `json:"m,omitempty"`
+	S uint64 `json:"s,omitempty"`
+	R uint64 `json:"r,omitempty"`
 
 	// message
 	Message *string `json:"message,omitempty"`

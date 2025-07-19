@@ -8,6 +8,7 @@ IMAGE := ${LOCATION}-docker.pkg.dev/${PROJECT_ID}/${SERVICE_NAME}/app
 TAG := latest
 
 update:
+	GOPROXY=direct go get github.com/itsubaki/qasm@HEAD
 	go get -u
 	go mod tidy
 
@@ -69,7 +70,7 @@ factorize:
 		-d '{"n": 15}' \
 		$(shell gcloud run services describe ${SERVICE_NAME} --project ${PROJECT_ID} --format 'value(status.url)')/quasar.v1.QuasarService/Factorize | jq .
 
-qasm:
+bell:
 	@curl -s \
 		-H "Authorization: Bearer $(shell gcloud auth print-identity-token)" \
 		-H "Content-Type: application/json" \

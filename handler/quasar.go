@@ -13,6 +13,7 @@ import (
 	"github.com/itsubaki/q/quantum/qubit"
 	"github.com/itsubaki/qasm/gen/parser"
 	"github.com/itsubaki/qasm/visitor"
+	"github.com/itsubaki/quasar/gate"
 	quasarv1 "github.com/itsubaki/quasar/gen/quasar/v1"
 )
 
@@ -81,7 +82,7 @@ func (s *QuasarService) Factorize(
 
 		qsim.X(r1[len(r1)-1])
 		qsim.H(r0...)
-		qsim.CModExp2(a, N, r0, r1)
+		gate.CModExp2(qsim, a, N, r0, r1)
 		qsim.InvQFT(r0...)
 		qsim.Measure()
 

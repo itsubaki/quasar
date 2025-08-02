@@ -9,8 +9,8 @@ require (
 	connectrpc.com/connect v1.18.1
 	github.com/antlr4-go/antlr/v4 v4.13.1
 	github.com/cucumber/godog v0.15.0
-	github.com/itsubaki/q v0.0.8-0.20250730120959-a286e9828dc5
-	github.com/itsubaki/qasm v0.1.4-0.20250730121409-6a917cf282f8
+	github.com/itsubaki/q v0.0.8-0.20250731125408-5f3a12c3796a
+	github.com/itsubaki/qasm v0.1.4-0.20250802042205-41e65efe8df0
 	github.com/jfilipczyk/gomatch v1.2.1
 	golang.org/x/net v0.42.0
 	google.golang.org/protobuf v1.36.6
@@ -51,7 +51,7 @@ require (
 	golang.org/x/sys v0.34.0 // indirect
 	golang.org/x/text v0.27.0 // indirect
 	golang.org/x/time v0.12.0 // indirect
-	google.golang.org/api v0.243.0 // indirect
+	google.golang.org/api v0.244.0 // indirect
 	google.golang.org/genproto v0.0.0-20250728155136-f173205681a0 // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20250728155136-f173205681a0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250728155136-f173205681a0 // indirect

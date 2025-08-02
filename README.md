@@ -4,7 +4,7 @@
 
 # quasar
 
-Quantum Computation Simulator as a Service
+- Quantum computation simulator as a Service
 
 ## Deploying to Cloud Run
 
@@ -32,10 +32,10 @@ curl -s \
   "state": [
     {
       "amplitude": {
-        "real": 0.7071067811865476,
+        "real": 0.7071,
         "imag": 0
       },
-      "probability": 0.5000000000000001,
+      "probability": 0.5,
       "int": [
         0
       ],
@@ -45,10 +45,10 @@ curl -s \
     },
     {
       "amplitude": {
-        "real": 0.7071067811865475,
+        "real": 0.7071,
         "imag": 0
       },
-      "probability": 0.4999999999999999,
+      "probability": 0.5,
       "int": [
         3
       ],

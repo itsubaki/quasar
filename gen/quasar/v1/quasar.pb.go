@@ -21,190 +21,6 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type FactorizeRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	N             uint64                 `protobuf:"varint,1,opt,name=n,proto3" json:"n,omitempty"`
-	A             *uint64                `protobuf:"varint,2,opt,name=a,proto3,oneof" json:"a,omitempty"`
-	T             *uint64                `protobuf:"varint,3,opt,name=t,proto3,oneof" json:"t,omitempty"`
-	Seed          *uint64                `protobuf:"varint,4,opt,name=seed,proto3,oneof" json:"seed,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *FactorizeRequest) Reset() {
-	*x = FactorizeRequest{}
-	mi := &file_quasar_v1_quasar_proto_msgTypes[0]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *FactorizeRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*FactorizeRequest) ProtoMessage() {}
-
-func (x *FactorizeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_quasar_v1_quasar_proto_msgTypes[0]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use FactorizeRequest.ProtoReflect.Descriptor instead.
-func (*FactorizeRequest) Descriptor() ([]byte, []int) {
-	return file_quasar_v1_quasar_proto_rawDescGZIP(), []int{0}
-}
-
-func (x *FactorizeRequest) GetN() uint64 {
-	if x != nil {
-		return x.N
-	}
-	return 0
-}
-
-func (x *FactorizeRequest) GetA() uint64 {
-	if x != nil && x.A != nil {
-		return *x.A
-	}
-	return 0
-}
-
-func (x *FactorizeRequest) GetT() uint64 {
-	if x != nil && x.T != nil {
-		return *x.T
-	}
-	return 0
-}
-
-func (x *FactorizeRequest) GetSeed() uint64 {
-	if x != nil && x.Seed != nil {
-		return *x.Seed
-	}
-	return 0
-}
-
-type FactorizeResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	N             uint64                 `protobuf:"varint,1,opt,name=n,proto3" json:"n,omitempty"`
-	A             uint64                 `protobuf:"varint,2,opt,name=a,proto3" json:"a,omitempty"`
-	T             uint64                 `protobuf:"varint,3,opt,name=t,proto3" json:"t,omitempty"`
-	Seed          uint64                 `protobuf:"varint,4,opt,name=seed,proto3" json:"seed,omitempty"`
-	M             string                 `protobuf:"bytes,5,opt,name=m,proto3" json:"m,omitempty"`
-	S             uint64                 `protobuf:"varint,6,opt,name=s,proto3" json:"s,omitempty"`
-	R             uint64                 `protobuf:"varint,7,opt,name=r,proto3" json:"r,omitempty"`
-	P             uint64                 `protobuf:"varint,8,opt,name=p,proto3" json:"p,omitempty"`
-	Q             uint64                 `protobuf:"varint,9,opt,name=q,proto3" json:"q,omitempty"`
-	Message       *string                `protobuf:"bytes,10,opt,name=message,proto3,oneof" json:"message,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *FactorizeResponse) Reset() {
-	*x = FactorizeResponse{}
-	mi := &file_quasar_v1_quasar_proto_msgTypes[1]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *FactorizeResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*FactorizeResponse) ProtoMessage() {}
-
-func (x *FactorizeResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_quasar_v1_quasar_proto_msgTypes[1]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use FactorizeResponse.ProtoReflect.Descriptor instead.
-func (*FactorizeResponse) Descriptor() ([]byte, []int) {
-	return file_quasar_v1_quasar_proto_rawDescGZIP(), []int{1}
-}
-
-func (x *FactorizeResponse) GetN() uint64 {
-	if x != nil {
-		return x.N
-	}
-	return 0
-}
-
-func (x *FactorizeResponse) GetA() uint64 {
-	if x != nil {
-		return x.A
-	}
-	return 0
-}
-
-func (x *FactorizeResponse) GetT() uint64 {
-	if x != nil {
-		return x.T
-	}
-	return 0
-}
-
-func (x *FactorizeResponse) GetSeed() uint64 {
-	if x != nil {
-		return x.Seed
-	}
-	return 0
-}
-
-func (x *FactorizeResponse) GetM() string {
-	if x != nil {
-		return x.M
-	}
-	return ""
-}
-
-func (x *FactorizeResponse) GetS() uint64 {
-	if x != nil {
-		return x.S
-	}
-	return 0
-}
-
-func (x *FactorizeResponse) GetR() uint64 {
-	if x != nil {
-		return x.R
-	}
-	return 0
-}
-
-func (x *FactorizeResponse) GetP() uint64 {
-	if x != nil {
-		return x.P
-	}
-	return 0
-}
-
-func (x *FactorizeResponse) GetQ() uint64 {
-	if x != nil {
-		return x.Q
-	}
-	return 0
-}
-
-func (x *FactorizeResponse) GetMessage() string {
-	if x != nil && x.Message != nil {
-		return *x.Message
-	}
-	return ""
-}
-
 type SimulateRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Code          string                 `protobuf:"bytes,1,opt,name=code,proto3" json:"code,omitempty"`
@@ -214,7 +30,7 @@ type SimulateRequest struct {
 
 func (x *SimulateRequest) Reset() {
 	*x = SimulateRequest{}
-	mi := &file_quasar_v1_quasar_proto_msgTypes[2]
+	mi := &file_quasar_v1_quasar_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -226,7 +42,7 @@ func (x *SimulateRequest) String() string {
 func (*SimulateRequest) ProtoMessage() {}
 
 func (x *SimulateRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_quasar_v1_quasar_proto_msgTypes[2]
+	mi := &file_quasar_v1_quasar_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -239,7 +55,7 @@ func (x *SimulateRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SimulateRequest.ProtoReflect.Descriptor instead.
 func (*SimulateRequest) Descriptor() ([]byte, []int) {
-	return file_quasar_v1_quasar_proto_rawDescGZIP(), []int{2}
+	return file_quasar_v1_quasar_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *SimulateRequest) GetCode() string {
@@ -258,7 +74,7 @@ type SimulateResponse struct {
 
 func (x *SimulateResponse) Reset() {
 	*x = SimulateResponse{}
-	mi := &file_quasar_v1_quasar_proto_msgTypes[3]
+	mi := &file_quasar_v1_quasar_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -270,7 +86,7 @@ func (x *SimulateResponse) String() string {
 func (*SimulateResponse) ProtoMessage() {}
 
 func (x *SimulateResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_quasar_v1_quasar_proto_msgTypes[3]
+	mi := &file_quasar_v1_quasar_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -283,7 +99,7 @@ func (x *SimulateResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SimulateResponse.ProtoReflect.Descriptor instead.
 func (*SimulateResponse) Descriptor() ([]byte, []int) {
-	return file_quasar_v1_quasar_proto_rawDescGZIP(), []int{3}
+	return file_quasar_v1_quasar_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *SimulateResponse) GetState() []*SimulateResponse_State {
@@ -303,7 +119,7 @@ type SimulateResponse_Amplitude struct {
 
 func (x *SimulateResponse_Amplitude) Reset() {
 	*x = SimulateResponse_Amplitude{}
-	mi := &file_quasar_v1_quasar_proto_msgTypes[4]
+	mi := &file_quasar_v1_quasar_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -315,7 +131,7 @@ func (x *SimulateResponse_Amplitude) String() string {
 func (*SimulateResponse_Amplitude) ProtoMessage() {}
 
 func (x *SimulateResponse_Amplitude) ProtoReflect() protoreflect.Message {
-	mi := &file_quasar_v1_quasar_proto_msgTypes[4]
+	mi := &file_quasar_v1_quasar_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -328,7 +144,7 @@ func (x *SimulateResponse_Amplitude) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SimulateResponse_Amplitude.ProtoReflect.Descriptor instead.
 func (*SimulateResponse_Amplitude) Descriptor() ([]byte, []int) {
-	return file_quasar_v1_quasar_proto_rawDescGZIP(), []int{3, 0}
+	return file_quasar_v1_quasar_proto_rawDescGZIP(), []int{1, 0}
 }
 
 func (x *SimulateResponse_Amplitude) GetReal() float64 {
@@ -357,7 +173,7 @@ type SimulateResponse_State struct {
 
 func (x *SimulateResponse_State) Reset() {
 	*x = SimulateResponse_State{}
-	mi := &file_quasar_v1_quasar_proto_msgTypes[5]
+	mi := &file_quasar_v1_quasar_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -369,7 +185,7 @@ func (x *SimulateResponse_State) String() string {
 func (*SimulateResponse_State) ProtoMessage() {}
 
 func (x *SimulateResponse_State) ProtoReflect() protoreflect.Message {
-	mi := &file_quasar_v1_quasar_proto_msgTypes[5]
+	mi := &file_quasar_v1_quasar_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -382,7 +198,7 @@ func (x *SimulateResponse_State) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SimulateResponse_State.ProtoReflect.Descriptor instead.
 func (*SimulateResponse_State) Descriptor() ([]byte, []int) {
-	return file_quasar_v1_quasar_proto_rawDescGZIP(), []int{3, 1}
+	return file_quasar_v1_quasar_proto_rawDescGZIP(), []int{1, 1}
 }
 
 func (x *SimulateResponse_State) GetAmplitude() *SimulateResponse_Amplitude {
@@ -417,29 +233,7 @@ var File_quasar_v1_quasar_proto protoreflect.FileDescriptor
 
 const file_quasar_v1_quasar_proto_rawDesc = "" +
 	"\n" +
-	"\x16quasar/v1/quasar.proto\x12\tquasar.v1\"t\n" +
-	"\x10FactorizeRequest\x12\f\n" +
-	"\x01n\x18\x01 \x01(\x04R\x01n\x12\x11\n" +
-	"\x01a\x18\x02 \x01(\x04H\x00R\x01a\x88\x01\x01\x12\x11\n" +
-	"\x01t\x18\x03 \x01(\x04H\x01R\x01t\x88\x01\x01\x12\x17\n" +
-	"\x04seed\x18\x04 \x01(\x04H\x02R\x04seed\x88\x01\x01B\x04\n" +
-	"\x02_aB\x04\n" +
-	"\x02_tB\a\n" +
-	"\x05_seed\"\xc2\x01\n" +
-	"\x11FactorizeResponse\x12\f\n" +
-	"\x01n\x18\x01 \x01(\x04R\x01n\x12\f\n" +
-	"\x01a\x18\x02 \x01(\x04R\x01a\x12\f\n" +
-	"\x01t\x18\x03 \x01(\x04R\x01t\x12\x12\n" +
-	"\x04seed\x18\x04 \x01(\x04R\x04seed\x12\f\n" +
-	"\x01m\x18\x05 \x01(\tR\x01m\x12\f\n" +
-	"\x01s\x18\x06 \x01(\x04R\x01s\x12\f\n" +
-	"\x01r\x18\a \x01(\x04R\x01r\x12\f\n" +
-	"\x01p\x18\b \x01(\x04R\x01p\x12\f\n" +
-	"\x01q\x18\t \x01(\x04R\x01q\x12\x1d\n" +
-	"\amessage\x18\n" +
-	" \x01(\tH\x00R\amessage\x88\x01\x01B\n" +
-	"\n" +
-	"\b_message\"%\n" +
+	"\x16quasar/v1/quasar.proto\x12\tquasar.v1\"%\n" +
 	"\x0fSimulateRequest\x12\x12\n" +
 	"\x04code\x18\x01 \x01(\tR\x04code\"\xa8\x02\n" +
 	"\x10SimulateResponse\x127\n" +
@@ -451,9 +245,8 @@ const file_quasar_v1_quasar_proto_rawDesc = "" +
 	"\tamplitude\x18\x01 \x01(\v2%.quasar.v1.SimulateResponse.AmplitudeR\tamplitude\x12 \n" +
 	"\vprobability\x18\x02 \x01(\x01R\vprobability\x12\x10\n" +
 	"\x03int\x18\x03 \x03(\x04R\x03int\x12#\n" +
-	"\rbinary_string\x18\x04 \x03(\tR\fbinaryString2\xa0\x01\n" +
-	"\rQuasarService\x12H\n" +
-	"\tFactorize\x12\x1b.quasar.v1.FactorizeRequest\x1a\x1c.quasar.v1.FactorizeResponse\"\x00\x12E\n" +
+	"\rbinary_string\x18\x04 \x03(\tR\fbinaryString2V\n" +
+	"\rQuasarService\x12E\n" +
 	"\bSimulate\x12\x1a.quasar.v1.SimulateRequest\x1a\x1b.quasar.v1.SimulateResponse\"\x00B3Z1github.com/itsubaki/quasar/gen/quasar/v1;quasarv1b\x06proto3"
 
 var (
@@ -468,24 +261,20 @@ func file_quasar_v1_quasar_proto_rawDescGZIP() []byte {
 	return file_quasar_v1_quasar_proto_rawDescData
 }
 
-var file_quasar_v1_quasar_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_quasar_v1_quasar_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_quasar_v1_quasar_proto_goTypes = []any{
-	(*FactorizeRequest)(nil),           // 0: quasar.v1.FactorizeRequest
-	(*FactorizeResponse)(nil),          // 1: quasar.v1.FactorizeResponse
-	(*SimulateRequest)(nil),            // 2: quasar.v1.SimulateRequest
-	(*SimulateResponse)(nil),           // 3: quasar.v1.SimulateResponse
-	(*SimulateResponse_Amplitude)(nil), // 4: quasar.v1.SimulateResponse.Amplitude
-	(*SimulateResponse_State)(nil),     // 5: quasar.v1.SimulateResponse.State
+	(*SimulateRequest)(nil),            // 0: quasar.v1.SimulateRequest
+	(*SimulateResponse)(nil),           // 1: quasar.v1.SimulateResponse
+	(*SimulateResponse_Amplitude)(nil), // 2: quasar.v1.SimulateResponse.Amplitude
+	(*SimulateResponse_State)(nil),     // 3: quasar.v1.SimulateResponse.State
 }
 var file_quasar_v1_quasar_proto_depIdxs = []int32{
-	5, // 0: quasar.v1.SimulateResponse.state:type_name -> quasar.v1.SimulateResponse.State
-	4, // 1: quasar.v1.SimulateResponse.State.amplitude:type_name -> quasar.v1.SimulateResponse.Amplitude
-	0, // 2: quasar.v1.QuasarService.Factorize:input_type -> quasar.v1.FactorizeRequest
-	2, // 3: quasar.v1.QuasarService.Simulate:input_type -> quasar.v1.SimulateRequest
-	1, // 4: quasar.v1.QuasarService.Factorize:output_type -> quasar.v1.FactorizeResponse
-	3, // 5: quasar.v1.QuasarService.Simulate:output_type -> quasar.v1.SimulateResponse
-	4, // [4:6] is the sub-list for method output_type
-	2, // [2:4] is the sub-list for method input_type
+	3, // 0: quasar.v1.SimulateResponse.state:type_name -> quasar.v1.SimulateResponse.State
+	2, // 1: quasar.v1.SimulateResponse.State.amplitude:type_name -> quasar.v1.SimulateResponse.Amplitude
+	0, // 2: quasar.v1.QuasarService.Simulate:input_type -> quasar.v1.SimulateRequest
+	1, // 3: quasar.v1.QuasarService.Simulate:output_type -> quasar.v1.SimulateResponse
+	3, // [3:4] is the sub-list for method output_type
+	2, // [2:3] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name
 	2, // [2:2] is the sub-list for extension extendee
 	0, // [0:2] is the sub-list for field type_name
@@ -496,15 +285,13 @@ func file_quasar_v1_quasar_proto_init() {
 	if File_quasar_v1_quasar_proto != nil {
 		return
 	}
-	file_quasar_v1_quasar_proto_msgTypes[0].OneofWrappers = []any{}
-	file_quasar_v1_quasar_proto_msgTypes[1].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_quasar_v1_quasar_proto_rawDesc), len(file_quasar_v1_quasar_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   6,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

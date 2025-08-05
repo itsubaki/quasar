@@ -59,24 +59,3 @@ curl -s \
   ]
 }
 ```
-
-```shell
-curl -s \
-    $(gcloud run services describe ${SERVICE_NAME} --project ${PROJECT_ID} --format 'value(status.url)')/quasar.v1.QuasarService/Factorize
-    -H "Authorization: Bearer $(shell gcloud auth print-identity-token)" \
-    -H "Content-Type: application/json" \
-    -d '{"n": 15}' | jq .
-```
-
-```json
-{
-  "n": 15,
-  "a": 13,
-  "m": "0.010",
-  "p": 3,
-  "q": 5,
-  "sr": "1/4",
-  "seed": -1,
-  "t": 3
-}
-```

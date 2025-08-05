@@ -33,15 +33,12 @@ const (
 // reflection-formatted method names, remove the leading slash and convert the remaining slash to a
 // period.
 const (
-	// QuasarServiceFactorizeProcedure is the fully-qualified name of the QuasarService's Factorize RPC.
-	QuasarServiceFactorizeProcedure = "/quasar.v1.QuasarService/Factorize"
 	// QuasarServiceSimulateProcedure is the fully-qualified name of the QuasarService's Simulate RPC.
 	QuasarServiceSimulateProcedure = "/quasar.v1.QuasarService/Simulate"
 )
 
 // QuasarServiceClient is a client for the quasar.v1.QuasarService service.
 type QuasarServiceClient interface {
-	Factorize(context.Context, *connect.Request[v1.FactorizeRequest]) (*connect.Response[v1.FactorizeResponse], error)
 	Simulate(context.Context, *connect.Request[v1.SimulateRequest]) (*connect.Response[v1.SimulateResponse], error)
 }
 
@@ -56,12 +53,6 @@ func NewQuasarServiceClient(httpClient connect.HTTPClient, baseURL string, opts 
 	baseURL = strings.TrimRight(baseURL, "/")
 	quasarServiceMethods := v1.File_quasar_v1_quasar_proto.Services().ByName("QuasarService").Methods()
 	return &quasarServiceClient{
-		factorize: connect.NewClient[v1.FactorizeRequest, v1.FactorizeResponse](
-			httpClient,
-			baseURL+QuasarServiceFactorizeProcedure,
-			connect.WithSchema(quasarServiceMethods.ByName("Factorize")),
-			connect.WithClientOptions(opts...),
-		),
 		simulate: connect.NewClient[v1.SimulateRequest, v1.SimulateResponse](
 			httpClient,
 			baseURL+QuasarServiceSimulateProcedure,
@@ -73,13 +64,7 @@ func NewQuasarServiceClient(httpClient connect.HTTPClient, baseURL string, opts 
 
 // quasarServiceClient implements QuasarServiceClient.
 type quasarServiceClient struct {
-	factorize *connect.Client[v1.FactorizeRequest, v1.FactorizeResponse]
-	simulate  *connect.Client[v1.SimulateRequest, v1.SimulateResponse]
-}
-
-// Factorize calls quasar.v1.QuasarService.Factorize.
-func (c *quasarServiceClient) Factorize(ctx context.Context, req *connect.Request[v1.FactorizeRequest]) (*connect.Response[v1.FactorizeResponse], error) {
-	return c.factorize.CallUnary(ctx, req)
+	simulate *connect.Client[v1.SimulateRequest, v1.SimulateResponse]
 }
 
 // Simulate calls quasar.v1.QuasarService.Simulate.
@@ -89,7 +74,6 @@ func (c *quasarServiceClient) Simulate(ctx context.Context, req *connect.Request
 
 // QuasarServiceHandler is an implementation of the quasar.v1.QuasarService service.
 type QuasarServiceHandler interface {
-	Factorize(context.Context, *connect.Request[v1.FactorizeRequest]) (*connect.Response[v1.FactorizeResponse], error)
 	Simulate(context.Context, *connect.Request[v1.SimulateRequest]) (*connect.Response[v1.SimulateResponse], error)
 }
 
@@ -100,12 +84,6 @@ type QuasarServiceHandler interface {
 // and JSON codecs. They also support gzip compression.
 func NewQuasarServiceHandler(svc QuasarServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
 	quasarServiceMethods := v1.File_quasar_v1_quasar_proto.Services().ByName("QuasarService").Methods()
-	quasarServiceFactorizeHandler := connect.NewUnaryHandler(
-		QuasarServiceFactorizeProcedure,
-		svc.Factorize,
-		connect.WithSchema(quasarServiceMethods.ByName("Factorize")),
-		connect.WithHandlerOptions(opts...),
-	)
 	quasarServiceSimulateHandler := connect.NewUnaryHandler(
 		QuasarServiceSimulateProcedure,
 		svc.Simulate,
@@ -114,8 +92,6 @@ func NewQuasarServiceHandler(svc QuasarServiceHandler, opts ...connect.HandlerOp
 	)
 	return "/quasar.v1.QuasarService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
-		case QuasarServiceFactorizeProcedure:
-			quasarServiceFactorizeHandler.ServeHTTP(w, r)
 		case QuasarServiceSimulateProcedure:
 			quasarServiceSimulateHandler.ServeHTTP(w, r)
 		default:
@@ -126,10 +102,6 @@ func NewQuasarServiceHandler(svc QuasarServiceHandler, opts ...connect.HandlerOp
 
 // UnimplementedQuasarServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedQuasarServiceHandler struct{}
-
-func (UnimplementedQuasarServiceHandler) Factorize(context.Context, *connect.Request[v1.FactorizeRequest]) (*connect.Response[v1.FactorizeResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("quasar.v1.QuasarService.Factorize is not implemented"))
-}
 
 func (UnimplementedQuasarServiceHandler) Simulate(context.Context, *connect.Request[v1.SimulateRequest]) (*connect.Response[v1.SimulateResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("quasar.v1.QuasarService.Simulate is not implemented"))

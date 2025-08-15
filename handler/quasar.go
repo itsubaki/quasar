@@ -2,7 +2,7 @@ package handler
 
 import (
 	"context"
-	"fmt"
+	"errors"
 
 	"connectrpc.com/connect"
 	"github.com/antlr4-go/antlr/v4"
@@ -26,7 +26,20 @@ func (s *QuasarService) Simulate(
 
 	v := visitor.New(qsim, env)
 	if err := v.Run(p.Program()); err != nil {
-		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("visitor run: %w", err))
+		switch {
+		case
+			errors.Is(err, visitor.ErrAlreadyDeclared),
+			errors.Is(err, visitor.ErrIdentifierNotFound),
+			errors.Is(err, visitor.ErrQubitNotFound),
+			errors.Is(err, visitor.ErrClassicalBitNotFound),
+			errors.Is(err, visitor.ErrVariableNotFound),
+			errors.Is(err, visitor.ErrFunctionNotFound),
+			errors.Is(err, visitor.ErrUnexpected),
+			errors.Is(err, visitor.ErrNotImplemented):
+			return nil, connect.NewError(connect.CodeInvalidArgument, err)
+		default:
+			return nil, connect.NewError(connect.CodeInternal, err)
+		}
 	}
 
 	// quantum state

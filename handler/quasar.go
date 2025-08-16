@@ -50,12 +50,7 @@ func (s *QuasarService) Simulate(
 	}
 
 	// quantum state
-	var index [][]int
-	for _, qb := range env.Qubit {
-		index = append(index, q.Index(qb...))
-	}
-
-	qstate := qsim.Underlying().State(index...)
+	qstate := qsim.Underlying().State()
 
 	// quantum state for json encoding
 	state := make([]*quasarv1.SimulateResponse_State, len(qstate))

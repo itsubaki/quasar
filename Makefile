@@ -47,7 +47,7 @@ build:
 
 deploy:
 	gcloud artifacts docker images describe ${IMAGE}
-	gcloud run deploy --region ${LOCATION} --project ${PROJECT_ID} --image ${IMAGE} --set-env-vars=PROJECT_ID=${PROJECT_ID},USE_CPROF=true ${SERVICE_NAME} ${AUTHENTICATE_FLAG}
+	gcloud run deploy --region ${LOCATION} --project ${PROJECT_ID} --image ${IMAGE} --set-env-vars=PROJECT_ID=${PROJECT_ID},USE_CPROF=true ${SERVICE_NAME}
 	gcloud run services update-traffic ${SERVICE_NAME} --to-latest --region ${LOCATION} --project ${PROJECT_ID}
 
 package:

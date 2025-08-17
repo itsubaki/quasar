@@ -11,14 +11,6 @@ on:
     types:
       - published
   workflow_dispatch:
-    inputs:
-      authenticate:
-        required: true
-        default: 'private'
-        type: choice
-        options:
-          - 'public'
-          - 'private'
 
 concurrency:
   group: deploy-${{ github.ref }}
@@ -109,13 +101,4 @@ jobs:
         env:
           PROJECT_ID: ${{ secrets.PROJECT_ID }}
         run: |
-          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
-            FLAG="--allow-unauthenticated"
-
-            SWITCH=${{ github.event.inputs['authenticate'] }}
-            if [ "$SWITCH" == "private" ]; then
-              FLAG="--no-allow-unauthenticated"
-            fi
-          fi
-
-          AUTHENTICATE_FLAG=${FLAG} make deploy
+          make deploy

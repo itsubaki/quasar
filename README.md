@@ -6,7 +6,7 @@
 
 - Quantum computation simulator as a Service
 
-## Deploying to Cloud Run
+## Deploying to Google Cloud Run
 
 ```shell
 export PROJECT_ID=YOUR_GOOGLE_CLOUD_PROJECT_ID

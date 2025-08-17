@@ -2,8 +2,6 @@ package handler
 
 import (
 	"context"
-	"errors"
-	"fmt"
 
 	"connectrpc.com/connect"
 	"github.com/antlr4-go/antlr/v4"

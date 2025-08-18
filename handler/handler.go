@@ -3,6 +3,7 @@ package handler
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"net/http"
 	_ "net/http/pprof"
 
@@ -39,6 +40,7 @@ func Recover() connect.UnaryInterceptorFunc {
 		return func(ctx context.Context, req connect.AnyRequest) (resp connect.AnyResponse, err error) {
 			defer func() {
 				if r := recover(); r != nil {
+					slog.DebugContext(ctx, "recovered from panic", slog.Any("recover", r))
 					resp, err = nil, connect.NewError(connect.CodeInternal, fmt.Errorf("unexpected: %v", r))
 				}
 			}()

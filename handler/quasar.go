@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"fmt"
 
 	"connectrpc.com/connect"
 	"github.com/antlr4-go/antlr/v4"
@@ -17,6 +18,12 @@ func (s *QuasarService) Simulate(
 	ctx context.Context,
 	req *connect.Request[quasarv1.SimulateRequest],
 ) (resp *connect.Response[quasarv1.SimulateResponse], err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			err = connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("unexpected: %v", r))
+		}
+	}()
+
 	lexer := parser.Newqasm3Lexer(antlr.NewInputStream(req.Msg.Code))
 	p := parser.Newqasm3Parser(antlr.NewCommonTokenStream(lexer, antlr.TokenDefaultChannel))
 

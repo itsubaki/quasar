@@ -10,7 +10,7 @@ require (
 	github.com/antlr4-go/antlr/v4 v4.13.1
 	github.com/cucumber/godog v0.15.0
 	github.com/itsubaki/q v0.0.9-0.20250825071607-4e028347f494
-	github.com/itsubaki/qasm v0.1.4-0.20250825073050-ab40b60555e0
+	github.com/itsubaki/qasm v0.1.4-0.20250825073708-1fb9c1e80838
 	github.com/jfilipczyk/gomatch v1.2.1
 	golang.org/x/net v0.43.0
 	google.golang.org/protobuf v1.36.8

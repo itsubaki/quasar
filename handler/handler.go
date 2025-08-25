@@ -13,7 +13,7 @@ import (
 	"golang.org/x/net/http2/h2c"
 )
 
-func New() (http.Handler, error) {
+func New(maxQubits int) (http.Handler, error) {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
@@ -26,7 +26,9 @@ func New() (http.Handler, error) {
 	})
 
 	mux.Handle(quasarv1connect.NewQuasarServiceHandler(
-		&QuasarService{},
+		&QuasarService{
+			MaxQubits: maxQubits,
+		},
 		connect.WithInterceptors(
 			Recover(),
 		),

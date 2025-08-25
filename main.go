@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strconv"
 	"strings"
 	"syscall"
 	"time"
@@ -23,6 +24,19 @@ var (
 	cprof       = os.Getenv("USE_CPROF")
 	port        = os.Getenv("PORT")
 	timeout     = 5 * time.Second
+	maxQubits   = func() int {
+		v := os.Getenv("MAX_QUBITS")
+		if v == "" {
+			return 0 // no limit
+		}
+
+		max, err := strconv.Atoi(v)
+		if err != nil {
+			log.Fatalf("invalid MAX_QUBITS: %v", err)
+		}
+
+		return max
+	}()
 )
 
 func main() {
@@ -42,7 +56,7 @@ func main() {
 	}
 
 	// handler
-	h, err := handler.New()
+	h, err := handler.New(maxQubits)
 	if err != nil {
 		log.Fatalf("new handler: %v", err)
 	}

@@ -11,7 +11,9 @@ import (
 	quasarv1 "github.com/itsubaki/quasar/gen/quasar/v1"
 )
 
-type QuasarService struct{}
+type QuasarService struct {
+	MaxQubits int
+}
 
 func (s *QuasarService) Simulate(
 	ctx context.Context,
@@ -22,8 +24,10 @@ func (s *QuasarService) Simulate(
 
 	qsim := q.New()
 	env := visitor.NewEnviron()
+	v := visitor.New(qsim, env,
+		visitor.WithMaxQubits(s.MaxQubits),
+	)
 
-	v := visitor.New(qsim, env)
 	if err := v.Run(p.Program()); err != nil {
 		return nil, connect.NewError(connect.CodeInvalidArgument, err)
 	}

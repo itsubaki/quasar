@@ -31,7 +31,7 @@ testwip:
 	PROJECT_ID=${PROJECT_ID} go test -v -godog.tags=wip -coverprofile=coverage.txt -covermode=atomic -coverpkg=./...
 
 testpkg:
-	PROJECT_ID=${PROJECT_ID} go test -v -cover $(shell go list ./... | grep -v /vendor/ | grep -v /build/ | grep -v -E "quasar$") -coverprofile=coverage-pkg.txt -covermode=atomic
+	PROJECT_ID=${PROJECT_ID} go test -v -cover $(shell go list ./... | grep -v /vendor/ | grep -v /build/ | grep -v -E "quasar$$") -coverprofile=coverage-pkg.txt -covermode=atomic
 
 artifact:
 	gcloud artifacts repositories create ${SERVICE_NAME} --repository-format=docker --location=${LOCATION} --project=${PROJECT_ID}

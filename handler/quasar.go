@@ -42,17 +42,17 @@ func (s *QuasarService) Simulate(
 	qstate := qsim.Underlying().State(index...)
 
 	// quantum state for json encoding
-	state := make([]*quasarv1.SimulateResponse_State, len(qstate))
+	states := make([]*quasarv1.SimulateResponse_State, len(qstate))
 	for i, s := range qstate {
 		binaryString, intValue := make([]string, len(index)), make([]uint64, len(index))
 		for j := range index {
 			binaryString[j], intValue[j] = s.BinaryString(j), uint64(s.Int(j))
 		}
 
-		state[i] = &quasarv1.SimulateResponse_State{
+		states[i] = &quasarv1.SimulateResponse_State{
 			BinaryString: binaryString,
 			Int:          intValue,
-			Probability: truncate(s.Probability(), 6),
+			Probability:  truncate(s.Probability(), 6),
 			Amplitude: &quasarv1.SimulateResponse_Amplitude{
 				Real: truncate(real(s.Amplitude()), 6),
 				Imag: truncate(imag(s.Amplitude()), 6),
@@ -61,7 +61,7 @@ func (s *QuasarService) Simulate(
 	}
 
 	return connect.NewResponse(&quasarv1.SimulateResponse{
-		State: state,
+		States: states,
 	}), nil
 }
 

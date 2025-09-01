@@ -21,7 +21,7 @@ message SimulateResponse {
     repeated string binary_string = 4;
   }
 
-  repeated State state = 1;
+  repeated State states = 1;
 }
 
 service QuasarService {

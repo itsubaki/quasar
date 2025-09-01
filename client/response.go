@@ -1,7 +1,7 @@
 package client
 
-type SimulateResponse struct {
-	State []State `json:"state"`
+type States struct {
+	States []State `json:"states"`
 }
 
 type State struct {

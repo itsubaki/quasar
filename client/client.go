@@ -23,7 +23,7 @@ func New(targetURL string, client *http.Client) *Client {
 	}
 }
 
-func (c *Client) Simulate(ctx context.Context, code string) (*SimulateResponse, error) {
+func (c *Client) Simulate(ctx context.Context, code string) (*States, error) {
 	resp, err := c.quasarClient.Simulate(ctx, connect.NewRequest(&quasarv1.SimulateRequest{
 		Code: code,
 	}))
@@ -31,9 +31,9 @@ func (c *Client) Simulate(ctx context.Context, code string) (*SimulateResponse, 
 		return nil, fmt.Errorf("simulate: %w", err)
 	}
 
-	state := make([]State, len(resp.Msg.State))
-	for i, s := range resp.Msg.State {
-		state[i] = State{
+	states := make([]State, len(resp.Msg.States))
+	for i, s := range resp.Msg.States {
+		states[i] = State{
 			Probability: s.Probability,
 			Amplitude: Amplitude{
 				Real: s.Amplitude.Real,
@@ -44,6 +44,6 @@ func (c *Client) Simulate(ctx context.Context, code string) (*SimulateResponse, 
 		}
 	}
 
-	return &SimulateResponse{State: state}, nil
+	return &States{States: states}, nil
 
 }

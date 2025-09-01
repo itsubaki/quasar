@@ -47,7 +47,7 @@ qft(q);
 		panic(err)
 	}
 
-	for _, s := range resp.Msg.State {
+	for _, s := range resp.Msg.States {
 		fmt.Printf("%s %2d: %+.4f %+.4f: %.4f\n",
 			s.BinaryString,
 			s.Int,

@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-	"time"
 
 	"connectrpc.com/connect"
 	quasarv1 "github.com/itsubaki/quasar/gen/quasar/v1"
@@ -62,26 +61,4 @@ func (c *Client) Simulate(ctx context.Context, code string) (*States, error) {
 	}
 
 	return &States{States: states}, nil
-}
-
-func (c *Client) Save(ctx context.Context, code string) (string, time.Time, error) {
-	resp, err := c.quasarClient.Save(ctx, connect.NewRequest(&quasarv1.SaveRequest{
-		Code: code,
-	}))
-	if err != nil {
-		return "", time.Time{}, fmt.Errorf("save: %w", err)
-	}
-
-	return resp.Msg.Id, resp.Msg.CreatedAt.AsTime(), nil
-}
-
-func (c *Client) Load(ctx context.Context, id string) (string, time.Time, error) {
-	resp, err := c.quasarClient.Load(ctx, connect.NewRequest(&quasarv1.LoadRequest{
-		Id: id,
-	}))
-	if err != nil {
-		return "", time.Time{}, fmt.Errorf("load: %w", err)
-	}
-
-	return resp.Msg.Code, resp.Msg.CreatedAt.AsTime(), nil
 }

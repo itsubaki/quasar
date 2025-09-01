@@ -57,7 +57,6 @@ func main() {
 
 	// handler
 	h, err := handler.New(
-		projectID,
 		maxQubits,
 	)
 	if err != nil {

@@ -75,15 +75,3 @@ curl:
 		-H 'Content-Type: application/json' \
 		-d '{"code": "OPENQASM 3.0; gate h q { U(pi/2.0, 0, pi) q; } gate x q { U(pi, 0, pi) q; } gate cx c, t { ctrl @ U(pi, 0, pi) c, t; } qubit[2] q; reset q; h q[0]; cx q[0], q[1];"}' \
 		localhost:8080/quasar.v1.QuasarService/Simulate | jq .
-
-save:
-	@curl -s \
-		-H 'Content-Type: application/json' \
-		-d '{"code": "OPENQASM 3.0; gate h q { U(pi/2.0, 0, pi) q; } gate x q { U(pi, 0, pi) q; } gate cx c, t { ctrl @ U(pi, 0, pi) c, t; } qubit[2] q; reset q; h q[0]; cx q[0], q[1];"}' \
-		localhost:8080/quasar.v1.QuasarService/Save | jq .
-
-load:
-	@curl -s \
-		-H 'Content-Type: application/json' \
-		-d '{"id": "V1hz_VNsg68hcldd"}' \
-		localhost:8080/quasar.v1.QuasarService/Load | jq .

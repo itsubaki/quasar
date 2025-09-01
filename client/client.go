@@ -23,7 +23,7 @@ func New(targetURL string, client *http.Client) *Client {
 	}
 }
 
-func (c *Client) Simulate(ctx context.Context, code string) (*RunResponse, error) {
+func (c *Client) Simulate(ctx context.Context, code string) (*SimulateResponse, error) {
 	resp, err := c.quasarClient.Simulate(ctx, connect.NewRequest(&quasarv1.SimulateRequest{
 		Code: code,
 	}))
@@ -44,6 +44,6 @@ func (c *Client) Simulate(ctx context.Context, code string) (*RunResponse, error
 		}
 	}
 
-	return &RunResponse{State: state}, nil
+	return &SimulateResponse{State: state}, nil
 
 }

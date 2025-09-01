@@ -124,6 +124,7 @@ func (s *QuasarService) Load(
 	}
 
 	return connect.NewResponse(&quasarv1.LoadResponse{
+		Id:   id,
 		Code: scode,
 	}), nil
 }

@@ -3,6 +3,7 @@ package handler
 import (
 	"context"
 	"fmt"
+	"math"
 
 	"connectrpc.com/connect"
 	"github.com/antlr4-go/antlr/v4"
@@ -41,10 +42,10 @@ func (s *QuasarService) Simulate(
 	state := make([]*quasarv1.SimulateResponse_State, len(qstate))
 	for i, s := range qstate {
 		state[i] = &quasarv1.SimulateResponse_State{
-			Probability: s.Probability(),
+			Probability: truncate(s.Probability(), 6),
 			Amplitude: &quasarv1.SimulateResponse_Amplitude{
-				Real: real(s.Amplitude()),
-				Imag: imag(s.Amplitude()),
+				Real: truncate(real(s.Amplitude()), 6),
+				Imag: truncate(imag(s.Amplitude()), 6),
 			},
 			Int: []uint64{
 				uint64(s.Int()),
@@ -60,10 +61,7 @@ func (s *QuasarService) Simulate(
 	}), nil
 }
 
-func defaultValue[T any](v *T, w T) T {
-	if v != nil {
-		return *v
-	}
-
-	return w
+func truncate(v float64, n int) float64 {
+	factor := math.Pow(10, float64(n))
+	return math.Trunc(v*factor) / factor
 }

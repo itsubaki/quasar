@@ -31,7 +31,7 @@ testwip:
 	PROJECT_ID=${PROJECT_ID} go test -v -godog.tags=wip -coverprofile=coverage.txt -covermode=atomic -coverpkg=./...
 
 testpkg:
-	PROJECT_ID=${PROJECT_ID} go test -v -cover $(shell go list ./... | grep -v /vendor/ | grep -v /build/ | grep -v -E "quasar$") -coverprofile=coverage-pkg.txt -covermode=atomic
+	PROJECT_ID=${PROJECT_ID} go test -v -cover $(shell go list ./... | grep -v /vendor/ | grep -v /build/ | grep -v -E "quasar$$") -coverprofile=coverage-pkg.txt -covermode=atomic
 
 artifact:
 	gcloud artifacts repositories create ${SERVICE_NAME} --repository-format=docker --location=${LOCATION} --project=${PROJECT_ID}
@@ -47,7 +47,7 @@ build:
 
 deploy:
 	gcloud artifacts docker images describe ${IMAGE}
-	gcloud run deploy --region ${LOCATION} --project ${PROJECT_ID} --image ${IMAGE} --set-env-vars=PROJECT_ID=${PROJECT_ID},USE_CPROF=true ${SERVICE_NAME}
+	gcloud run deploy --region ${LOCATION} --project ${PROJECT_ID} --image ${IMAGE} --set-env-vars=PROJECT_ID=${PROJECT_ID},USE_CPROF=true,MAX_QUBITS=10 ${SERVICE_NAME}
 	gcloud run services update-traffic ${SERVICE_NAME} --to-latest --region ${LOCATION} --project ${PROJECT_ID}
 
 package:

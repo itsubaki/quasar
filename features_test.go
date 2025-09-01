@@ -28,7 +28,8 @@ type apiFeature struct {
 }
 
 func (a *apiFeature) start() {
-	h, err := handler.New()
+	maxQubits := 0 // no limit
+	h, err := handler.New(maxQubits)
 	if err != nil {
 		log.Fatalf("new handler: %v", err)
 	}

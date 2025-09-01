@@ -12,6 +12,8 @@ import (
 	"github.com/itsubaki/qasm/gen/parser"
 	"github.com/itsubaki/qasm/visitor"
 	quasarv1 "github.com/itsubaki/quasar/gen/quasar/v1"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 type QuasarService struct {
@@ -85,7 +87,7 @@ func (s *QuasarService) Save(
 		"code": req.Msg.Code,
 	})
 	if err != nil {
-		return nil, connect.NewError(connect.CodeUnavailable, err)
+		return nil, connect.NewError(connect.CodeInternal, err)
 	}
 
 	return connect.NewResponse(&quasarv1.SaveResponse{
@@ -104,7 +106,11 @@ func (s *QuasarService) Load(
 
 	ref, err := s.Firestore.Collection("qasm").Doc(id).Get(ctx)
 	if err != nil {
-		return nil, connect.NewError(connect.CodeUnavailable, err)
+		if status.Code(err) == codes.NotFound {
+			return nil, connect.NewError(connect.CodeNotFound, err)
+		}
+
+		return nil, connect.NewError(connect.CodeInternal, err)
 	}
 
 	code, ok := ref.Data()["code"]

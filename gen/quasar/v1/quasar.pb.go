@@ -109,6 +109,190 @@ func (x *SimulateResponse) GetStates() []*SimulateResponse_State {
 	return nil
 }
 
+type SaveRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Code          string                 `protobuf:"bytes,1,opt,name=code,proto3" json:"code,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SaveRequest) Reset() {
+	*x = SaveRequest{}
+	mi := &file_quasar_v1_quasar_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SaveRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SaveRequest) ProtoMessage() {}
+
+func (x *SaveRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_quasar_v1_quasar_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SaveRequest.ProtoReflect.Descriptor instead.
+func (*SaveRequest) Descriptor() ([]byte, []int) {
+	return file_quasar_v1_quasar_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *SaveRequest) GetCode() string {
+	if x != nil {
+		return x.Code
+	}
+	return ""
+}
+
+type SaveResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SaveResponse) Reset() {
+	*x = SaveResponse{}
+	mi := &file_quasar_v1_quasar_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SaveResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SaveResponse) ProtoMessage() {}
+
+func (x *SaveResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_quasar_v1_quasar_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SaveResponse.ProtoReflect.Descriptor instead.
+func (*SaveResponse) Descriptor() ([]byte, []int) {
+	return file_quasar_v1_quasar_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *SaveResponse) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+type LoadRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *LoadRequest) Reset() {
+	*x = LoadRequest{}
+	mi := &file_quasar_v1_quasar_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *LoadRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LoadRequest) ProtoMessage() {}
+
+func (x *LoadRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_quasar_v1_quasar_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LoadRequest.ProtoReflect.Descriptor instead.
+func (*LoadRequest) Descriptor() ([]byte, []int) {
+	return file_quasar_v1_quasar_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *LoadRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+type LoadResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Code          string                 `protobuf:"bytes,2,opt,name=code,proto3" json:"code,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *LoadResponse) Reset() {
+	*x = LoadResponse{}
+	mi := &file_quasar_v1_quasar_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *LoadResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LoadResponse) ProtoMessage() {}
+
+func (x *LoadResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_quasar_v1_quasar_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LoadResponse.ProtoReflect.Descriptor instead.
+func (*LoadResponse) Descriptor() ([]byte, []int) {
+	return file_quasar_v1_quasar_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *LoadResponse) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *LoadResponse) GetCode() string {
+	if x != nil {
+		return x.Code
+	}
+	return ""
+}
+
 type SimulateResponse_Amplitude struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Real          float64                `protobuf:"fixed64,1,opt,name=real,proto3" json:"real,omitempty"`
@@ -119,7 +303,7 @@ type SimulateResponse_Amplitude struct {
 
 func (x *SimulateResponse_Amplitude) Reset() {
 	*x = SimulateResponse_Amplitude{}
-	mi := &file_quasar_v1_quasar_proto_msgTypes[2]
+	mi := &file_quasar_v1_quasar_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -131,7 +315,7 @@ func (x *SimulateResponse_Amplitude) String() string {
 func (*SimulateResponse_Amplitude) ProtoMessage() {}
 
 func (x *SimulateResponse_Amplitude) ProtoReflect() protoreflect.Message {
-	mi := &file_quasar_v1_quasar_proto_msgTypes[2]
+	mi := &file_quasar_v1_quasar_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -173,7 +357,7 @@ type SimulateResponse_State struct {
 
 func (x *SimulateResponse_State) Reset() {
 	*x = SimulateResponse_State{}
-	mi := &file_quasar_v1_quasar_proto_msgTypes[3]
+	mi := &file_quasar_v1_quasar_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -185,7 +369,7 @@ func (x *SimulateResponse_State) String() string {
 func (*SimulateResponse_State) ProtoMessage() {}
 
 func (x *SimulateResponse_State) ProtoReflect() protoreflect.Message {
-	mi := &file_quasar_v1_quasar_proto_msgTypes[3]
+	mi := &file_quasar_v1_quasar_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -245,9 +429,20 @@ const file_quasar_v1_quasar_proto_rawDesc = "" +
 	"\tamplitude\x18\x01 \x01(\v2%.quasar.v1.SimulateResponse.AmplitudeR\tamplitude\x12 \n" +
 	"\vprobability\x18\x02 \x01(\x01R\vprobability\x12\x10\n" +
 	"\x03int\x18\x03 \x03(\x04R\x03int\x12#\n" +
-	"\rbinary_string\x18\x04 \x03(\tR\fbinaryString2V\n" +
+	"\rbinary_string\x18\x04 \x03(\tR\fbinaryString\"!\n" +
+	"\vSaveRequest\x12\x12\n" +
+	"\x04code\x18\x01 \x01(\tR\x04code\"\x1e\n" +
+	"\fSaveResponse\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"\x1d\n" +
+	"\vLoadRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"2\n" +
+	"\fLoadResponse\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
+	"\x04code\x18\x02 \x01(\tR\x04code2\xcc\x01\n" +
 	"\rQuasarService\x12E\n" +
-	"\bSimulate\x12\x1a.quasar.v1.SimulateRequest\x1a\x1b.quasar.v1.SimulateResponse\"\x00B3Z1github.com/itsubaki/quasar/gen/quasar/v1;quasarv1b\x06proto3"
+	"\bSimulate\x12\x1a.quasar.v1.SimulateRequest\x1a\x1b.quasar.v1.SimulateResponse\"\x00\x129\n" +
+	"\x04Save\x12\x16.quasar.v1.SaveRequest\x1a\x17.quasar.v1.SaveResponse\"\x00\x129\n" +
+	"\x04Load\x12\x16.quasar.v1.LoadRequest\x1a\x17.quasar.v1.LoadResponse\"\x00B3Z1github.com/itsubaki/quasar/gen/quasar/v1;quasarv1b\x06proto3"
 
 var (
 	file_quasar_v1_quasar_proto_rawDescOnce sync.Once
@@ -261,20 +456,28 @@ func file_quasar_v1_quasar_proto_rawDescGZIP() []byte {
 	return file_quasar_v1_quasar_proto_rawDescData
 }
 
-var file_quasar_v1_quasar_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_quasar_v1_quasar_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_quasar_v1_quasar_proto_goTypes = []any{
 	(*SimulateRequest)(nil),            // 0: quasar.v1.SimulateRequest
 	(*SimulateResponse)(nil),           // 1: quasar.v1.SimulateResponse
-	(*SimulateResponse_Amplitude)(nil), // 2: quasar.v1.SimulateResponse.Amplitude
-	(*SimulateResponse_State)(nil),     // 3: quasar.v1.SimulateResponse.State
+	(*SaveRequest)(nil),                // 2: quasar.v1.SaveRequest
+	(*SaveResponse)(nil),               // 3: quasar.v1.SaveResponse
+	(*LoadRequest)(nil),                // 4: quasar.v1.LoadRequest
+	(*LoadResponse)(nil),               // 5: quasar.v1.LoadResponse
+	(*SimulateResponse_Amplitude)(nil), // 6: quasar.v1.SimulateResponse.Amplitude
+	(*SimulateResponse_State)(nil),     // 7: quasar.v1.SimulateResponse.State
 }
 var file_quasar_v1_quasar_proto_depIdxs = []int32{
-	3, // 0: quasar.v1.SimulateResponse.states:type_name -> quasar.v1.SimulateResponse.State
-	2, // 1: quasar.v1.SimulateResponse.State.amplitude:type_name -> quasar.v1.SimulateResponse.Amplitude
+	7, // 0: quasar.v1.SimulateResponse.states:type_name -> quasar.v1.SimulateResponse.State
+	6, // 1: quasar.v1.SimulateResponse.State.amplitude:type_name -> quasar.v1.SimulateResponse.Amplitude
 	0, // 2: quasar.v1.QuasarService.Simulate:input_type -> quasar.v1.SimulateRequest
-	1, // 3: quasar.v1.QuasarService.Simulate:output_type -> quasar.v1.SimulateResponse
-	3, // [3:4] is the sub-list for method output_type
-	2, // [2:3] is the sub-list for method input_type
+	2, // 3: quasar.v1.QuasarService.Save:input_type -> quasar.v1.SaveRequest
+	4, // 4: quasar.v1.QuasarService.Load:input_type -> quasar.v1.LoadRequest
+	1, // 5: quasar.v1.QuasarService.Simulate:output_type -> quasar.v1.SimulateResponse
+	3, // 6: quasar.v1.QuasarService.Save:output_type -> quasar.v1.SaveResponse
+	5, // 7: quasar.v1.QuasarService.Load:output_type -> quasar.v1.LoadResponse
+	5, // [5:8] is the sub-list for method output_type
+	2, // [2:5] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name
 	2, // [2:2] is the sub-list for extension extendee
 	0, // [0:2] is the sub-list for field type_name
@@ -291,7 +494,7 @@ func file_quasar_v1_quasar_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_quasar_v1_quasar_proto_rawDesc), len(file_quasar_v1_quasar_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   8,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

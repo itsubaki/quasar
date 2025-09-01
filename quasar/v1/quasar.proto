@@ -24,6 +24,25 @@ message SimulateResponse {
   repeated State states = 1;
 }
 
+message SaveRequest {
+  string code = 1;
+}
+
+message SaveResponse {
+  string id = 1;
+}
+
+message LoadRequest {
+  string id = 1;
+}
+
+message LoadResponse {
+  string id = 1;
+  string code = 2;
+}
+
 service QuasarService {
   rpc Simulate(SimulateRequest) returns (SimulateResponse) {};
+  rpc Save(SaveRequest) returns (SaveResponse) {};
+  rpc Load(LoadRequest) returns (LoadResponse) {};
 }

@@ -19,9 +19,9 @@ Feature:
                 "state": [
                     {
                         "amplitude": {
-                            "real": 0.7071067811865476
+                            "real": 0.707106
                         },
-                        "probability": 0.5000000000000001,
+                        "probability": 0.5,
                         "int": [
                             "0"
                         ],
@@ -31,9 +31,9 @@ Feature:
                     },
                     {
                         "amplitude": {
-                            "real": 0.7071067811865475
+                            "real": 0.707106
                         },
-                        "probability": 0.4999999999999999,
+                        "probability": 0.499999,
                         "int": [
                             "3"
                         ],
@@ -62,9 +62,9 @@ Feature:
                 "state": [
                     {
                         "amplitude": {
-                            "real": 0.3535533905932738
+                            "real": 0.353553
                         },
-                        "probability": 0.12500000000000003,
+                        "probability": 0.125,
                         "int": [
                             "0"
                         ],
@@ -74,10 +74,10 @@ Feature:
                     },
                     {
                         "amplitude": {
-                            "real": 0.2500000000000001,
-                            "imag": 0.24999999999999992
+                            "real": 0.25,
+                            "imag": 0.249999
                         },
-                        "probability": 0.12500000000000003,
+                        "probability": 0.125,
                         "int": [
                             "1"
                         ],
@@ -87,9 +87,9 @@ Feature:
                     },
                     {
                         "amplitude": {
-                            "imag": 0.35355339059327373
+                            "imag": 0.353553
                         },
-                        "probability": 0.12499999999999997,
+                        "probability": 0.124999,
                         "int": [
                             "2"
                         ],
@@ -99,10 +99,10 @@ Feature:
                     },
                     {
                         "amplitude": {
-                            "real": -0.24999999999999986,
-                            "imag": 0.24999999999999997
+                            "real": -0.249999,
+                            "imag": 0.249999
                         },
-                        "probability": 0.1249999999999999,
+                        "probability": 0.124999,
                         "int": [
                             "3"
                         ],
@@ -112,9 +112,9 @@ Feature:
                     },
                     {
                         "amplitude": {
-                            "real": -0.35355339059327384
+                            "real": -0.353553
                         },
-                        "probability": 0.12500000000000006,
+                        "probability": 0.125,
                         "int": [
                             "4"
                         ],
@@ -124,10 +124,10 @@ Feature:
                     },
                     {
                         "amplitude": {
-                            "real": -0.25000000000000017,
-                            "imag": -0.24999999999999992
+                            "real": -0.25,
+                            "imag": -0.249999
                         },
-                        "probability": 0.12500000000000003,
+                        "probability": 0.125,
                         "int": [
                             "5"
                         ],
@@ -137,9 +137,9 @@ Feature:
                     },
                     {
                         "amplitude": {
-                            "imag": -0.3535533905932738
+                            "imag": -0.353553
                         },
-                        "probability": 0.12500000000000003,
+                        "probability": 0.125,
                         "int": [
                             "6"
                         ],
@@ -149,10 +149,10 @@ Feature:
                     },
                     {
                         "amplitude": {
-                            "real": 0.2499999999999999,
-                            "imag": -0.2500000000000001
+                            "real": 0.249999,
+                            "imag": -0.25
                         },
-                        "probability": 0.12500000000000003,
+                        "probability": 0.125,
                         "int": [
                             "7"
                         ],

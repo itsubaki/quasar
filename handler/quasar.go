@@ -45,6 +45,11 @@ func (s *QuasarService) Simulate(
 	qstate := qsim.Underlying().State(index...)
 
 	// quantum state for json encoding
+	truncate := func(v float64, n int) float64 {
+		factor := math.Pow(10, float64(n))
+		return math.Trunc(v*factor) / factor
+	}
+
 	states := make([]*quasarv1.SimulateResponse_State, len(qstate))
 	for i, s := range qstate {
 		binaryString, intValue := make([]string, len(index)), make([]uint64, len(index))
@@ -115,9 +120,4 @@ func (s *QuasarService) Load(
 	return connect.NewResponse(&quasarv1.LoadResponse{
 		Code: scode,
 	}), nil
-}
-
-func truncate(v float64, n int) float64 {
-	factor := math.Pow(10, float64(n))
-	return math.Trunc(v*factor) / factor
 }

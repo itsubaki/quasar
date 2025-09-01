@@ -1,7 +1,10 @@
-name: deploy
+name: test
 
 on:
   push:
+    branches:
+      - main
+  pull_request:
     branches:
       - main
   release:
@@ -55,47 +58,3 @@ jobs:
           PROJECT_ID: ${{ secrets.PROJECT_ID }}
         run: |
           make testpkg
-
-  deploy:
-    needs: [test]
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-
-      - name: Setup Go
-        uses: actions/setup-go@v5
-        with:
-          go-version-file: go.mod
-          cache: false
-
-      - name: Add mask
-        run: |
-          echo "::add-mask::${{ secrets.PROJECT_ID }}"
-          echo "::add-mask::${{ secrets.SERVICE_URL }}"
-
-      - name: Auth Google Cloud
-        uses: "google-github-actions/auth@v2"
-        with:
-          credentials_json: "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_JSON }}"
-
-      - name: Setup Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3.0.0
-        with:
-          project_id: ${{ secrets.PROJECT_ID }}
-
-      - name: Build image
-        env:
-          PROJECT_ID: ${{ secrets.PROJECT_ID }}
-        run: |
-          make install
-          make gen
-          make build
-
-      - name: Deploy to Google Cloud Run
-        env:
-          PROJECT_ID: ${{ secrets.PROJECT_ID }}
-        run: |
-          make deploy

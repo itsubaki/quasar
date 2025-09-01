@@ -56,7 +56,10 @@ func main() {
 	}
 
 	// handler
-	h, err := handler.New(maxQubits)
+	h, err := handler.New(
+		projectID,
+		maxQubits,
+	)
 	if err != nil {
 		log.Fatalf("new handler: %v", err)
 	}

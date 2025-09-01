@@ -4,6 +4,8 @@ package quasar.v1;
 
 option go_package = "github.com/itsubaki/quasar/gen/quasar/v1;quasarv1";
 
+import "google/protobuf/timestamp.proto";
+
 message SimulateRequest {
   string code = 1;
 }
@@ -30,6 +32,7 @@ message SaveRequest {
 
 message SaveResponse {
   string id = 1;
+  google.protobuf.Timestamp created_at = 2;
 }
 
 message LoadRequest {
@@ -39,6 +42,7 @@ message LoadRequest {
 message LoadResponse {
   string id = 1;
   string code = 2;
+  google.protobuf.Timestamp created_at = 3;
 }
 
 service QuasarService {

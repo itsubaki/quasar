@@ -2,8 +2,11 @@ package handler
 
 import (
 	"context"
+	"crypto/sha256"
+	"encoding/base64"
 	"fmt"
 	"math"
+	"time"
 
 	"cloud.google.com/go/firestore"
 	"connectrpc.com/connect"
@@ -14,6 +17,7 @@ import (
 	quasarv1 "github.com/itsubaki/quasar/gen/quasar/v1"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 type QuasarService struct {
@@ -79,19 +83,25 @@ func (s *QuasarService) Save(
 	ctx context.Context,
 	req *connect.Request[quasarv1.SaveRequest],
 ) (resp *connect.Response[quasarv1.SaveResponse], err error) {
-	if len(req.Msg.Code) == 0 {
+	code := req.Msg.Code
+	if len(code) == 0 {
 		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("code is empty"))
 	}
 
-	ref, _, err := s.Firestore.Collection("qasm").Add(ctx, map[string]any{
-		"code": req.Msg.Code,
-	})
-	if err != nil {
-		return nil, connect.NewError(connect.CodeInternal, err)
+	hash := sha256.Sum256([]byte(code))
+	id := base64.RawURLEncoding.EncodeToString(hash[:])[:16]
+
+	createdAt := time.Now()
+	if _, err := s.Firestore.Collection("qasm").Doc(id).Set(ctx, map[string]any{
+		"code":       code,
+		"created_at": createdAt,
+	}); err != nil {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("something went wrong"))
 	}
 
 	return connect.NewResponse(&quasarv1.SaveResponse{
-		Id: ref.ID,
+		Id:        id,
+		CreatedAt: timestamppb.New(createdAt),
 	}), nil
 }
 
@@ -107,10 +117,10 @@ func (s *QuasarService) Load(
 	ref, err := s.Firestore.Collection("qasm").Doc(id).Get(ctx)
 	if err != nil {
 		if status.Code(err) == codes.NotFound {
-			return nil, connect.NewError(connect.CodeNotFound, err)
+			return nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("id=%v not found", id))
 		}
 
-		return nil, connect.NewError(connect.CodeInternal, err)
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("something went wrong"))
 	}
 
 	code, ok := ref.Data()["code"]
@@ -123,8 +133,19 @@ func (s *QuasarService) Load(
 		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("invalid type(%T)", code))
 	}
 
+	createdAt, ok := ref.Data()["created_at"]
+	if !ok {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("created_at is empty"))
+	}
+
+	tcreatedAt, ok := createdAt.(time.Time)
+	if !ok {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("invalid type(%T)", createdAt))
+	}
+
 	return connect.NewResponse(&quasarv1.LoadResponse{
-		Id:   id,
-		Code: scode,
+		Id:        id,
+		Code:      scode,
+		CreatedAt: timestamppb.New(tcreatedAt),
 	}), nil
 }

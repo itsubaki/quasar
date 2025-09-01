@@ -26,7 +26,7 @@ func New(projectID string, maxQubits int) (http.Handler, error) {
 		fmt.Fprintf(w, `{"ok": true}`)
 	})
 
-	client, err := firestore.NewClient(context.Background(), projectID)
+	client, err := firestore.NewClientWithDatabase(context.Background(), projectID, projectID)
 	if err != nil {
 		return nil, fmt.Errorf("new firestore client: %v", err)
 	}

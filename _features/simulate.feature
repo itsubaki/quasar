@@ -16,7 +16,7 @@ Feature:
         Then the response should match json:
             """
             {
-                "state": [
+                "states": [
                     {
                         "amplitude": {
                             "real": 0.707106
@@ -59,7 +59,7 @@ Feature:
         Then the response should match json:
             """
             {
-                "state": [
+                "states": [
                     {
                         "amplitude": {
                             "real": 0.353553

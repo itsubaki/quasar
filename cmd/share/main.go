@@ -35,7 +35,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("saved:", id, createdAt)
+	fmt.Println("saved: ", id, createdAt)
 
 	code, createdAt, err := client.
 		New(TargetURL, client.NewWithIdentityToken(IdentityToken)).
@@ -43,5 +43,6 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("loaded:", id, code, createdAt)
+	fmt.Println("loaded:", id, createdAt)
+	fmt.Println(code)
 }

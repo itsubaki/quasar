@@ -29,7 +29,7 @@ curl -s \
 
 ```json
 {
-  "state": [
+  "states": [
     {
       "amplitude": {
         "real": 0.7071,

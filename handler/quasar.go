@@ -123,29 +123,35 @@ func (s *QuasarService) Load(
 		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("something went wrong"))
 	}
 
-	code, ok := ref.Data()["code"]
-	if !ok {
-		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("code is empty"))
+	code, err := field[string](ref.Data(), "code")
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInternal, err)
 	}
 
-	scode, ok := code.(string)
-	if !ok {
-		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("invalid type(%T)", code))
-	}
-
-	createdAt, ok := ref.Data()["created_at"]
-	if !ok {
-		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("created_at is empty"))
-	}
-
-	tcreatedAt, ok := createdAt.(time.Time)
-	if !ok {
-		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("invalid type(%T)", createdAt))
+	createdAt, err := field[time.Time](ref.Data(), "created_at")
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInternal, err)
 	}
 
 	return connect.NewResponse(&quasarv1.LoadResponse{
 		Id:        id,
-		Code:      scode,
-		CreatedAt: timestamppb.New(tcreatedAt),
+		Code:      code,
+		CreatedAt: timestamppb.New(createdAt),
 	}), nil
+}
+
+func field[T any](data map[string]any, key string) (T, error) {
+	v, ok := data[key]
+	if !ok {
+		var zero T
+		return zero, fmt.Errorf("field %s not found", key)
+	}
+
+	typed, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, fmt.Errorf("invalid type(%T)", v)
+	}
+
+	return typed, nil
 }

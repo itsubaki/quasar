@@ -41,7 +41,7 @@ jobs:
           credentials_json: "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_JSON }}"
 
       - name: Setup Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3.0.0
+        uses: google-github-actions/setup-gcloud@v3.0.1
         with:
           project_id: ${{ secrets.PROJECT_ID }}
 

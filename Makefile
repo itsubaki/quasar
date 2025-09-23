@@ -33,6 +33,9 @@ testwip:
 testpkg:
 	PROJECT_ID=${PROJECT_ID} go test -v -cover $(shell go list ./... | grep -v /vendor/ | grep -v /build/ | grep -v -E "quasar$$") -coverprofile=coverage-pkg.txt -covermode=atomic
 
+lint:
+	golangci-lint run
+
 artifact:
 	gcloud artifacts repositories create ${SERVICE_NAME} --repository-format=docker --location=${LOCATION} --project=${PROJECT_ID}
 

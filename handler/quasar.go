@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"errors"
 	"math"
 
 	"connectrpc.com/connect"
@@ -12,6 +13,8 @@ import (
 	quasarv1 "github.com/itsubaki/quasar/gen/quasar/v1"
 )
 
+var ErrQubitsNotFound = errors.New("qubits not found")
+
 type QuasarService struct {
 	MaxQubits int
 }
@@ -19,7 +22,7 @@ type QuasarService struct {
 func (s *QuasarService) Simulate(
 	ctx context.Context,
 	req *connect.Request[quasarv1.SimulateRequest],
-) (resp *connect.Response[quasarv1.SimulateResponse], err error) {
+) (*connect.Response[quasarv1.SimulateResponse], error) {
 	lexer := parser.Newqasm3Lexer(antlr.NewInputStream(req.Msg.Code))
 	p := parser.Newqasm3Parser(antlr.NewCommonTokenStream(lexer, antlr.TokenDefaultChannel))
 
@@ -31,6 +34,10 @@ func (s *QuasarService) Simulate(
 
 	if err := v.Run(p.Program()); err != nil {
 		return nil, connect.NewError(connect.CodeInvalidArgument, err)
+	}
+
+	if len(env.Qubit) == 0 {
+		return nil, connect.NewError(connect.CodeInvalidArgument, ErrQubitsNotFound)
 	}
 
 	// quantum state

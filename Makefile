@@ -65,7 +65,7 @@ up:
 	docker compose up
 
 run:
-	PROJECT_ID=${PROJECT_ID} USE_PPROF=true go run main.go
+	PROJECT_ID=${PROJECT_ID} DATABASE_ID=${DATABASE_ID} USE_PPROF=true go run main.go
 
 bell:
 	@curl -s \

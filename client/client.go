@@ -69,7 +69,7 @@ func (c *Client) Share(ctx context.Context, code string) (string, time.Time, err
 		Code: code,
 	}))
 	if err != nil {
-		return "", time.Time{}, fmt.Errorf("save: %w", err)
+		return "", time.Time{}, fmt.Errorf("share: %w", err)
 	}
 
 	return resp.Msg.Id, resp.Msg.CreatedAt.AsTime(), nil
@@ -80,7 +80,7 @@ func (c *Client) Edit(ctx context.Context, id string) (string, time.Time, error)
 		Id: id,
 	}))
 	if err != nil {
-		return "", time.Time{}, fmt.Errorf("load: %w", err)
+		return "", time.Time{}, fmt.Errorf("edit: %w", err)
 	}
 
 	return resp.Msg.Code, resp.Msg.CreatedAt.AsTime(), nil

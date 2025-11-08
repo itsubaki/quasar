@@ -113,7 +113,7 @@ func (s *QuasarService) Share(
 	// id
 	id := GenID(code, 16)
 
-	// save to firestore
+	// store to firestore
 	createdAt := time.Now()
 	if _, err := s.Firestore.Collection("qasm").Doc(id).Set(ctx, map[string]any{
 		"code":       code,

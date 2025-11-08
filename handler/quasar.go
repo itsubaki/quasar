@@ -21,7 +21,12 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-var ErrQubitsNotFound = errors.New("qubits not found")
+var (
+	ErrQubitsNotFound     = errors.New("qubits not found")
+	ErrCodeNotFound       = errors.New("code not found")
+	ErrIDNotFound         = errors.New("id not found")
+	ErrSomethingWentWrong = errors.New("something went wrong")
+)
 
 type QuasarService struct {
 	MaxQubits int
@@ -92,7 +97,7 @@ func (s *QuasarService) Save(
 ) (resp *connect.Response[quasarv1.SaveResponse], err error) {
 	code := req.Msg.Code
 	if len(code) == 0 {
-		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("code is empty"))
+		return nil, connect.NewError(connect.CodeInvalidArgument, ErrCodeNotFound)
 	}
 
 	// id
@@ -105,7 +110,7 @@ func (s *QuasarService) Save(
 		"code":       code,
 		"created_at": createdAt,
 	}); err != nil {
-		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("something went wrong"))
+		return nil, connect.NewError(connect.CodeInternal, ErrSomethingWentWrong)
 	}
 
 	return connect.NewResponse(&quasarv1.SaveResponse{
@@ -120,17 +125,17 @@ func (s *QuasarService) Load(
 ) (resp *connect.Response[quasarv1.LoadResponse], err error) {
 	id := req.Msg.Id
 	if len(id) == 0 {
-		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("id is empty"))
+		return nil, connect.NewError(connect.CodeInvalidArgument, ErrIDNotFound)
 	}
 
 	// load from firestore
 	ref, err := s.Firestore.Collection("qasm").Doc(id).Get(ctx)
 	if err != nil {
 		if status.Code(err) == codes.NotFound {
-			return nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("id=%v not found", id))
+			return nil, connect.NewError(connect.CodeNotFound, ErrIDNotFound)
 		}
 
-		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("something went wrong"))
+		return nil, connect.NewError(connect.CodeInternal, ErrSomethingWentWrong)
 	}
 
 	code, err := Get[string](ref.Data(), "code")

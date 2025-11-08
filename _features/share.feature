@@ -1,5 +1,5 @@
 Feature:
-    In order to share quantum algorithm with openqasm
+    In order to share a quantum algorithm with openqasm
     As an API User
 
     Scenario: should share bell.qasm

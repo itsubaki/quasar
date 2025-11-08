@@ -111,10 +111,7 @@ func (s *QuasarService) Share(
 	}
 
 	// id
-	id, err := GenID(code, 16)
-	if err != nil {
-		return nil, connect.NewError(connect.CodeInternal, ErrSomethingWentWrong)
-	}
+	id := GenID(code, 16)
 
 	// save to firestore
 	createdAt := time.Now()
@@ -167,14 +164,10 @@ func (s *QuasarService) Edit(
 	}), nil
 }
 
-func GenID(code string, length int) (string, error) {
+func GenID(code string, length int) string {
 	hash := sha256.New()
-	if _, err := io.WriteString(hash, salt); err != nil {
-		return "", fmt.Errorf("write salt: %w", err)
-	}
-	if _, err := hash.Write([]byte(code)); err != nil {
-		return "", fmt.Errorf("write code: %w", err)
-	}
+	io.WriteString(hash, salt)
+	hash.Write([]byte(code))
 
 	sum := hash.Sum(nil)
 	b := make([]byte, base64.URLEncoding.EncodedLen(len(sum)))
@@ -185,7 +178,7 @@ func GenID(code string, length int) (string, error) {
 		hashLen++
 	}
 
-	return string(b)[:hashLen], nil
+	return string(b)[:hashLen]
 }
 
 func Get[T any](data map[string]any, key string) (T, error) {

@@ -16,7 +16,7 @@ Feature:
         Then the response should match json:
             """
             {
-                "id": "sQhI9W5KL-2lXEEW",
+                "id": "AMOYU8a1VLEfWjqf",
                 "createdAt": "@string@"
             }
             """
@@ -26,7 +26,7 @@ Feature:
         Given I set request body:
             """
             {
-                "id": "sQhI9W5KL-2lXEEW"
+                "id": "AMOYU8a1VLEfWjqf"
             }
             """
         When I send "POST" request to "/quasar.v1.QuasarService/Load"
@@ -34,7 +34,7 @@ Feature:
         Then the response should match json:
             """
             {
-                "id": "sQhI9W5KL-2lXEEW",
+                "id": "AMOYU8a1VLEfWjqf",
                 "code": "@string@",
                 "createdAt": "@string@"
             }

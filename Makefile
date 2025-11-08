@@ -89,5 +89,5 @@ save:
 load:
 	@curl -s \
 		-H 'Content-Type: application/json' \
-		-d '{"id": "V1hz_VNsg68hcldd"}' \
+		-d '{"id": "64EsAqoWwdHeRn3o"}' \
 		localhost:8080/quasar.v1.QuasarService/Load | jq .

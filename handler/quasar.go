@@ -6,6 +6,7 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
+	"io"
 	"math"
 	"time"
 
@@ -20,6 +21,8 @@ import (
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
+
+const salt = "quasar salt\n"
 
 var (
 	ErrQubitsNotFound     = errors.New("qubits not found")
@@ -101,8 +104,10 @@ func (s *QuasarService) Save(
 	}
 
 	// id
-	hash := sha256.Sum256([]byte(code))
-	id := base64.RawURLEncoding.EncodeToString(hash[:])[:16]
+	id, err := GenID(code, 16)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInternal, ErrSomethingWentWrong)
+	}
 
 	// save to firestore
 	createdAt := time.Now()
@@ -153,6 +158,27 @@ func (s *QuasarService) Load(
 		Code:      code,
 		CreatedAt: timestamppb.New(createdAt),
 	}), nil
+}
+
+func GenID(code string, length int) (string, error) {
+	hash := sha256.New()
+	if _, err := io.WriteString(hash, salt); err != nil {
+		return "", fmt.Errorf("write salt: %w", err)
+	}
+	if _, err := hash.Write([]byte(code)); err != nil {
+		return "", fmt.Errorf("write code: %w", err)
+	}
+
+	sum := hash.Sum(nil)
+	b := make([]byte, base64.URLEncoding.EncodedLen(len(sum)))
+	base64.URLEncoding.Encode(b, sum)
+
+	hashLen := length
+	for hashLen <= len(b) && b[hashLen-1] == '_' {
+		hashLen++
+	}
+
+	return string(b)[:hashLen], nil
 }
 
 func Get[T any](data map[string]any, key string) (T, error) {

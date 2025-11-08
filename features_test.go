@@ -11,7 +11,6 @@ import (
 	"os"
 	"strings"
 
-	"cloud.google.com/go/firestore"
 	"github.com/cucumber/godog"
 	"github.com/itsubaki/quasar/handler"
 	"github.com/jfilipczyk/gomatch"
@@ -29,19 +28,9 @@ type apiFeature struct {
 }
 
 func (a *apiFeature) start() {
-	// firestore client
-	fsc, err := firestore.NewClientWithDatabase(
-		context.Background(),
-		os.Getenv("PROJECT_ID"),
-		os.Getenv("DATABASE_ID"),
-	)
-	if err != nil {
-		log.Fatalf("new firestore client: %v", err)
-	}
-
 	h, err := handler.New(
 		0, // no limit
-		fsc,
+		&handler.MemoryStore{},
 	)
 	if err != nil {
 		log.Fatalf("new handler: %v", err)

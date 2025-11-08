@@ -5,13 +5,12 @@ import (
 	"net/http"
 	_ "net/http/pprof"
 
-	"cloud.google.com/go/firestore"
 	"github.com/itsubaki/quasar/gen/quasar/v1/quasarv1connect"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 )
 
-func New(maxQubits int, fsc *firestore.Client) (http.Handler, error) {
+func New(maxQubits int, store Store) (http.Handler, error) {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
@@ -26,7 +25,7 @@ func New(maxQubits int, fsc *firestore.Client) (http.Handler, error) {
 	mux.Handle(quasarv1connect.NewQuasarServiceHandler(
 		&QuasarService{
 			MaxQubits: maxQubits,
-			Firestore: fsc,
+			Store:     store,
 		},
 	))
 

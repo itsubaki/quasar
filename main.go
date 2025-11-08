@@ -70,7 +70,10 @@ func main() {
 	// handler
 	h, err := handler.New(
 		maxQubits,
-		fsc,
+		&handler.FireStore{
+			Collection: "snippet",
+			Client:     fsc,
+		},
 	)
 	if err != nil {
 		log.Fatalf("new handler: %v", err)

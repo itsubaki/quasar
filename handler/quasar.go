@@ -10,7 +10,6 @@ import (
 	"math"
 	"time"
 
-	"cloud.google.com/go/firestore"
 	"connectrpc.com/connect"
 	"github.com/antlr4-go/antlr/v4"
 	"github.com/itsubaki/q"
@@ -31,12 +30,13 @@ var (
 	ErrQubitsNotFound     = errors.New("qubits not found")
 	ErrCodeNotFound       = errors.New("code not found")
 	ErrIDNotFound         = errors.New("id not found")
+	ErrNoSuchEntity       = errors.New("no such entity")
 	ErrSomethingWentWrong = errors.New("something went wrong")
 )
 
 type QuasarService struct {
 	MaxQubits int
-	Firestore *firestore.Client
+	Store     Store
 }
 
 func (s *QuasarService) Simulate(
@@ -67,6 +67,7 @@ func (s *QuasarService) Simulate(
 	}
 
 	qstate := qsim.Underlying().State(index...)
+	states := make([]*quasarv1.SimulateResponse_State, len(qstate))
 
 	// quantum state for json encoding
 	truncate := func(v float64, n int) float64 {
@@ -74,7 +75,7 @@ func (s *QuasarService) Simulate(
 		return math.Trunc(v*factor) / factor
 	}
 
-	states := make([]*quasarv1.SimulateResponse_State, len(qstate))
+	// build response
 	for i, s := range qstate {
 		binaryString, intValue := make([]string, len(index)), make([]uint64, len(index))
 		for j := range index {
@@ -110,14 +111,11 @@ func (s *QuasarService) Share(
 		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("code size exceeds %d bytes", maxSize))
 	}
 
-	// id
-	id := GenID(code, 16)
-
-	// store to firestore
-	createdAt := time.Now()
-	if _, err := s.Firestore.Collection("qasm").Doc(id).Set(ctx, map[string]any{
-		"code":       code,
-		"created_at": createdAt,
+	// put
+	id, createdAt := GenID(code, 16), time.Now()
+	if err := s.Store.Put(ctx, id, &Snippet{
+		Code:      code,
+		CreatedAt: createdAt,
 	}); err != nil {
 		return nil, connect.NewError(connect.CodeInternal, ErrSomethingWentWrong)
 	}
@@ -137,30 +135,20 @@ func (s *QuasarService) Edit(
 		return nil, connect.NewError(connect.CodeInvalidArgument, ErrIDNotFound)
 	}
 
-	// load from firestore
-	ref, err := s.Firestore.Collection("qasm").Doc(id).Get(ctx)
+	// get
+	snippet, err := s.Store.Get(ctx, id)
 	if err != nil {
 		if status.Code(err) == codes.NotFound {
-			return nil, connect.NewError(connect.CodeNotFound, ErrIDNotFound)
+			return nil, connect.NewError(connect.CodeNotFound, ErrNoSuchEntity)
 		}
 
 		return nil, connect.NewError(connect.CodeInternal, ErrSomethingWentWrong)
 	}
 
-	code, err := Get[string](ref.Data(), "code")
-	if err != nil {
-		return nil, connect.NewError(connect.CodeInternal, err)
-	}
-
-	createdAt, err := Get[time.Time](ref.Data(), "created_at")
-	if err != nil {
-		return nil, connect.NewError(connect.CodeInternal, err)
-	}
-
 	return connect.NewResponse(&quasarv1.EditResponse{
 		Id:        id,
-		Code:      code,
-		CreatedAt: timestamppb.New(createdAt),
+		Code:      snippet.Code,
+		CreatedAt: timestamppb.New(snippet.CreatedAt),
 	}), nil
 }
 
@@ -179,20 +167,4 @@ func GenID(code string, length int) string {
 	}
 
 	return string(b)[:hashLen]
-}
-
-func Get[T any](data map[string]any, key string) (T, error) {
-	v, ok := data[key]
-	if !ok {
-		var zero T
-		return zero, fmt.Errorf("field %s not found", key)
-	}
-
-	typed, ok := v.(T)
-	if !ok {
-		var zero T
-		return zero, fmt.Errorf("invalid type(%T)", v)
-	}
-
-	return typed, nil
 }

@@ -29,24 +29,24 @@ func main() {
 		panic(err)
 	}
 
-	// save
+	// share
 	id, createdAt, err := client.
 		New(TargetURL, client.NewWithIdentityToken(IdentityToken)).
-		Save(context.Background(), string(contents))
+		Share(context.Background(), string(contents))
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Println("saved: ", id, createdAt)
+	fmt.Println("shared: ", id, createdAt)
 
-	// load
+	// edit
 	code, createdAt, err := client.
 		New(TargetURL, client.NewWithIdentityToken(IdentityToken)).
-		Load(context.Background(), id)
+		Edit(context.Background(), id)
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Println("loaded:", id, createdAt)
+	fmt.Println("edited:", id, createdAt)
 	fmt.Println(code)
 }

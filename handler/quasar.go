@@ -22,7 +22,10 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-const salt = "quasar salt\n"
+const (
+	salt    = "quasar salt\n"
+	maxSize = 64 * 1024
+)
 
 var (
 	ErrQubitsNotFound     = errors.New("qubits not found")
@@ -94,13 +97,17 @@ func (s *QuasarService) Simulate(
 	}), nil
 }
 
-func (s *QuasarService) Save(
+func (s *QuasarService) Share(
 	ctx context.Context,
-	req *connect.Request[quasarv1.SaveRequest],
-) (resp *connect.Response[quasarv1.SaveResponse], err error) {
+	req *connect.Request[quasarv1.ShareRequest],
+) (resp *connect.Response[quasarv1.ShareResponse], err error) {
 	code := req.Msg.Code
 	if len(code) == 0 {
 		return nil, connect.NewError(connect.CodeInvalidArgument, ErrCodeNotFound)
+	}
+
+	if len(code) > maxSize {
+		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("code size exceeds %d bytes", maxSize))
 	}
 
 	// id
@@ -118,16 +125,16 @@ func (s *QuasarService) Save(
 		return nil, connect.NewError(connect.CodeInternal, ErrSomethingWentWrong)
 	}
 
-	return connect.NewResponse(&quasarv1.SaveResponse{
+	return connect.NewResponse(&quasarv1.ShareResponse{
 		Id:        id,
 		CreatedAt: timestamppb.New(createdAt),
 	}), nil
 }
 
-func (s *QuasarService) Load(
+func (s *QuasarService) Edit(
 	ctx context.Context,
-	req *connect.Request[quasarv1.LoadRequest],
-) (resp *connect.Response[quasarv1.LoadResponse], err error) {
+	req *connect.Request[quasarv1.EditRequest],
+) (resp *connect.Response[quasarv1.EditResponse], err error) {
 	id := req.Msg.Id
 	if len(id) == 0 {
 		return nil, connect.NewError(connect.CodeInvalidArgument, ErrIDNotFound)
@@ -153,7 +160,7 @@ func (s *QuasarService) Load(
 		return nil, connect.NewError(connect.CodeInternal, err)
 	}
 
-	return connect.NewResponse(&quasarv1.LoadResponse{
+	return connect.NewResponse(&quasarv1.EditResponse{
 		Id:        id,
 		Code:      code,
 		CreatedAt: timestamppb.New(createdAt),

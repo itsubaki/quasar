@@ -2,7 +2,7 @@ Feature:
     In order to share quantum algorithm with openqasm
     As an API User
 
-    Scenario: should save bell.qasm
+    Scenario: should share bell.qasm
         Given I set file "testdata/bell.qasm"
         Given I set "content-type" header with "application/json"
         Given I set request body:
@@ -11,7 +11,7 @@ Feature:
                 "code": "{{file:testdata/bell.qasm}}"
             }
             """
-        When I send "POST" request to "/quasar.v1.QuasarService/Save"
+        When I send "POST" request to "/quasar.v1.QuasarService/Share"
         Then the response code should be 200
         Then the response should match json:
             """
@@ -21,7 +21,7 @@ Feature:
             }
             """
 
-    Scenario: should load bell.qasm
+    Scenario: should edit bell.qasm
         Given I set "content-type" header with "application/json"
         Given I set request body:
             """
@@ -29,7 +29,7 @@ Feature:
                 "id": "AMOYU8a1VLEfWjqf"
             }
             """
-        When I send "POST" request to "/quasar.v1.QuasarService/Load"
+        When I send "POST" request to "/quasar.v1.QuasarService/Edit"
         Then the response code should be 200
         Then the response should match json:
             """

@@ -26,20 +26,20 @@ message SimulateResponse {
   repeated State states = 1;
 }
 
-message SaveRequest {
+message ShareRequest {
   string code = 1;
 }
 
-message SaveResponse {
+message ShareResponse {
   string id = 1;
   google.protobuf.Timestamp created_at = 2;
 }
 
-message LoadRequest {
+message EditRequest {
   string id = 1;
 }
 
-message LoadResponse {
+message EditResponse {
   string id = 1;
   string code = 2;
   google.protobuf.Timestamp created_at = 3;
@@ -47,6 +47,6 @@ message LoadResponse {
 
 service QuasarService {
   rpc Simulate(SimulateRequest) returns (SimulateResponse) {};
-  rpc Save(SaveRequest) returns (SaveResponse) {};
-  rpc Load(LoadRequest) returns (LoadResponse) {};
+  rpc Share(ShareRequest) returns (ShareResponse) {};
+  rpc Edit(EditRequest) returns (EditResponse) {};
 }

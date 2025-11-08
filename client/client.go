@@ -64,8 +64,8 @@ func (c *Client) Simulate(ctx context.Context, code string) (*States, error) {
 	return &States{States: states}, nil
 }
 
-func (c *Client) Save(ctx context.Context, code string) (string, time.Time, error) {
-	resp, err := c.quasarClient.Save(ctx, connect.NewRequest(&quasarv1.SaveRequest{
+func (c *Client) Share(ctx context.Context, code string) (string, time.Time, error) {
+	resp, err := c.quasarClient.Share(ctx, connect.NewRequest(&quasarv1.ShareRequest{
 		Code: code,
 	}))
 	if err != nil {
@@ -75,8 +75,8 @@ func (c *Client) Save(ctx context.Context, code string) (string, time.Time, erro
 	return resp.Msg.Id, resp.Msg.CreatedAt.AsTime(), nil
 }
 
-func (c *Client) Load(ctx context.Context, id string) (string, time.Time, error) {
-	resp, err := c.quasarClient.Load(ctx, connect.NewRequest(&quasarv1.LoadRequest{
+func (c *Client) Edit(ctx context.Context, id string) (string, time.Time, error) {
+	resp, err := c.quasarClient.Edit(ctx, connect.NewRequest(&quasarv1.EditRequest{
 		Id: id,
 	}))
 	if err != nil {

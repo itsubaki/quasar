@@ -35,11 +35,17 @@ const (
 const (
 	// QuasarServiceSimulateProcedure is the fully-qualified name of the QuasarService's Simulate RPC.
 	QuasarServiceSimulateProcedure = "/quasar.v1.QuasarService/Simulate"
+	// QuasarServiceShareProcedure is the fully-qualified name of the QuasarService's Share RPC.
+	QuasarServiceShareProcedure = "/quasar.v1.QuasarService/Share"
+	// QuasarServiceEditProcedure is the fully-qualified name of the QuasarService's Edit RPC.
+	QuasarServiceEditProcedure = "/quasar.v1.QuasarService/Edit"
 )
 
 // QuasarServiceClient is a client for the quasar.v1.QuasarService service.
 type QuasarServiceClient interface {
 	Simulate(context.Context, *connect.Request[v1.SimulateRequest]) (*connect.Response[v1.SimulateResponse], error)
+	Share(context.Context, *connect.Request[v1.ShareRequest]) (*connect.Response[v1.ShareResponse], error)
+	Edit(context.Context, *connect.Request[v1.EditRequest]) (*connect.Response[v1.EditResponse], error)
 }
 
 // NewQuasarServiceClient constructs a client for the quasar.v1.QuasarService service. By default,
@@ -59,12 +65,26 @@ func NewQuasarServiceClient(httpClient connect.HTTPClient, baseURL string, opts 
 			connect.WithSchema(quasarServiceMethods.ByName("Simulate")),
 			connect.WithClientOptions(opts...),
 		),
+		share: connect.NewClient[v1.ShareRequest, v1.ShareResponse](
+			httpClient,
+			baseURL+QuasarServiceShareProcedure,
+			connect.WithSchema(quasarServiceMethods.ByName("Share")),
+			connect.WithClientOptions(opts...),
+		),
+		edit: connect.NewClient[v1.EditRequest, v1.EditResponse](
+			httpClient,
+			baseURL+QuasarServiceEditProcedure,
+			connect.WithSchema(quasarServiceMethods.ByName("Edit")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
 // quasarServiceClient implements QuasarServiceClient.
 type quasarServiceClient struct {
 	simulate *connect.Client[v1.SimulateRequest, v1.SimulateResponse]
+	share    *connect.Client[v1.ShareRequest, v1.ShareResponse]
+	edit     *connect.Client[v1.EditRequest, v1.EditResponse]
 }
 
 // Simulate calls quasar.v1.QuasarService.Simulate.
@@ -72,9 +92,21 @@ func (c *quasarServiceClient) Simulate(ctx context.Context, req *connect.Request
 	return c.simulate.CallUnary(ctx, req)
 }
 
+// Share calls quasar.v1.QuasarService.Share.
+func (c *quasarServiceClient) Share(ctx context.Context, req *connect.Request[v1.ShareRequest]) (*connect.Response[v1.ShareResponse], error) {
+	return c.share.CallUnary(ctx, req)
+}
+
+// Edit calls quasar.v1.QuasarService.Edit.
+func (c *quasarServiceClient) Edit(ctx context.Context, req *connect.Request[v1.EditRequest]) (*connect.Response[v1.EditResponse], error) {
+	return c.edit.CallUnary(ctx, req)
+}
+
 // QuasarServiceHandler is an implementation of the quasar.v1.QuasarService service.
 type QuasarServiceHandler interface {
 	Simulate(context.Context, *connect.Request[v1.SimulateRequest]) (*connect.Response[v1.SimulateResponse], error)
+	Share(context.Context, *connect.Request[v1.ShareRequest]) (*connect.Response[v1.ShareResponse], error)
+	Edit(context.Context, *connect.Request[v1.EditRequest]) (*connect.Response[v1.EditResponse], error)
 }
 
 // NewQuasarServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -90,10 +122,26 @@ func NewQuasarServiceHandler(svc QuasarServiceHandler, opts ...connect.HandlerOp
 		connect.WithSchema(quasarServiceMethods.ByName("Simulate")),
 		connect.WithHandlerOptions(opts...),
 	)
+	quasarServiceShareHandler := connect.NewUnaryHandler(
+		QuasarServiceShareProcedure,
+		svc.Share,
+		connect.WithSchema(quasarServiceMethods.ByName("Share")),
+		connect.WithHandlerOptions(opts...),
+	)
+	quasarServiceEditHandler := connect.NewUnaryHandler(
+		QuasarServiceEditProcedure,
+		svc.Edit,
+		connect.WithSchema(quasarServiceMethods.ByName("Edit")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/quasar.v1.QuasarService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case QuasarServiceSimulateProcedure:
 			quasarServiceSimulateHandler.ServeHTTP(w, r)
+		case QuasarServiceShareProcedure:
+			quasarServiceShareHandler.ServeHTTP(w, r)
+		case QuasarServiceEditProcedure:
+			quasarServiceEditHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -105,4 +153,12 @@ type UnimplementedQuasarServiceHandler struct{}
 
 func (UnimplementedQuasarServiceHandler) Simulate(context.Context, *connect.Request[v1.SimulateRequest]) (*connect.Response[v1.SimulateResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("quasar.v1.QuasarService.Simulate is not implemented"))
+}
+
+func (UnimplementedQuasarServiceHandler) Share(context.Context, *connect.Request[v1.ShareRequest]) (*connect.Response[v1.ShareResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("quasar.v1.QuasarService.Share is not implemented"))
+}
+
+func (UnimplementedQuasarServiceHandler) Edit(context.Context, *connect.Request[v1.EditRequest]) (*connect.Response[v1.EditResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("quasar.v1.QuasarService.Edit is not implemented"))
 }

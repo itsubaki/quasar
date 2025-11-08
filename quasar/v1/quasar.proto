@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package quasar.v1;
 
+import "google/protobuf/timestamp.proto";
+
 option go_package = "github.com/itsubaki/quasar/gen/quasar/v1;quasarv1";
 
 message SimulateRequest {
@@ -24,6 +26,27 @@ message SimulateResponse {
   repeated State states = 1;
 }
 
+message ShareRequest {
+  string code = 1;
+}
+
+message ShareResponse {
+  string id = 1;
+  google.protobuf.Timestamp created_at = 2;
+}
+
+message EditRequest {
+  string id = 1;
+}
+
+message EditResponse {
+  string id = 1;
+  string code = 2;
+  google.protobuf.Timestamp created_at = 3;
+}
+
 service QuasarService {
   rpc Simulate(SimulateRequest) returns (SimulateResponse) {};
+  rpc Share(ShareRequest) returns (ShareResponse) {};
+  rpc Edit(EditRequest) returns (EditResponse) {};
 }

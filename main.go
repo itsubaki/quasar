@@ -13,12 +13,14 @@ import (
 	"syscall"
 	"time"
 
+	"cloud.google.com/go/firestore"
 	"cloud.google.com/go/profiler"
 	"github.com/itsubaki/quasar/handler"
 )
 
 var (
 	projectID   = os.Getenv("PROJECT_ID")
+	databaseID  = os.Getenv("DATABASE_ID")
 	serviceName = os.Getenv("K_SERVICE")  // https://cloud.google.com/run/docs/container-contract?hl=ja#services-env-vars
 	revision    = os.Getenv("K_REVISION") // https://cloud.google.com/run/docs/container-contract?hl=ja#services-env-vars
 	cprof       = os.Getenv("USE_CPROF")
@@ -55,9 +57,20 @@ func main() {
 		}
 	}
 
+	// firestore client
+	fsc, err := firestore.NewClientWithDatabase(
+		context.Background(),
+		projectID,
+		databaseID,
+	)
+	if err != nil {
+		log.Fatalf("new firestore client: %v", err)
+	}
+
 	// handler
 	h, err := handler.New(
 		maxQubits,
+		fsc,
 	)
 	if err != nil {
 		log.Fatalf("new handler: %v", err)

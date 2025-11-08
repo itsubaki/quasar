@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"context"
 	"fmt"
 	"net/http"
 	_ "net/http/pprof"
@@ -12,7 +11,7 @@ import (
 	"golang.org/x/net/http2/h2c"
 )
 
-func New(projectID, databaseID string, maxQubits int) (http.Handler, error) {
+func New(maxQubits int, fsc *firestore.Client) (http.Handler, error) {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
@@ -24,15 +23,10 @@ func New(projectID, databaseID string, maxQubits int) (http.Handler, error) {
 		_, _ = fmt.Fprintf(w, `{"ok": true}`)
 	})
 
-	fs, err := firestore.NewClientWithDatabase(context.Background(), projectID, databaseID)
-	if err != nil {
-		return nil, fmt.Errorf("new firestore client: %v", err)
-	}
-
 	mux.Handle(quasarv1connect.NewQuasarServiceHandler(
 		&QuasarService{
 			MaxQubits: maxQubits,
-			Firestore: fs,
+			Firestore: fsc,
 		},
 	))
 

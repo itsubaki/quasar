@@ -13,6 +13,7 @@ import (
 	"syscall"
 	"time"
 
+	"cloud.google.com/go/firestore"
 	"cloud.google.com/go/profiler"
 	"github.com/itsubaki/quasar/handler"
 )
@@ -56,11 +57,20 @@ func main() {
 		}
 	}
 
-	// handler
-	h, err := handler.New(
+	// firestore client
+	fsc, err := firestore.NewClientWithDatabase(
+		context.Background(),
 		projectID,
 		databaseID,
+	)
+	if err != nil {
+		log.Fatalf("new firestore client: %v", err)
+	}
+
+	// handler
+	h, err := handler.New(
 		maxQubits,
+		fsc,
 	)
 	if err != nil {
 		log.Fatalf("new handler: %v", err)

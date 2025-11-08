@@ -35,11 +35,17 @@ const (
 const (
 	// QuasarServiceSimulateProcedure is the fully-qualified name of the QuasarService's Simulate RPC.
 	QuasarServiceSimulateProcedure = "/quasar.v1.QuasarService/Simulate"
+	// QuasarServiceSaveProcedure is the fully-qualified name of the QuasarService's Save RPC.
+	QuasarServiceSaveProcedure = "/quasar.v1.QuasarService/Save"
+	// QuasarServiceLoadProcedure is the fully-qualified name of the QuasarService's Load RPC.
+	QuasarServiceLoadProcedure = "/quasar.v1.QuasarService/Load"
 )
 
 // QuasarServiceClient is a client for the quasar.v1.QuasarService service.
 type QuasarServiceClient interface {
 	Simulate(context.Context, *connect.Request[v1.SimulateRequest]) (*connect.Response[v1.SimulateResponse], error)
+	Save(context.Context, *connect.Request[v1.SaveRequest]) (*connect.Response[v1.SaveResponse], error)
+	Load(context.Context, *connect.Request[v1.LoadRequest]) (*connect.Response[v1.LoadResponse], error)
 }
 
 // NewQuasarServiceClient constructs a client for the quasar.v1.QuasarService service. By default,
@@ -59,12 +65,26 @@ func NewQuasarServiceClient(httpClient connect.HTTPClient, baseURL string, opts 
 			connect.WithSchema(quasarServiceMethods.ByName("Simulate")),
 			connect.WithClientOptions(opts...),
 		),
+		save: connect.NewClient[v1.SaveRequest, v1.SaveResponse](
+			httpClient,
+			baseURL+QuasarServiceSaveProcedure,
+			connect.WithSchema(quasarServiceMethods.ByName("Save")),
+			connect.WithClientOptions(opts...),
+		),
+		load: connect.NewClient[v1.LoadRequest, v1.LoadResponse](
+			httpClient,
+			baseURL+QuasarServiceLoadProcedure,
+			connect.WithSchema(quasarServiceMethods.ByName("Load")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
 // quasarServiceClient implements QuasarServiceClient.
 type quasarServiceClient struct {
 	simulate *connect.Client[v1.SimulateRequest, v1.SimulateResponse]
+	save     *connect.Client[v1.SaveRequest, v1.SaveResponse]
+	load     *connect.Client[v1.LoadRequest, v1.LoadResponse]
 }
 
 // Simulate calls quasar.v1.QuasarService.Simulate.
@@ -72,9 +92,21 @@ func (c *quasarServiceClient) Simulate(ctx context.Context, req *connect.Request
 	return c.simulate.CallUnary(ctx, req)
 }
 
+// Save calls quasar.v1.QuasarService.Save.
+func (c *quasarServiceClient) Save(ctx context.Context, req *connect.Request[v1.SaveRequest]) (*connect.Response[v1.SaveResponse], error) {
+	return c.save.CallUnary(ctx, req)
+}
+
+// Load calls quasar.v1.QuasarService.Load.
+func (c *quasarServiceClient) Load(ctx context.Context, req *connect.Request[v1.LoadRequest]) (*connect.Response[v1.LoadResponse], error) {
+	return c.load.CallUnary(ctx, req)
+}
+
 // QuasarServiceHandler is an implementation of the quasar.v1.QuasarService service.
 type QuasarServiceHandler interface {
 	Simulate(context.Context, *connect.Request[v1.SimulateRequest]) (*connect.Response[v1.SimulateResponse], error)
+	Save(context.Context, *connect.Request[v1.SaveRequest]) (*connect.Response[v1.SaveResponse], error)
+	Load(context.Context, *connect.Request[v1.LoadRequest]) (*connect.Response[v1.LoadResponse], error)
 }
 
 // NewQuasarServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -90,10 +122,26 @@ func NewQuasarServiceHandler(svc QuasarServiceHandler, opts ...connect.HandlerOp
 		connect.WithSchema(quasarServiceMethods.ByName("Simulate")),
 		connect.WithHandlerOptions(opts...),
 	)
+	quasarServiceSaveHandler := connect.NewUnaryHandler(
+		QuasarServiceSaveProcedure,
+		svc.Save,
+		connect.WithSchema(quasarServiceMethods.ByName("Save")),
+		connect.WithHandlerOptions(opts...),
+	)
+	quasarServiceLoadHandler := connect.NewUnaryHandler(
+		QuasarServiceLoadProcedure,
+		svc.Load,
+		connect.WithSchema(quasarServiceMethods.ByName("Load")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/quasar.v1.QuasarService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case QuasarServiceSimulateProcedure:
 			quasarServiceSimulateHandler.ServeHTTP(w, r)
+		case QuasarServiceSaveProcedure:
+			quasarServiceSaveHandler.ServeHTTP(w, r)
+		case QuasarServiceLoadProcedure:
+			quasarServiceLoadHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -105,4 +153,12 @@ type UnimplementedQuasarServiceHandler struct{}
 
 func (UnimplementedQuasarServiceHandler) Simulate(context.Context, *connect.Request[v1.SimulateRequest]) (*connect.Response[v1.SimulateResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("quasar.v1.QuasarService.Simulate is not implemented"))
+}
+
+func (UnimplementedQuasarServiceHandler) Save(context.Context, *connect.Request[v1.SaveRequest]) (*connect.Response[v1.SaveResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("quasar.v1.QuasarService.Save is not implemented"))
+}
+
+func (UnimplementedQuasarServiceHandler) Load(context.Context, *connect.Request[v1.LoadRequest]) (*connect.Response[v1.LoadResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("quasar.v1.QuasarService.Load is not implemented"))
 }

@@ -19,6 +19,7 @@ import (
 
 var (
 	projectID   = os.Getenv("PROJECT_ID")
+	databaseID  = os.Getenv("DATABASE_ID")
 	serviceName = os.Getenv("K_SERVICE")  // https://cloud.google.com/run/docs/container-contract?hl=ja#services-env-vars
 	revision    = os.Getenv("K_REVISION") // https://cloud.google.com/run/docs/container-contract?hl=ja#services-env-vars
 	cprof       = os.Getenv("USE_CPROF")
@@ -57,6 +58,8 @@ func main() {
 
 	// handler
 	h, err := handler.New(
+		projectID,
+		databaseID,
 		maxQubits,
 	)
 	if err != nil {

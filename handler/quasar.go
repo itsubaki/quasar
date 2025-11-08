@@ -2,21 +2,30 @@ package handler
 
 import (
 	"context"
+	"crypto/sha256"
+	"encoding/base64"
 	"errors"
+	"fmt"
 	"math"
+	"time"
 
+	"cloud.google.com/go/firestore"
 	"connectrpc.com/connect"
 	"github.com/antlr4-go/antlr/v4"
 	"github.com/itsubaki/q"
 	"github.com/itsubaki/qasm/gen/parser"
 	"github.com/itsubaki/qasm/visitor"
 	quasarv1 "github.com/itsubaki/quasar/gen/quasar/v1"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 var ErrQubitsNotFound = errors.New("qubits not found")
 
 type QuasarService struct {
 	MaxQubits int
+	Firestore *firestore.Client
 }
 
 func (s *QuasarService) Simulate(
@@ -75,4 +84,84 @@ func (s *QuasarService) Simulate(
 	return connect.NewResponse(&quasarv1.SimulateResponse{
 		States: states,
 	}), nil
+}
+
+func (s *QuasarService) Save(
+	ctx context.Context,
+	req *connect.Request[quasarv1.SaveRequest],
+) (resp *connect.Response[quasarv1.SaveResponse], err error) {
+	code := req.Msg.Code
+	if len(code) == 0 {
+		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("code is empty"))
+	}
+
+	// id
+	hash := sha256.Sum256([]byte(code))
+	id := base64.RawURLEncoding.EncodeToString(hash[:])[:16]
+
+	// save to firestore
+	createdAt := time.Now()
+	if _, err := s.Firestore.Collection("qasm").Doc(id).Set(ctx, map[string]any{
+		"code":       code,
+		"created_at": createdAt,
+	}); err != nil {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("something went wrong"))
+	}
+
+	return connect.NewResponse(&quasarv1.SaveResponse{
+		Id:        id,
+		CreatedAt: timestamppb.New(createdAt),
+	}), nil
+}
+
+func (s *QuasarService) Load(
+	ctx context.Context,
+	req *connect.Request[quasarv1.LoadRequest],
+) (resp *connect.Response[quasarv1.LoadResponse], err error) {
+	id := req.Msg.Id
+	if len(id) == 0 {
+		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("id is empty"))
+	}
+
+	// load from firestore
+	ref, err := s.Firestore.Collection("qasm").Doc(id).Get(ctx)
+	if err != nil {
+		if status.Code(err) == codes.NotFound {
+			return nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("id=%v not found", id))
+		}
+
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("something went wrong"))
+	}
+
+	code, err := Get[string](ref.Data(), "code")
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInternal, err)
+	}
+
+	createdAt, err := Get[time.Time](ref.Data(), "created_at")
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInternal, err)
+	}
+
+	return connect.NewResponse(&quasarv1.LoadResponse{
+		Id:        id,
+		Code:      code,
+		CreatedAt: timestamppb.New(createdAt),
+	}), nil
+}
+
+func Get[T any](data map[string]any, key string) (T, error) {
+	v, ok := data[key]
+	if !ok {
+		var zero T
+		return zero, fmt.Errorf("field %s not found", key)
+	}
+
+	typed, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, fmt.Errorf("invalid type(%T)", v)
+	}
+
+	return typed, nil
 }

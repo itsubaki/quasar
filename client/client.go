@@ -27,6 +27,12 @@ type Amplitude struct {
 	Imag float64 `json:"imag"`
 }
 
+type Snippet struct {
+	ID        string
+	Code      string
+	CreatedAt time.Time
+}
+
 type Client struct {
 	quasarClient quasarv1connect.QuasarServiceClient
 }
@@ -61,27 +67,37 @@ func (c *Client) Simulate(ctx context.Context, code string) (*States, error) {
 		}
 	}
 
-	return &States{States: states}, nil
+	return &States{
+		States: states,
+	}, nil
 }
 
-func (c *Client) Share(ctx context.Context, code string) (string, time.Time, error) {
+func (c *Client) Share(ctx context.Context, code string) (*Snippet, error) {
 	resp, err := c.quasarClient.Share(ctx, connect.NewRequest(&quasarv1.ShareRequest{
 		Code: code,
 	}))
 	if err != nil {
-		return "", time.Time{}, fmt.Errorf("share: %w", err)
+		return nil, fmt.Errorf("share: %w", err)
 	}
 
-	return resp.Msg.Id, resp.Msg.CreatedAt.AsTime(), nil
+	return &Snippet{
+		ID:        resp.Msg.Id,
+		Code:      code,
+		CreatedAt: resp.Msg.CreatedAt.AsTime(),
+	}, nil
 }
 
-func (c *Client) Edit(ctx context.Context, id string) (string, time.Time, error) {
+func (c *Client) Edit(ctx context.Context, id string) (*Snippet, error) {
 	resp, err := c.quasarClient.Edit(ctx, connect.NewRequest(&quasarv1.EditRequest{
 		Id: id,
 	}))
 	if err != nil {
-		return "", time.Time{}, fmt.Errorf("edit: %w", err)
+		return nil, fmt.Errorf("edit: %w", err)
 	}
 
-	return resp.Msg.Code, resp.Msg.CreatedAt.AsTime(), nil
+	return &Snippet{
+		ID:        resp.Msg.Id,
+		Code:      resp.Msg.Code,
+		CreatedAt: resp.Msg.CreatedAt.AsTime(),
+	}, nil
 }

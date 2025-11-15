@@ -30,23 +30,23 @@ func main() {
 	}
 
 	// share
-	id, createdAt, err := client.
+	resp, err := client.
 		New(TargetURL, client.NewWithIdentityToken(IdentityToken)).
 		Share(context.Background(), string(contents))
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Println("shared: ", id, createdAt)
+	fmt.Println("shared: ", resp.ID, resp.CreatedAt)
 
 	// edit
-	code, createdAt, err := client.
+	snippet, err := client.
 		New(TargetURL, client.NewWithIdentityToken(IdentityToken)).
-		Edit(context.Background(), id)
+		Edit(context.Background(), resp.ID)
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Println("edited:", id, createdAt)
-	fmt.Println(code)
+	fmt.Println("edited:", snippet.ID, snippet.CreatedAt)
+	fmt.Println(snippet.Code)
 }

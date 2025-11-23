@@ -60,6 +60,7 @@ type FireStore struct {
 
 func (s *FireStore) Put(ctx context.Context, id string, snippet *Snippet) error {
 	if _, err := s.Client.Collection(s.Collection).Doc(id).Set(ctx, map[string]any{
+		"id":         id,
 		"code":       snippet.Code,
 		"created_at": snippet.CreatedAt,
 	}); err != nil {

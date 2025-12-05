@@ -153,6 +153,10 @@ func (s *QuasarService) Edit(
 			return nil, connect.NewError(connect.CodeNotFound, ErrNoSuchEntity)
 		}
 
+		if errors.Is(err, store.ErrNoSuchEntity) {
+			return nil, connect.NewError(connect.CodeNotFound, ErrNoSuchEntity)
+		}
+
 		return nil, connect.NewError(connect.CodeInternal, ErrSomethingWentWrong)
 	}
 

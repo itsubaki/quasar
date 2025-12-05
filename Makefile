@@ -27,6 +27,8 @@ gen:
 
 test:
 	PROJECT_ID=${PROJECT_ID} DATABASE_ID=${DATABASE_ID} go test -v -coverprofile=coverage.txt -covermode=atomic -coverpkg=./...
+	grep -Ev "gen|main.go" coverage.txt > tmp.txt
+	mv tmp.txt coverage.txt
 
 testwip:
 	PROJECT_ID=${PROJECT_ID} DATABASE_ID=${DATABASE_ID} go test -v -godog.tags=wip -coverprofile=coverage.txt -covermode=atomic -coverpkg=./...

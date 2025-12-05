@@ -27,3 +27,13 @@ func ExampleMemoryStore() {
 	// Output:
 	// bar
 }
+
+func ExampleMemoryStore_nohit() {
+	s := &store.MemoryStore{}
+	if _, err := s.Get(context.TODO(), "foo"); err != nil {
+		fmt.Println(err)
+	}
+
+	// Output:
+	// no such entity
+}

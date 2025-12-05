@@ -71,7 +71,7 @@ func main() {
 	// handler
 	h, err := handler.New(
 		maxQubits,
-		&store.FireStore{
+		&store.Firestore{
 			Collection: "snippet",
 			Client:     fsc,
 		},

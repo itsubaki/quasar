@@ -37,7 +37,7 @@ var (
 
 var (
 	_ Store = (*store.MemoryStore)(nil)
-	_ Store = (*store.FireStore)(nil)
+	_ Store = (*store.Firestore)(nil)
 )
 
 type Store interface {

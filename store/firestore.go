@@ -8,12 +8,12 @@ import (
 	"cloud.google.com/go/firestore"
 )
 
-type FireStore struct {
+type Firestore struct {
 	Collection string
 	Client     *firestore.Client
 }
 
-func (s *FireStore) Put(ctx context.Context, id string, snippet *Snippet) error {
+func (s *Firestore) Put(ctx context.Context, id string, snippet *Snippet) error {
 	if _, err := s.Client.Collection(s.Collection).Doc(id).Set(ctx, map[string]any{
 		"id":         id,
 		"code":       snippet.Code,
@@ -25,7 +25,7 @@ func (s *FireStore) Put(ctx context.Context, id string, snippet *Snippet) error 
 	return nil
 }
 
-func (s *FireStore) Get(ctx context.Context, id string) (*Snippet, error) {
+func (s *Firestore) Get(ctx context.Context, id string) (*Snippet, error) {
 	doc, err := s.Client.Collection(s.Collection).Doc(id).Get(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("get: %w", err)

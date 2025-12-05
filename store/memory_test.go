@@ -1,16 +1,16 @@
-package handler_test
+package store_test
 
 import (
 	"context"
 	"fmt"
 	"time"
 
-	"github.com/itsubaki/quasar/handler"
+	"github.com/itsubaki/quasar/store"
 )
 
 func ExampleMemoryStore() {
-	s := &handler.MemoryStore{}
-	if err := s.Put(context.TODO(), "foo", &handler.Snippet{
+	s := &store.MemoryStore{}
+	if err := s.Put(context.TODO(), "foo", &store.Snippet{
 		Code:      "bar",
 		CreatedAt: time.Now(),
 	}); err != nil {

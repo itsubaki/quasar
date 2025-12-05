@@ -16,6 +16,7 @@ import (
 	"cloud.google.com/go/firestore"
 	"cloud.google.com/go/profiler"
 	"github.com/itsubaki/quasar/handler"
+	"github.com/itsubaki/quasar/store"
 )
 
 var (
@@ -70,7 +71,7 @@ func main() {
 	// handler
 	h, err := handler.New(
 		maxQubits,
-		&handler.FireStore{
+		&store.FireStore{
 			Collection: "snippet",
 			Client:     fsc,
 		},

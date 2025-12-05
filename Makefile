@@ -34,6 +34,11 @@ testwip:
 testpkg:
 	PROJECT_ID=${PROJECT_ID} DATABASE_ID=${DATABASE_ID} go test -v -cover $(shell go list ./... | grep -v /vendor/ | grep -v /build/ | grep -v -E "quasar$$") -coverprofile=coverage-pkg.txt -covermode=atomic
 
+coverage:
+	tail -n +1 coverage.txt     | grep -v 'main' >  cover.txt
+	tail -n +2 coverage-pkg.txt | grep -v 'main' >> cover.txt
+	go tool cover -html=cover.txt -o cover.html
+
 lint:
 	golangci-lint run
 

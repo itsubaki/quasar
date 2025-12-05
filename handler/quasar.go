@@ -16,6 +16,7 @@ import (
 	"github.com/itsubaki/qasm/gen/parser"
 	"github.com/itsubaki/qasm/visitor"
 	quasarv1 "github.com/itsubaki/quasar/gen/quasar/v1"
+	"github.com/itsubaki/quasar/store"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -33,6 +34,16 @@ var (
 	ErrNoSuchEntity       = errors.New("no such entity")
 	ErrSomethingWentWrong = errors.New("something went wrong")
 )
+
+var (
+	_ Store = (*store.MemoryStore)(nil)
+	_ Store = (*store.FireStore)(nil)
+)
+
+type Store interface {
+	Put(ctx context.Context, id string, snippet *store.Snippet) error
+	Get(ctx context.Context, id string) (*store.Snippet, error)
+}
 
 type QuasarService struct {
 	MaxQubits int
@@ -113,7 +124,7 @@ func (s *QuasarService) Share(
 
 	// put
 	id, createdAt := GenID(code, 16), time.Now()
-	if err := s.Store.Put(ctx, id, &Snippet{
+	if err := s.Store.Put(ctx, id, &store.Snippet{
 		Code:      code,
 		CreatedAt: createdAt,
 	}); err != nil {

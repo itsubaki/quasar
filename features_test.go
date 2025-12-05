@@ -13,6 +13,7 @@ import (
 
 	"github.com/cucumber/godog"
 	"github.com/itsubaki/quasar/handler"
+	"github.com/itsubaki/quasar/store"
 	"github.com/jfilipczyk/gomatch"
 )
 
@@ -30,7 +31,7 @@ type apiFeature struct {
 func (a *apiFeature) start() {
 	h, err := handler.New(
 		0, // no limit
-		&handler.MemoryStore{},
+		&store.MemoryStore{},
 	)
 	if err != nil {
 		log.Fatalf("new handler: %v", err)

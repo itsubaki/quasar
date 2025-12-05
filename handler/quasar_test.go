@@ -67,3 +67,15 @@ qft(q);
 	// [110] [ 6]: +0.0000 -0.3536: 0.1250
 	// [111] [ 7]: +0.2500 -0.2500: 0.1250
 }
+
+func ExampleQuasarService_noqubits() {
+	service := &handler.QuasarService{}
+	if _, err := service.Simulate(context.Background(), connect.NewRequest(&quasarv1.SimulateRequest{
+		Code: "OPENQASM 3.0;",
+	})); err != nil {
+		fmt.Println(err)
+	}
+
+	// Output:
+	// invalid_argument: qubits not found
+}

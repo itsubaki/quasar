@@ -9,7 +9,7 @@ require (
 	github.com/antlr4-go/antlr/v4 v4.13.1
 	github.com/cucumber/godog v0.15.0
 	github.com/itsubaki/q v0.0.10-0.20251123112312-2feee8f64b26
-	github.com/itsubaki/qasm v0.1.4-0.20251206021503-a4bd5fa6610c
+	github.com/itsubaki/qasm v0.1.4-0.20260107152908-407a442a9475
 	github.com/jfilipczyk/gomatch v1.2.1
 	golang.org/x/net v0.48.0
 	google.golang.org/grpc v1.78.0
@@ -30,10 +30,10 @@ require (
 	github.com/go-logr/logr v1.4.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/gofrs/uuid v4.3.1+incompatible // indirect
-	github.com/google/pprof v0.0.0-20251213031049-b05bdaca462f // indirect
+	github.com/google/pprof v0.0.0-20260106004452-d7df1bf2cac7 // indirect
 	github.com/google/s2a-go v0.1.9 // indirect
 	github.com/google/uuid v1.6.0 // indirect
-	github.com/googleapis/enterprise-certificate-proxy v0.3.7 // indirect
+	github.com/googleapis/enterprise-certificate-proxy v0.3.8 // indirect
 	github.com/googleapis/gax-go/v2 v2.16.0 // indirect
 	github.com/hashicorp/go-immutable-radix v1.3.1 // indirect
 	github.com/hashicorp/go-memdb v1.3.4 // indirect
@@ -53,7 +53,7 @@ require (
 	golang.org/x/sys v0.39.0 // indirect
 	golang.org/x/text v0.32.0 // indirect
 	golang.org/x/time v0.14.0 // indirect
-	google.golang.org/api v0.258.0 // indirect
+	google.golang.org/api v0.259.0 // indirect
 	google.golang.org/genproto v0.0.0-20251222181119-0a764e51fe1b // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20251222181119-0a764e51fe1b // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20251222181119-0a764e51fe1b // indirect

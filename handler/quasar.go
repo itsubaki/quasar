@@ -14,6 +14,7 @@ import (
 	"github.com/antlr4-go/antlr/v4"
 	"github.com/itsubaki/q"
 	"github.com/itsubaki/qasm/gen/parser"
+	"github.com/itsubaki/qasm/listener"
 	"github.com/itsubaki/qasm/visitor"
 	quasarv1 "github.com/itsubaki/quasar/gen/quasar/v1"
 	"github.com/itsubaki/quasar/store"
@@ -57,13 +58,25 @@ func (s *QuasarService) Simulate(
 	lexer := parser.Newqasm3Lexer(antlr.NewInputStream(req.Msg.Code))
 	p := parser.Newqasm3Parser(antlr.NewCommonTokenStream(lexer, antlr.TokenDefaultChannel))
 
+	// add error listener
+	errListener := &listener.ErrorListener{}
+	lexer.AddErrorListener(errListener)
+	p.AddErrorListener(errListener)
+
+	// parse
+	program := p.Program()
+	if len(errListener.Errors) > 0 {
+		return nil, connect.NewError(connect.CodeInvalidArgument, errors.Join(errListener.Errors...))
+	}
+
+	// quantum simulator
 	qsim := q.New()
 	env := visitor.NewEnviron()
 	v := visitor.New(qsim, env,
 		visitor.WithMaxQubits(s.MaxQubits),
 	)
 
-	if err := v.Run(p.Program()); err != nil {
+	if err := v.Run(program); err != nil {
 		return nil, connect.NewError(connect.CodeInvalidArgument, err)
 	}
 
@@ -72,11 +85,7 @@ func (s *QuasarService) Simulate(
 	}
 
 	// quantum state
-	var index [][]int
-	for _, n := range env.QubitOrder {
-		index = append(index, q.Index(env.Qubit[n]...))
-	}
-
+	index := env.Index()
 	qstate := qsim.Underlying().State(index...)
 	states := make([]*quasarv1.SimulateResponse_State, len(qstate))
 

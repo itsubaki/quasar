@@ -81,7 +81,7 @@ func TestQuasarService_Simulate(t *testing.T) {
 	}{
 		{
 			code:   "invalid",
-			errMsg: "invalid_argument: statement=: unexpected",
+			errMsg: "invalid_argument: syntax error at line:1:7: no viable alternative at input 'invalid'",
 		},
 		{
 			code:   "qubit[12] q;",
@@ -102,7 +102,7 @@ func TestQuasarService_Simulate(t *testing.T) {
 			continue
 		}
 
-		t.Errorf("expected error but got response: %+v, %v", resp, err)
+		t.Errorf("expected error but got response: resp=%+v, err=%v", resp, err)
 	}
 }
 

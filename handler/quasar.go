@@ -62,7 +62,7 @@ func (s *QuasarService) Simulate(
 	// parse
 	program := p.Program()
 	if len(errListener.Errors) > 0 {
-		return nil, connect.NewError(connect.CodeInvalidArgument, errors.Join(errListener.Errors...))
+		return nil, connect.NewError(connect.CodeInvalidArgument, errListener.Errors[0])
 	}
 
 	// quantum simulator

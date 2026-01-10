@@ -57,11 +57,7 @@ func (s *QuasarService) Simulate(
 ) (*connect.Response[quasarv1.SimulateResponse], error) {
 	lexer := parser.Newqasm3Lexer(antlr.NewInputStream(req.Msg.Code))
 	p := parser.Newqasm3Parser(antlr.NewCommonTokenStream(lexer, antlr.TokenDefaultChannel))
-
-	// add error listener
-	errListener := &listener.ErrorListener{}
-	lexer.AddErrorListener(errListener)
-	p.AddErrorListener(errListener)
+	errListener := listener.NewErrorListener(lexer, p)
 
 	// parse
 	program := p.Program()

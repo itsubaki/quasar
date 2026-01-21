@@ -9,7 +9,7 @@ require (
 	github.com/antlr4-go/antlr/v4 v4.13.1
 	github.com/cucumber/godog v0.15.0
 	github.com/itsubaki/q v0.0.10-0.20260121105909-2df8d49ff6d9
-	github.com/itsubaki/qasm v0.1.4-0.20260121110642-528f85a0d4e7
+	github.com/itsubaki/qasm v0.1.4-0.20260121160241-3bbbf03c3253
 	github.com/jfilipczyk/gomatch v1.2.1
 	golang.org/x/net v0.49.0
 	google.golang.org/grpc v1.78.0

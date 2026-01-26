@@ -92,10 +92,10 @@ github.com/hashicorp/golang-lru v0.5.0/go.mod h1:/m3WP610KZHVQ1SGc6re/UDhFvYD7pJ
 github.com/hashicorp/golang-lru v0.5.4 h1:YDjusn29QI/Das2iO9M0BHnIbxPeyuCHsjMW+lJfyTc=
 github.com/hashicorp/golang-lru v0.5.4/go.mod h1:iADmTwqILo4mZ8BN3D2Q6+9jd8WM5uGBxy+E8yxSoD4=
 github.com/inconshreveable/mousetrap v1.1.0/go.mod h1:vpF70FUmC8bwa3OWnCshd2FqLfsEA9PFc4w1p2J65bw=
-github.com/itsubaki/q v0.0.10-0.20260124140407-e2481902bd31 h1:4pnws9uuzL6ZLt1QhU6MoW+gwiSPITJhRzM7fHU54nk=
-github.com/itsubaki/q v0.0.10-0.20260124140407-e2481902bd31/go.mod h1:iu/YVKAxGQ9h/xxmcVveJqPfJ0yR4N3u6krgXEUC3J4=
-github.com/itsubaki/qasm v0.1.4-0.20260124140747-a8e5cc69895b h1:iRcKrgvyI2a4Xr6wT9XcvORBwFBtErZyi49mH+oSfuA=
-github.com/itsubaki/qasm v0.1.4-0.20260124140747-a8e5cc69895b/go.mod h1:W/Y7Tvp8rFdDZfEdyrzwWTupDk7YBoiJPveksee2q9U=
+github.com/itsubaki/q v0.0.10-0.20260126102831-fbadee41f4d6 h1:q5tUHpjCDUn685gAss2J2hmWkfSIAfGG3cq5zpYDbWU=
+github.com/itsubaki/q v0.0.10-0.20260126102831-fbadee41f4d6/go.mod h1:iu/YVKAxGQ9h/xxmcVveJqPfJ0yR4N3u6krgXEUC3J4=
+github.com/itsubaki/qasm v0.1.4-0.20260126102937-b1768e0b2957 h1:4cnj0Tydd85I0r+bELtT/SRf0ElXUBMNR3wUnqefpro=
+github.com/itsubaki/qasm v0.1.4-0.20260126102937-b1768e0b2957/go.mod h1:dn/sG9b3RFXjkey0uREsKih0ol7Zg8JgyAu4uJetqWo=
 github.com/jfilipczyk/gomatch v1.2.1 h1:1apWwM4OrVl/avoaY9sInZJqioA6HOSOc/Mg8VzQueY=
 github.com/jfilipczyk/gomatch v1.2.1/go.mod h1:uD5cJG0I8GB0lhwg8dq8DspFqtF1Si+n9sPEe1iBgWc=
 github.com/kr/pretty v0.2.1/go.mod h1:ipq/a2n7PKx3OHsz4KJII5eveXtPO4qwEXGdVfWzfnI=

@@ -80,27 +80,29 @@ func (s *QuasarService) Simulate(
 		return nil, connect.NewError(connect.CodeInvalidArgument, ErrQubitsNotFound)
 	}
 
-	// quantum state
-	index := env.Index()
-	qstate := qsim.Underlying().State(index...)
-	states := make([]*quasarv1.SimulateResponse_State, len(qstate))
+	unsigned := func(v []int64) []uint64 {
+		u := make([]uint64, len(v))
+		for i, n := range v {
+			u[i] = uint64(n)
+		}
 
-	// quantum state for json encoding
+		return u
+	}
+
 	truncate := func(v float64, n int) float64 {
 		factor := math.Pow(10, float64(n))
 		return math.Trunc(v*factor) / factor
 	}
 
-	// build response
-	for i, s := range qstate {
-		binaryString, intValue := make([]string, len(index)), make([]uint64, len(index))
-		for j := range index {
-			binaryString[j], intValue[j] = s.BinaryString(j), uint64(s.Int(j))
-		}
+	// quantum state
+	qstate := qsim.Underlying().State(env.Index()...)
 
+	// build response
+	states := make([]*quasarv1.SimulateResponse_State, len(qstate))
+	for i, s := range qstate {
 		states[i] = &quasarv1.SimulateResponse_State{
-			BinaryString: binaryString,
-			Int:          intValue,
+			BinaryString: s.BinaryString(),
+			Int:          unsigned(s.Int()),
 			Probability:  truncate(s.Probability(), 6),
 			Amplitude: &quasarv1.SimulateResponse_Amplitude{
 				Real: truncate(real(s.Amplitude()), 6),

@@ -1,6 +1,6 @@
 module github.com/itsubaki/quasar
 
-go 1.24.9
+go 1.25.0
 
 require (
 	cloud.google.com/go/firestore v1.21.0
@@ -8,17 +8,17 @@ require (
 	connectrpc.com/connect v1.19.1
 	github.com/antlr4-go/antlr/v4 v4.13.1
 	github.com/cucumber/godog v0.15.0
-	github.com/itsubaki/q v0.0.10-0.20260126102831-fbadee41f4d6
-	github.com/itsubaki/qasm v0.1.4-0.20260126102937-b1768e0b2957
+	github.com/itsubaki/q v0.0.11-0.20260213103739-efd176e9c698
+	github.com/itsubaki/qasm v0.1.4-0.20260213152836-13af16dbff37
 	github.com/jfilipczyk/gomatch v1.2.1
-	golang.org/x/net v0.49.0
-	google.golang.org/grpc v1.78.0
+	golang.org/x/net v0.50.0
+	google.golang.org/grpc v1.79.1
 	google.golang.org/protobuf v1.36.11
 )
 
 require (
 	cloud.google.com/go v0.123.0 // indirect
-	cloud.google.com/go/auth v0.18.1 // indirect
+	cloud.google.com/go/auth v0.18.2 // indirect
 	cloud.google.com/go/auth/oauth2adapt v0.2.8 // indirect
 	cloud.google.com/go/compute/metadata v0.9.0 // indirect
 	cloud.google.com/go/longrunning v0.8.0 // indirect
@@ -30,31 +30,31 @@ require (
 	github.com/go-logr/logr v1.4.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/gofrs/uuid v4.3.1+incompatible // indirect
-	github.com/google/pprof v0.0.0-20260115054156-294ebfa9ad83 // indirect
+	github.com/google/pprof v0.0.0-20260202012954-cb029daf43ef // indirect
 	github.com/google/s2a-go v0.1.9 // indirect
 	github.com/google/uuid v1.6.0 // indirect
-	github.com/googleapis/enterprise-certificate-proxy v0.3.11 // indirect
-	github.com/googleapis/gax-go/v2 v2.16.0 // indirect
+	github.com/googleapis/enterprise-certificate-proxy v0.3.12 // indirect
+	github.com/googleapis/gax-go/v2 v2.17.0 // indirect
 	github.com/hashicorp/go-immutable-radix v1.3.1 // indirect
 	github.com/hashicorp/go-memdb v1.3.4 // indirect
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	go.opentelemetry.io/auto/sdk v1.2.1 // indirect
-	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.64.0 // indirect
-	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.64.0 // indirect
-	go.opentelemetry.io/otel v1.39.0 // indirect
-	go.opentelemetry.io/otel/metric v1.39.0 // indirect
-	go.opentelemetry.io/otel/trace v1.39.0 // indirect
-	golang.org/x/crypto v0.47.0 // indirect
-	golang.org/x/exp v0.0.0-20260112195511-716be5621a96 // indirect
-	golang.org/x/oauth2 v0.34.0 // indirect
+	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.65.0 // indirect
+	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.65.0 // indirect
+	go.opentelemetry.io/otel v1.40.0 // indirect
+	go.opentelemetry.io/otel/metric v1.40.0 // indirect
+	go.opentelemetry.io/otel/trace v1.40.0 // indirect
+	golang.org/x/crypto v0.48.0 // indirect
+	golang.org/x/exp v0.0.0-20260212183809-81e46e3db34a // indirect
+	golang.org/x/oauth2 v0.35.0 // indirect
 	golang.org/x/sync v0.19.0 // indirect
-	golang.org/x/sys v0.40.0 // indirect
-	golang.org/x/text v0.33.0 // indirect
+	golang.org/x/sys v0.41.0 // indirect
+	golang.org/x/text v0.34.0 // indirect
 	golang.org/x/time v0.14.0 // indirect
-	google.golang.org/api v0.262.0 // indirect
-	google.golang.org/genproto v0.0.0-20260122232226-8e98ce8d340d // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20260122232226-8e98ce8d340d // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20260122232226-8e98ce8d340d // indirect
+	google.golang.org/api v0.266.0 // indirect
+	google.golang.org/genproto v0.0.0-20260209200024-4cfbd4190f57 // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20260209200024-4cfbd4190f57 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20260209200024-4cfbd4190f57 // indirect
 )

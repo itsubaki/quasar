@@ -80,7 +80,7 @@ func (s *QuasarService) Simulate(
 		return nil, connect.NewError(connect.CodeInvalidArgument, ErrQubitsNotFound)
 	}
 
-	unsigned := func(v []int64) []uint64 {
+	unsigned := func(v []int) []uint64 {
 		u := make([]uint64, len(v))
 		for i, n := range v {
 			u[i] = uint64(n)
@@ -95,7 +95,7 @@ func (s *QuasarService) Simulate(
 	}
 
 	// quantum state
-	qstate := qsim.Underlying().State(env.Index()...)
+	qstate := qsim.Qubit().State(env.Index()...)
 
 	// build response
 	states := make([]*quasarv1.SimulateResponse_State, len(qstate))

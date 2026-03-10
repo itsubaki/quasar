@@ -3,18 +3,19 @@ package main_test
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"reflect"
 	"strings"
 
 	"github.com/cucumber/godog"
 	"github.com/itsubaki/quasar/handler"
 	"github.com/itsubaki/quasar/store"
-	"github.com/jfilipczyk/gomatch"
 )
 
 var api = &apiFeature{}
@@ -104,12 +105,17 @@ func (a *apiFeature) ResponseShouldMatchJSON(body *godog.DocString) error {
 	want := a.replace(body.Content)
 	got := a.resp.Body.String()
 
-	ok, err := gomatch.NewDefaultJSONMatcher().Match(want, got)
-	if err != nil {
-		return fmt.Errorf("got=%v, want=%v, match: %v", got, want, err)
+	var expected any
+	if err := json.Unmarshal([]byte(want), &expected); err != nil {
+		return fmt.Errorf("unmarshal: %w", err)
 	}
 
-	if !ok {
+	var actual any
+	if err := json.Unmarshal([]byte(got), &actual); err != nil {
+		return fmt.Errorf("unmarshal: %w", err)
+	}
+
+	if !reflect.DeepEqual(expected, actual) {
 		return fmt.Errorf("got=%v, want=%v", got, want)
 	}
 

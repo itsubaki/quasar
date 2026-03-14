@@ -13,6 +13,7 @@ import (
 	"connectrpc.com/connect"
 	"github.com/antlr4-go/antlr/v4"
 	"github.com/itsubaki/q"
+	"github.com/itsubaki/qasm/environ"
 	"github.com/itsubaki/qasm/gen/parser"
 	"github.com/itsubaki/qasm/listener"
 	"github.com/itsubaki/qasm/visitor"
@@ -67,7 +68,7 @@ func (s *QuasarService) Simulate(
 
 	// quantum simulator
 	qsim := q.New()
-	env := visitor.NewEnviron()
+	env := environ.New()
 	v := visitor.New(qsim, env,
 		visitor.WithMaxQubits(s.MaxQubits),
 	)

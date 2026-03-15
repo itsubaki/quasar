@@ -100,7 +100,7 @@ Feature:
                     {
                         "amplitude": {
                             "real": -0.249999,
-                            "imag": 0.249999
+                            "imag": 0.25
                         },
                         "probability": 0.124999,
                         "int": [
@@ -152,7 +152,7 @@ Feature:
                             "real": 0.249999,
                             "imag": -0.25
                         },
-                        "probability": 0.125,
+                        "probability": 0.124999,
                         "int": [
                             "7"
                         ],

@@ -29,6 +29,8 @@ const (
 	maxSize = 64 * 1024
 )
 
+var scale = math.Pow(10, 6)
+
 var (
 	ErrQubitsNotFound     = errors.New("qubits not found")
 	ErrCodeNotFound       = errors.New("code not found")
@@ -90,9 +92,8 @@ func (s *QuasarService) Simulate(
 		return u
 	}
 
-	round := func(v float64, n int) float64 {
-		factor := math.Pow(10, float64(n))
-		return math.Round(v*factor) / factor
+	round := func(v float64) float64 {
+		return math.Round(v*scale) / scale
 	}
 
 	// quantum state
@@ -104,10 +105,10 @@ func (s *QuasarService) Simulate(
 		states[i] = &quasarv1.SimulateResponse_State{
 			BinaryString: s.BinaryString(),
 			Int:          unsigned(s.Int()),
-			Probability:  round(s.Probability(), 6),
+			Probability:  round(s.Probability()),
 			Amplitude: &quasarv1.SimulateResponse_Amplitude{
-				Real: round(real(s.Amplitude()), 6),
-				Imag: round(imag(s.Amplitude()), 6),
+				Real: round(real(s.Amplitude())),
+				Imag: round(imag(s.Amplitude())),
 			},
 		}
 	}

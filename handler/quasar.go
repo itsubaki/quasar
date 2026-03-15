@@ -90,9 +90,9 @@ func (s *QuasarService) Simulate(
 		return u
 	}
 
-	truncate := func(v float64, n int) float64 {
+	round := func(v float64, n int) float64 {
 		factor := math.Pow(10, float64(n))
-		return math.Trunc(v*factor) / factor
+		return math.Round(v*factor) / factor
 	}
 
 	// quantum state
@@ -104,10 +104,10 @@ func (s *QuasarService) Simulate(
 		states[i] = &quasarv1.SimulateResponse_State{
 			BinaryString: s.BinaryString(),
 			Int:          unsigned(s.Int()),
-			Probability:  truncate(s.Probability(), 6),
+			Probability:  round(s.Probability(), 6),
 			Amplitude: &quasarv1.SimulateResponse_Amplitude{
-				Real: truncate(real(s.Amplitude()), 6),
-				Imag: truncate(imag(s.Amplitude()), 6),
+				Real: round(real(s.Amplitude()), 6),
+				Imag: round(imag(s.Amplitude()), 6),
 			},
 		}
 	}

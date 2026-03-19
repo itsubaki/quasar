@@ -11,7 +11,7 @@ require (
 	github.com/itsubaki/q v0.0.11-0.20260315124753-2248e6fb67a4
 	github.com/itsubaki/qasm v0.1.4-0.20260315124920-2b2e9ae223aa
 	golang.org/x/net v0.52.0
-	google.golang.org/grpc v1.79.2
+	google.golang.org/grpc v1.79.3
 	google.golang.org/protobuf v1.36.11
 )
 

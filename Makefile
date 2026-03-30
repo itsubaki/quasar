@@ -78,19 +78,19 @@ bell:
 	@curl -s \
 		-H "Authorization: Bearer $(shell gcloud auth print-identity-token)" \
 		-H "Content-Type: application/json" \
-		-d '{"code": "OPENQASM 3.0; gate h q { U(pi/2.0, 0, pi) q; } gate x q { U(pi, 0, pi) q; } gate cx c, t { ctrl @ U(pi, 0, pi) c, t; } qubit[2] q; reset q; h q[0]; cx q[0], q[1];"}' \
+		-d "$$(jq -Rs '{code: .}' testdata/bell.qasm)" \
 		$(shell gcloud run services describe ${SERVICE_NAME} --project ${PROJECT_ID} --format 'value(status.url)')/quasar.v1.QuasarService/Simulate | jq .
 
 curl:
 	@curl -s \
 		-H 'Content-Type: application/json' \
-		-d '{"code": "OPENQASM 3.0; gate h q { U(pi/2.0, 0, pi) q; } gate x q { U(pi, 0, pi) q; } gate cx c, t { ctrl @ U(pi, 0, pi) c, t; } qubit[2] q; reset q; h q[0]; cx q[0], q[1];"}' \
+		-d "$$(jq -Rs '{code: .}' testdata/bell.qasm)" \
 		localhost:8080/quasar.v1.QuasarService/Simulate | jq .
 
 share:
 	@curl -s \
 		-H 'Content-Type: application/json' \
-		-d '{"code": "OPENQASM 3.0; gate h q { U(pi/2.0, 0, pi) q; } gate x q { U(pi, 0, pi) q; } gate cx c, t { ctrl @ U(pi, 0, pi) c, t; } qubit[2] q; reset q; h q[0]; cx q[0], q[1];"}' \
+		-d "$$(jq -Rs '{code: .}' testdata/bell.qasm)" \
 		localhost:8080/quasar.v1.QuasarService/Share | jq .
 
 edit:

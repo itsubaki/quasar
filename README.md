@@ -21,10 +21,10 @@ gcloud run deploy --image ${IMAGE} --set-env-vars=PROJECT_ID=${PROJECT_ID} quasa
 
 ```shell
 curl -s \
-    $(gcloud run services describe ${SERVICE_NAME} --project ${PROJECT_ID} --format 'value(status.url)')/quasar.v1.QuasarService/Simulate 
+    $(gcloud run services describe ${SERVICE_NAME} --project ${PROJECT_ID} --format 'value(status.url)')/quasar.v1.QuasarService/Simulate \
     -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
     -H "Content-Type: application/json" \
-    -d "$$(jq -Rs '{code: .}' testdata/bell.qasm)" | jq
+    -d "$(jq -Rs '{code: .}' testdata/bell.qasm)" | jq
 ```
 
 ```json

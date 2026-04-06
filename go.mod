@@ -8,8 +8,8 @@ require (
 	connectrpc.com/connect v1.19.1
 	github.com/antlr4-go/antlr/v4 v4.13.1
 	github.com/cucumber/godog v0.15.0
-	github.com/itsubaki/q v0.0.11-0.20260404044909-a429ac91d38a
-	github.com/itsubaki/qasm v0.1.5-0.20260406082103-ec582ee00aae
+	github.com/itsubaki/q v0.0.11-0.20260405013445-e7ca0594ef3b
+	github.com/itsubaki/qasm v0.1.5-0.20260406090909-a583b36fe017
 	golang.org/x/net v0.52.0
 	google.golang.org/grpc v1.80.0
 	google.golang.org/protobuf v1.36.11

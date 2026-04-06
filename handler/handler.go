@@ -17,12 +17,16 @@ func New(maxQubits int, store Store) (http.Handler, error) {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		_, _ = fmt.Fprintf(w, `{"ok": true}`)
+		if _, err := fmt.Fprintf(w, `{"ok": true}`); err != nil {
+			slog.WarnContext(r.Context(), "write response", slog.Any("error", err))
+		}
 	})
 
 	mux.HandleFunc("/status", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		_, _ = fmt.Fprintf(w, `{"ok": true}`)
+		if _, err := fmt.Fprintf(w, `{"ok": true}`); err != nil {
+			slog.WarnContext(r.Context(), "write response", slog.Any("error", err))
+		}
 	})
 
 	mux.Handle(quasarv1connect.NewQuasarServiceHandler(

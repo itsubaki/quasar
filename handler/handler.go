@@ -43,7 +43,12 @@ func Recover() connect.UnaryInterceptorFunc {
 		return func(ctx context.Context, req connect.AnyRequest) (resp connect.AnyResponse, err error) {
 			defer func() {
 				if r := recover(); r != nil {
-					slog.ErrorContext(ctx, "unexpected: %v", r)
+					slog.ErrorContext(ctx,
+						"recovered",
+						slog.Any("panic", r),
+						slog.String("procedure", req.Spec().Procedure),
+					)
+
 					resp, err = nil, connect.NewError(connect.CodeInternal, fmt.Errorf("unexpected: %v", r))
 				}
 			}()

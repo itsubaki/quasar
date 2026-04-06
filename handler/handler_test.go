@@ -1,10 +1,14 @@
 package handler_test
 
 import (
+	"context"
+	"errors"
 	"fmt"
 	"io"
+	"log/slog"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"strings"
 	"testing"
 
@@ -134,7 +138,7 @@ func TestQuasarService_Edit(t *testing.T) {
 			continue
 		}
 
-		t.Errorf("expected error but got response: %+v, %v", resp, err)
+		t.Errorf("expected error but got response: resp=%+v, err=%v", resp, err)
 	}
 }
 
@@ -166,6 +170,56 @@ func TestQuasarService_Share(t *testing.T) {
 			continue
 		}
 
-		t.Errorf("expected error but got response: %+v, %v", resp, err)
+		t.Errorf("expected error but got response: resp=%+v, err=%v", resp, err)
+	}
+}
+
+func TestRecover(t *testing.T) {
+	prev := slog.Default()
+	slog.SetDefault(slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{})))
+	t.Cleanup(func() {
+		slog.SetDefault(prev)
+	})
+
+	cases := []struct {
+		panicVal any
+		errMsg   string
+	}{
+		{
+			panicVal: "string panic",
+			errMsg:   "unexpected: string panic",
+		},
+		{
+			panicVal: errors.New("new error panic"),
+			errMsg:   "unexpected: new error panic",
+		},
+	}
+
+	for _, c := range cases {
+		next := handler.Recover()(func(context.Context, connect.AnyRequest) (connect.AnyResponse, error) {
+			panic(c.panicVal)
+		})
+
+		resp, err := next(context.Background(), connect.NewRequest(&quasarv1.ShareRequest{}))
+		if err == nil {
+			t.Fatal("expected error")
+		}
+
+		if resp != nil {
+			t.Fatalf("expected nil response, got=%+v", resp)
+		}
+
+		var connectErr *connect.Error
+		if !errors.As(err, &connectErr) {
+			t.Fatalf("expected *connect.Error, got=%T", err)
+		}
+
+		if got := connectErr.Code(); got != connect.CodeInternal {
+			t.Fatalf("code=%v, want=%v", got, connect.CodeInternal)
+		}
+
+		if got := connectErr.Message(); got != c.errMsg {
+			t.Fatalf("message=%v, want=%v", got, c.errMsg)
+		}
 	}
 }

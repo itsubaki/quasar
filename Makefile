@@ -12,7 +12,7 @@ update:
 	GOPROXY=direct go get github.com/itsubaki/qasm@HEAD
 	go get -u
 	go mod tidy
-	pinact run
+	pinact run -u
 
 install:
 	go install github.com/bufbuild/buf/cmd/buf@latest

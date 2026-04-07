@@ -85,7 +85,7 @@ func TestQuasarService_Simulate(t *testing.T) {
 	}{
 		{
 			code:   "invalid",
-			errMsg: "invalid_argument: syntax error at line:1:7: no viable alternative at input 'invalid'",
+			errMsg: "invalid_argument: 1:7: no viable alternative at input 'invalid'",
 		},
 		{
 			code:   "qubit[12] q;",

@@ -4,13 +4,13 @@ go 1.25.7
 
 require (
 	cloud.google.com/go/firestore v1.21.0
-	cloud.google.com/go/profiler v0.5.0
+	cloud.google.com/go/profiler v0.6.0
 	connectrpc.com/connect v1.19.1
 	github.com/antlr4-go/antlr/v4 v4.13.1
 	github.com/cucumber/godog v0.15.0
-	github.com/itsubaki/q v0.0.11-0.20260405013445-e7ca0594ef3b
-	github.com/itsubaki/qasm v0.1.5-0.20260409124059-9c24a471e976
-	golang.org/x/net v0.52.0
+	github.com/itsubaki/q v0.0.11-0.20260410093247-18ccf2f20050
+	github.com/itsubaki/qasm v0.1.5-0.20260410104144-e414e26dcacd
+	golang.org/x/net v0.53.0
 	google.golang.org/grpc v1.80.0
 	google.golang.org/protobuf v1.36.11
 )
@@ -20,7 +20,7 @@ require (
 	cloud.google.com/go/auth v0.20.0 // indirect
 	cloud.google.com/go/auth/oauth2adapt v0.2.8 // indirect
 	cloud.google.com/go/compute/metadata v0.9.0 // indirect
-	cloud.google.com/go/longrunning v0.9.0 // indirect
+	cloud.google.com/go/longrunning v0.10.0 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/cucumber/gherkin/go/v26 v26.2.0 // indirect
 	github.com/cucumber/messages/go/v21 v21.0.1 // indirect
@@ -44,8 +44,8 @@ require (
 	go.opentelemetry.io/otel v1.43.0 // indirect
 	go.opentelemetry.io/otel/metric v1.43.0 // indirect
 	go.opentelemetry.io/otel/trace v1.43.0 // indirect
-	golang.org/x/crypto v0.49.0 // indirect
-	golang.org/x/exp v0.0.0-20260312153236-7ab1446f8b90 // indirect
+	golang.org/x/crypto v0.50.0 // indirect
+	golang.org/x/exp v0.0.0-20260410095643-746e56fc9e2f // indirect
 	golang.org/x/oauth2 v0.36.0 // indirect
 	golang.org/x/sync v0.20.0 // indirect
 	golang.org/x/sys v0.43.0 // indirect

@@ -63,6 +63,18 @@ func (m *mock) Edit(
 	}), nil
 }
 
+func (m *mock) Validate(
+	ctx context.Context,
+	req *connect.Request[quasarv1.ValidateRequest],
+) (*connect.Response[quasarv1.ValidateResponse], error) {
+	return connect.NewResponse(&quasarv1.ValidateResponse{
+		Valid:   false,
+		Line:    new(int32(10)),
+		Column:  new(int32(5)),
+		Message: new("syntax error"),
+	}), nil
+}
+
 func ExampleClient_Simulate() {
 	srv := newMock()
 	defer srv.Close()
@@ -123,4 +135,28 @@ func ExampleClient_Edit() {
 	// abcd1234
 	// qubit[3] q;
 	// 1234
+}
+
+func ExampleClient_Validate() {
+	srv := newMock()
+	defer srv.Close()
+
+	result, err := client.New(srv.URL, srv.Client()).Validate(
+		context.Background(),
+		"qubit[3] q;",
+	)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(result.Valid)
+	fmt.Println(*result.Line)
+	fmt.Println(*result.Column)
+	fmt.Println(*result.Message)
+
+	// Output:
+	// false
+	// 10
+	// 5
+	// syntax error
 }

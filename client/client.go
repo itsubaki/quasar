@@ -28,9 +28,16 @@ type Amplitude struct {
 }
 
 type Snippet struct {
-	ID        string
-	Code      string
-	CreatedAt time.Time
+	ID        string    `json:"id"`
+	Code      string    `json:"code"`
+	CreatedAt time.Time `json:"created_at"`
+}
+
+type ValidationResult struct {
+	Valid   bool    `json:"valid"`
+	Line    *int32  `json:"line,omitempty"`
+	Column  *int32  `json:"column,omitempty"`
+	Message *string `json:"message,omitempty"`
 }
 
 type Client struct {
@@ -99,5 +106,21 @@ func (c *Client) Edit(ctx context.Context, id string) (*Snippet, error) {
 		ID:        resp.Msg.Id,
 		Code:      resp.Msg.Code,
 		CreatedAt: resp.Msg.CreatedAt.AsTime(),
+	}, nil
+}
+
+func (c *Client) Validate(ctx context.Context, code string) (*ValidationResult, error) {
+	resp, err := c.quasarClient.Validate(ctx, connect.NewRequest(&quasarv1.ValidateRequest{
+		Code: code,
+	}))
+	if err != nil {
+		return nil, fmt.Errorf("validate: %w", err)
+	}
+
+	return &ValidationResult{
+		Valid:   resp.Msg.Valid,
+		Line:    resp.Msg.Line,
+		Column:  resp.Msg.Column,
+		Message: resp.Msg.Message,
 	}, nil
 }

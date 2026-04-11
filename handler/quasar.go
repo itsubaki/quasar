@@ -8,14 +8,13 @@ import (
 	"fmt"
 	"io"
 	"math"
+	"strings"
 	"time"
 
 	"connectrpc.com/connect"
-	"github.com/antlr4-go/antlr/v4"
 	"github.com/itsubaki/q"
 	"github.com/itsubaki/qasm/environ"
-	"github.com/itsubaki/qasm/gen/parser"
-	"github.com/itsubaki/qasm/listener"
+	"github.com/itsubaki/qasm/parser"
 	"github.com/itsubaki/qasm/visitor"
 	quasarv1 "github.com/itsubaki/quasar/gen/quasar/v1"
 	"github.com/itsubaki/quasar/store"
@@ -58,14 +57,13 @@ func (s *QuasarService) Simulate(
 	ctx context.Context,
 	req *connect.Request[quasarv1.SimulateRequest],
 ) (*connect.Response[quasarv1.SimulateResponse], error) {
-	lexer := parser.Newqasm3Lexer(antlr.NewInputStream(req.Msg.Code))
-	p := parser.Newqasm3Parser(antlr.NewCommonTokenStream(lexer, antlr.TokenDefaultChannel))
-	errListener := listener.NewErrorListener(lexer, p)
+	if len(strings.TrimSpace(req.Msg.Code)) == 0 {
+		return nil, connect.NewError(connect.CodeInvalidArgument, ErrCodeNotFound)
+	}
 
-	// parse
-	program := p.Program()
-	if len(errListener.Errors) > 0 {
-		return nil, connect.NewError(connect.CodeInvalidArgument, errListener.Errors[0])
+	program, err := parser.Parse(req.Msg.Code)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInvalidArgument, err)
 	}
 
 	// quantum simulator

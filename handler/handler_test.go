@@ -91,6 +91,18 @@ func TestQuasarService_Simulate(t *testing.T) {
 			code:   "qubit[12] q;",
 			errMsg: "invalid_argument: need=12, max=10: too many qubits",
 		},
+		{
+			code:   "",
+			errMsg: "invalid_argument: code not found",
+		},
+		{
+			code:   "qubit[ q;",
+			errMsg: `invalid_argument: 1:8: mismatched input ';' expecting ']'`,
+		},
+		{
+			code:   "OPENQASM 3.0;",
+			errMsg: "invalid_argument: qubits not found",
+		},
 	}
 
 	svc := &handler.QuasarService{
@@ -176,10 +188,8 @@ func TestQuasarService_Share(t *testing.T) {
 
 func TestRecover(t *testing.T) {
 	prev := slog.Default()
-	slog.SetDefault(slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{})))
-	t.Cleanup(func() {
-		slog.SetDefault(prev)
-	})
+	slog.SetDefault(slog.New(slog.NewJSONHandler(os.Stderr, &slog.HandlerOptions{})))
+	t.Cleanup(func() { slog.SetDefault(prev) })
 
 	cases := []struct {
 		panicVal any

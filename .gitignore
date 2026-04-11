@@ -25,4 +25,5 @@ oryxBuildBinary
 
 # vscode
 .vscode
+*.html
 

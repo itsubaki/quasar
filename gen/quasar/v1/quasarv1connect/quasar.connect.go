@@ -39,13 +39,20 @@ const (
 	QuasarServiceShareProcedure = "/quasar.v1.QuasarService/Share"
 	// QuasarServiceEditProcedure is the fully-qualified name of the QuasarService's Edit RPC.
 	QuasarServiceEditProcedure = "/quasar.v1.QuasarService/Edit"
+	// QuasarServiceValidateProcedure is the fully-qualified name of the QuasarService's Validate RPC.
+	QuasarServiceValidateProcedure = "/quasar.v1.QuasarService/Validate"
 )
 
 // QuasarServiceClient is a client for the quasar.v1.QuasarService service.
 type QuasarServiceClient interface {
+	// Simulate simulates the quantum circuit defined in the code and returns the resulting states.
 	Simulate(context.Context, *connect.Request[v1.SimulateRequest]) (*connect.Response[v1.SimulateResponse], error)
+	// Share shares the quantum circuit defined in the code and returns the share ID and creation time.
 	Share(context.Context, *connect.Request[v1.ShareRequest]) (*connect.Response[v1.ShareResponse], error)
+	// Edit edits the quantum circuit identified by the given ID and returns the updated code and creation time.
 	Edit(context.Context, *connect.Request[v1.EditRequest]) (*connect.Response[v1.EditResponse], error)
+	// Validate validates the quantum circuit defined in the code and returns any errors found.
+	Validate(context.Context, *connect.Request[v1.ValidateRequest]) (*connect.Response[v1.ValidateResponse], error)
 }
 
 // NewQuasarServiceClient constructs a client for the quasar.v1.QuasarService service. By default,
@@ -77,6 +84,12 @@ func NewQuasarServiceClient(httpClient connect.HTTPClient, baseURL string, opts 
 			connect.WithSchema(quasarServiceMethods.ByName("Edit")),
 			connect.WithClientOptions(opts...),
 		),
+		validate: connect.NewClient[v1.ValidateRequest, v1.ValidateResponse](
+			httpClient,
+			baseURL+QuasarServiceValidateProcedure,
+			connect.WithSchema(quasarServiceMethods.ByName("Validate")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
@@ -85,6 +98,7 @@ type quasarServiceClient struct {
 	simulate *connect.Client[v1.SimulateRequest, v1.SimulateResponse]
 	share    *connect.Client[v1.ShareRequest, v1.ShareResponse]
 	edit     *connect.Client[v1.EditRequest, v1.EditResponse]
+	validate *connect.Client[v1.ValidateRequest, v1.ValidateResponse]
 }
 
 // Simulate calls quasar.v1.QuasarService.Simulate.
@@ -102,11 +116,21 @@ func (c *quasarServiceClient) Edit(ctx context.Context, req *connect.Request[v1.
 	return c.edit.CallUnary(ctx, req)
 }
 
+// Validate calls quasar.v1.QuasarService.Validate.
+func (c *quasarServiceClient) Validate(ctx context.Context, req *connect.Request[v1.ValidateRequest]) (*connect.Response[v1.ValidateResponse], error) {
+	return c.validate.CallUnary(ctx, req)
+}
+
 // QuasarServiceHandler is an implementation of the quasar.v1.QuasarService service.
 type QuasarServiceHandler interface {
+	// Simulate simulates the quantum circuit defined in the code and returns the resulting states.
 	Simulate(context.Context, *connect.Request[v1.SimulateRequest]) (*connect.Response[v1.SimulateResponse], error)
+	// Share shares the quantum circuit defined in the code and returns the share ID and creation time.
 	Share(context.Context, *connect.Request[v1.ShareRequest]) (*connect.Response[v1.ShareResponse], error)
+	// Edit edits the quantum circuit identified by the given ID and returns the updated code and creation time.
 	Edit(context.Context, *connect.Request[v1.EditRequest]) (*connect.Response[v1.EditResponse], error)
+	// Validate validates the quantum circuit defined in the code and returns any errors found.
+	Validate(context.Context, *connect.Request[v1.ValidateRequest]) (*connect.Response[v1.ValidateResponse], error)
 }
 
 // NewQuasarServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -134,6 +158,12 @@ func NewQuasarServiceHandler(svc QuasarServiceHandler, opts ...connect.HandlerOp
 		connect.WithSchema(quasarServiceMethods.ByName("Edit")),
 		connect.WithHandlerOptions(opts...),
 	)
+	quasarServiceValidateHandler := connect.NewUnaryHandler(
+		QuasarServiceValidateProcedure,
+		svc.Validate,
+		connect.WithSchema(quasarServiceMethods.ByName("Validate")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/quasar.v1.QuasarService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case QuasarServiceSimulateProcedure:
@@ -142,6 +172,8 @@ func NewQuasarServiceHandler(svc QuasarServiceHandler, opts ...connect.HandlerOp
 			quasarServiceShareHandler.ServeHTTP(w, r)
 		case QuasarServiceEditProcedure:
 			quasarServiceEditHandler.ServeHTTP(w, r)
+		case QuasarServiceValidateProcedure:
+			quasarServiceValidateHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -161,4 +193,8 @@ func (UnimplementedQuasarServiceHandler) Share(context.Context, *connect.Request
 
 func (UnimplementedQuasarServiceHandler) Edit(context.Context, *connect.Request[v1.EditRequest]) (*connect.Response[v1.EditResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("quasar.v1.QuasarService.Edit is not implemented"))
+}
+
+func (UnimplementedQuasarServiceHandler) Validate(context.Context, *connect.Request[v1.ValidateRequest]) (*connect.Response[v1.ValidateResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("quasar.v1.QuasarService.Validate is not implemented"))
 }

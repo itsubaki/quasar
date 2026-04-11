@@ -45,8 +45,27 @@ message EditResponse {
   google.protobuf.Timestamp created_at = 3;
 }
 
+message ValidateRequest {
+  string code = 1;
+}
+
+message ValidateResponse {
+  bool valid = 1;
+  optional int32 line = 2;
+  optional int32 column = 3;
+  optional string message = 4;
+}
+
 service QuasarService {
+  // Simulate simulates the quantum circuit defined in the code and returns the resulting states.
   rpc Simulate(SimulateRequest) returns (SimulateResponse) {};
+
+  // Share shares the quantum circuit defined in the code and returns the share ID and creation time.
   rpc Share(ShareRequest) returns (ShareResponse) {};
+
+  // Edit edits the quantum circuit identified by the given ID and returns the updated code and creation time.
   rpc Edit(EditRequest) returns (EditResponse) {};
+
+  // Validate validates the quantum circuit defined in the code and returns any errors found.
+  rpc Validate(ValidateRequest) returns (ValidateResponse) {};
 }

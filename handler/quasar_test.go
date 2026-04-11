@@ -3,10 +3,13 @@ package handler_test
 import (
 	"context"
 	"fmt"
+	"strings"
+	"testing"
 
 	"connectrpc.com/connect"
 	quasarv1 "github.com/itsubaki/quasar/gen/quasar/v1"
 	"github.com/itsubaki/quasar/handler"
+	"github.com/itsubaki/quasar/store"
 )
 
 func ExampleQuasarService_Simulate() {
@@ -66,4 +69,167 @@ qft(q);
 	// [101] [ 5]: -0.2500 -0.2500: 0.1250
 	// [110] [ 6]: +0.0000 -0.3536: 0.1250
 	// [111] [ 7]: +0.2500 -0.2500: 0.1250
+}
+
+func TestQuasarService_Simulate(t *testing.T) {
+	cases := []struct {
+		code   string
+		errMsg string
+	}{
+		{
+			code:   "invalid",
+			errMsg: "invalid_argument: 1:7: no viable alternative at input 'invalid'",
+		},
+		{
+			code:   "qubit[12] q;",
+			errMsg: "invalid_argument: need=12, max=10: too many qubits",
+		},
+		{
+			code:   "",
+			errMsg: "invalid_argument: code not found",
+		},
+		{
+			code:   "qubit[ q;",
+			errMsg: `invalid_argument: 1:8: mismatched input ';' expecting ']'`,
+		},
+		{
+			code:   "OPENQASM 3.0;",
+			errMsg: "invalid_argument: qubits not found",
+		},
+	}
+
+	svc := &handler.QuasarService{
+		MaxQubits: 10,
+		Store:     &store.MemoryStore{},
+	}
+
+	for _, c := range cases {
+		resp, err := svc.Simulate(t.Context(), connect.NewRequest(&quasarv1.SimulateRequest{
+			Code: c.code,
+		}))
+		if err != nil && err.Error() == c.errMsg {
+			continue
+		}
+
+		t.Errorf("expected error but got response: resp=%+v, err=%v", resp, err)
+	}
+}
+
+func TestQuasarService_Edit(t *testing.T) {
+	cases := []struct {
+		id     string
+		errMsg string
+	}{
+		{
+			id:     "", // empty
+			errMsg: "invalid_argument: id not found",
+		},
+		{
+			id:     "example",
+			errMsg: "not_found: no such entity",
+		},
+	}
+
+	svc := &handler.QuasarService{
+		MaxQubits: 10,
+		Store:     &store.MemoryStore{},
+	}
+
+	for _, c := range cases {
+		resp, err := svc.Edit(t.Context(), connect.NewRequest(&quasarv1.EditRequest{
+			Id: c.id,
+		}))
+		if err != nil && err.Error() == c.errMsg {
+			continue
+		}
+
+		t.Errorf("expected error but got response: resp=%+v, err=%v", resp, err)
+	}
+}
+
+func TestQuasarService_Share(t *testing.T) {
+	cases := []struct {
+		code   string
+		errMsg string
+	}{
+		{
+			code:   "", // empty
+			errMsg: "invalid_argument: code not found",
+		},
+		{
+			code:   strings.Repeat("qubit[2] q;", 2<<12),
+			errMsg: "invalid_argument: code size exceeds 65536 bytes",
+		},
+	}
+
+	svc := &handler.QuasarService{
+		MaxQubits: 10,
+		Store:     &store.MemoryStore{},
+	}
+
+	for _, c := range cases {
+		resp, err := svc.Share(t.Context(), connect.NewRequest(&quasarv1.ShareRequest{
+			Code: c.code,
+		}))
+		if err != nil && err.Error() == c.errMsg {
+			continue
+		}
+
+		t.Errorf("expected error but got response: resp=%+v, err=%v", resp, err)
+	}
+}
+
+func TestQuasarService_Validate(t *testing.T) {
+	cases := []struct {
+		code   string
+		want   bool
+		line   int32
+		column int32
+		errMsg string
+	}{
+		{
+			code: "OPENQASM 3.0;",
+			want: true,
+		},
+		{
+			code:   "",
+			errMsg: "invalid_argument: code not found",
+		},
+		{
+			code:   "qubit[ q;",
+			want:   false,
+			line:   1,
+			column: 8,
+		},
+	}
+
+	svc := &handler.QuasarService{
+		MaxQubits: 10,
+		Store:     &store.MemoryStore{},
+	}
+
+	for _, c := range cases {
+		resp, err := svc.Validate(t.Context(), connect.NewRequest(&quasarv1.ValidateRequest{
+			Code: c.code,
+		}))
+		if err != nil {
+			if err.Error() != c.errMsg {
+				t.Errorf("got=%v, want=%v", err.Error(), c.errMsg)
+			}
+
+			continue
+		}
+
+		if resp.Msg.Valid != c.want {
+			t.Errorf("got=%v, want=%v", resp.Msg.Valid, c.want)
+		}
+
+		if resp.Msg.Line != nil && *resp.Msg.Line != c.line {
+			t.Errorf("got=%v, want=%v", *resp.Msg.Line, c.line)
+		}
+
+		if resp.Msg.Column != nil && *resp.Msg.Column != c.column {
+			t.Errorf("got=%v, want=%v", *resp.Msg.Column, c.column)
+		}
+	}
 }

@@ -1,6 +1,6 @@
 module github.com/itsubaki/quasar
 
-go 1.25.7
+go 1.26.2
 
 require (
 	cloud.google.com/go/firestore v1.21.0

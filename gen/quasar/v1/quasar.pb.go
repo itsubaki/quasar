@@ -310,6 +310,118 @@ func (x *EditResponse) GetCreatedAt() *timestamppb.Timestamp {
 	return nil
 }
 
+type ValidateRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Code          string                 `protobuf:"bytes,1,opt,name=code,proto3" json:"code,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ValidateRequest) Reset() {
+	*x = ValidateRequest{}
+	mi := &file_quasar_v1_quasar_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ValidateRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ValidateRequest) ProtoMessage() {}
+
+func (x *ValidateRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_quasar_v1_quasar_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ValidateRequest.ProtoReflect.Descriptor instead.
+func (*ValidateRequest) Descriptor() ([]byte, []int) {
+	return file_quasar_v1_quasar_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *ValidateRequest) GetCode() string {
+	if x != nil {
+		return x.Code
+	}
+	return ""
+}
+
+type ValidateResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Valid         bool                   `protobuf:"varint,1,opt,name=valid,proto3" json:"valid,omitempty"`
+	Line          *int32                 `protobuf:"varint,2,opt,name=line,proto3,oneof" json:"line,omitempty"`
+	Column        *int32                 `protobuf:"varint,3,opt,name=column,proto3,oneof" json:"column,omitempty"`
+	Message       *string                `protobuf:"bytes,4,opt,name=message,proto3,oneof" json:"message,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ValidateResponse) Reset() {
+	*x = ValidateResponse{}
+	mi := &file_quasar_v1_quasar_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ValidateResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ValidateResponse) ProtoMessage() {}
+
+func (x *ValidateResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_quasar_v1_quasar_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ValidateResponse.ProtoReflect.Descriptor instead.
+func (*ValidateResponse) Descriptor() ([]byte, []int) {
+	return file_quasar_v1_quasar_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *ValidateResponse) GetValid() bool {
+	if x != nil {
+		return x.Valid
+	}
+	return false
+}
+
+func (x *ValidateResponse) GetLine() int32 {
+	if x != nil && x.Line != nil {
+		return *x.Line
+	}
+	return 0
+}
+
+func (x *ValidateResponse) GetColumn() int32 {
+	if x != nil && x.Column != nil {
+		return *x.Column
+	}
+	return 0
+}
+
+func (x *ValidateResponse) GetMessage() string {
+	if x != nil && x.Message != nil {
+		return *x.Message
+	}
+	return ""
+}
+
 type SimulateResponse_Amplitude struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Real          float64                `protobuf:"fixed64,1,opt,name=real,proto3" json:"real,omitempty"`
@@ -320,7 +432,7 @@ type SimulateResponse_Amplitude struct {
 
 func (x *SimulateResponse_Amplitude) Reset() {
 	*x = SimulateResponse_Amplitude{}
-	mi := &file_quasar_v1_quasar_proto_msgTypes[6]
+	mi := &file_quasar_v1_quasar_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -332,7 +444,7 @@ func (x *SimulateResponse_Amplitude) String() string {
 func (*SimulateResponse_Amplitude) ProtoMessage() {}
 
 func (x *SimulateResponse_Amplitude) ProtoReflect() protoreflect.Message {
-	mi := &file_quasar_v1_quasar_proto_msgTypes[6]
+	mi := &file_quasar_v1_quasar_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -374,7 +486,7 @@ type SimulateResponse_State struct {
 
 func (x *SimulateResponse_State) Reset() {
 	*x = SimulateResponse_State{}
-	mi := &file_quasar_v1_quasar_proto_msgTypes[7]
+	mi := &file_quasar_v1_quasar_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -386,7 +498,7 @@ func (x *SimulateResponse_State) String() string {
 func (*SimulateResponse_State) ProtoMessage() {}
 
 func (x *SimulateResponse_State) ProtoReflect() protoreflect.Message {
-	mi := &file_quasar_v1_quasar_proto_msgTypes[7]
+	mi := &file_quasar_v1_quasar_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -459,11 +571,23 @@ const file_quasar_v1_quasar_proto_rawDesc = "" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04code\x18\x02 \x01(\tR\x04code\x129\n" +
 	"\n" +
-	"created_at\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt2\xcf\x01\n" +
+	"created_at\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\"%\n" +
+	"\x0fValidateRequest\x12\x12\n" +
+	"\x04code\x18\x01 \x01(\tR\x04code\"\x9d\x01\n" +
+	"\x10ValidateResponse\x12\x14\n" +
+	"\x05valid\x18\x01 \x01(\bR\x05valid\x12\x17\n" +
+	"\x04line\x18\x02 \x01(\x05H\x00R\x04line\x88\x01\x01\x12\x1b\n" +
+	"\x06column\x18\x03 \x01(\x05H\x01R\x06column\x88\x01\x01\x12\x1d\n" +
+	"\amessage\x18\x04 \x01(\tH\x02R\amessage\x88\x01\x01B\a\n" +
+	"\x05_lineB\t\n" +
+	"\a_columnB\n" +
+	"\n" +
+	"\b_message2\x96\x02\n" +
 	"\rQuasarService\x12E\n" +
 	"\bSimulate\x12\x1a.quasar.v1.SimulateRequest\x1a\x1b.quasar.v1.SimulateResponse\"\x00\x12<\n" +
 	"\x05Share\x12\x17.quasar.v1.ShareRequest\x1a\x18.quasar.v1.ShareResponse\"\x00\x129\n" +
-	"\x04Edit\x12\x16.quasar.v1.EditRequest\x1a\x17.quasar.v1.EditResponse\"\x00B3Z1github.com/itsubaki/quasar/gen/quasar/v1;quasarv1b\x06proto3"
+	"\x04Edit\x12\x16.quasar.v1.EditRequest\x1a\x17.quasar.v1.EditResponse\"\x00\x12E\n" +
+	"\bValidate\x12\x1a.quasar.v1.ValidateRequest\x1a\x1b.quasar.v1.ValidateResponse\"\x00B3Z1github.com/itsubaki/quasar/gen/quasar/v1;quasarv1b\x06proto3"
 
 var (
 	file_quasar_v1_quasar_proto_rawDescOnce sync.Once
@@ -477,7 +601,7 @@ func file_quasar_v1_quasar_proto_rawDescGZIP() []byte {
 	return file_quasar_v1_quasar_proto_rawDescData
 }
 
-var file_quasar_v1_quasar_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
+var file_quasar_v1_quasar_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
 var file_quasar_v1_quasar_proto_goTypes = []any{
 	(*SimulateRequest)(nil),            // 0: quasar.v1.SimulateRequest
 	(*SimulateResponse)(nil),           // 1: quasar.v1.SimulateResponse
@@ -485,26 +609,30 @@ var file_quasar_v1_quasar_proto_goTypes = []any{
 	(*ShareResponse)(nil),              // 3: quasar.v1.ShareResponse
 	(*EditRequest)(nil),                // 4: quasar.v1.EditRequest
 	(*EditResponse)(nil),               // 5: quasar.v1.EditResponse
-	(*SimulateResponse_Amplitude)(nil), // 6: quasar.v1.SimulateResponse.Amplitude
-	(*SimulateResponse_State)(nil),     // 7: quasar.v1.SimulateResponse.State
-	(*timestamppb.Timestamp)(nil),      // 8: google.protobuf.Timestamp
+	(*ValidateRequest)(nil),            // 6: quasar.v1.ValidateRequest
+	(*ValidateResponse)(nil),           // 7: quasar.v1.ValidateResponse
+	(*SimulateResponse_Amplitude)(nil), // 8: quasar.v1.SimulateResponse.Amplitude
+	(*SimulateResponse_State)(nil),     // 9: quasar.v1.SimulateResponse.State
+	(*timestamppb.Timestamp)(nil),      // 10: google.protobuf.Timestamp
 }
 var file_quasar_v1_quasar_proto_depIdxs = []int32{
-	7, // 0: quasar.v1.SimulateResponse.states:type_name -> quasar.v1.SimulateResponse.State
-	8, // 1: quasar.v1.ShareResponse.created_at:type_name -> google.protobuf.Timestamp
-	8, // 2: quasar.v1.EditResponse.created_at:type_name -> google.protobuf.Timestamp
-	6, // 3: quasar.v1.SimulateResponse.State.amplitude:type_name -> quasar.v1.SimulateResponse.Amplitude
-	0, // 4: quasar.v1.QuasarService.Simulate:input_type -> quasar.v1.SimulateRequest
-	2, // 5: quasar.v1.QuasarService.Share:input_type -> quasar.v1.ShareRequest
-	4, // 6: quasar.v1.QuasarService.Edit:input_type -> quasar.v1.EditRequest
-	1, // 7: quasar.v1.QuasarService.Simulate:output_type -> quasar.v1.SimulateResponse
-	3, // 8: quasar.v1.QuasarService.Share:output_type -> quasar.v1.ShareResponse
-	5, // 9: quasar.v1.QuasarService.Edit:output_type -> quasar.v1.EditResponse
-	7, // [7:10] is the sub-list for method output_type
-	4, // [4:7] is the sub-list for method input_type
-	4, // [4:4] is the sub-list for extension type_name
-	4, // [4:4] is the sub-list for extension extendee
-	0, // [0:4] is the sub-list for field type_name
+	9,  // 0: quasar.v1.SimulateResponse.states:type_name -> quasar.v1.SimulateResponse.State
+	10, // 1: quasar.v1.ShareResponse.created_at:type_name -> google.protobuf.Timestamp
+	10, // 2: quasar.v1.EditResponse.created_at:type_name -> google.protobuf.Timestamp
+	8,  // 3: quasar.v1.SimulateResponse.State.amplitude:type_name -> quasar.v1.SimulateResponse.Amplitude
+	0,  // 4: quasar.v1.QuasarService.Simulate:input_type -> quasar.v1.SimulateRequest
+	2,  // 5: quasar.v1.QuasarService.Share:input_type -> quasar.v1.ShareRequest
+	4,  // 6: quasar.v1.QuasarService.Edit:input_type -> quasar.v1.EditRequest
+	6,  // 7: quasar.v1.QuasarService.Validate:input_type -> quasar.v1.ValidateRequest
+	1,  // 8: quasar.v1.QuasarService.Simulate:output_type -> quasar.v1.SimulateResponse
+	3,  // 9: quasar.v1.QuasarService.Share:output_type -> quasar.v1.ShareResponse
+	5,  // 10: quasar.v1.QuasarService.Edit:output_type -> quasar.v1.EditResponse
+	7,  // 11: quasar.v1.QuasarService.Validate:output_type -> quasar.v1.ValidateResponse
+	8,  // [8:12] is the sub-list for method output_type
+	4,  // [4:8] is the sub-list for method input_type
+	4,  // [4:4] is the sub-list for extension type_name
+	4,  // [4:4] is the sub-list for extension extendee
+	0,  // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_quasar_v1_quasar_proto_init() }
@@ -512,13 +640,14 @@ func file_quasar_v1_quasar_proto_init() {
 	if File_quasar_v1_quasar_proto != nil {
 		return
 	}
+	file_quasar_v1_quasar_proto_msgTypes[7].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_quasar_v1_quasar_proto_rawDesc), len(file_quasar_v1_quasar_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   8,
+			NumMessages:   10,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

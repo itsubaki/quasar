@@ -14,6 +14,7 @@ import (
 	"connectrpc.com/connect"
 	"github.com/itsubaki/q"
 	"github.com/itsubaki/qasm/environ"
+	"github.com/itsubaki/qasm/listener"
 	"github.com/itsubaki/qasm/parser"
 	"github.com/itsubaki/qasm/visitor"
 	quasarv1 "github.com/itsubaki/quasar/gen/quasar/v1"
@@ -171,6 +172,32 @@ func (s *QuasarService) Edit(
 		Id:        id,
 		Code:      snippet.Code,
 		CreatedAt: timestamppb.New(snippet.CreatedAt),
+	}), nil
+}
+
+func (s *QuasarService) Validate(
+	ctx context.Context,
+	req *connect.Request[quasarv1.ValidateRequest],
+) (*connect.Response[quasarv1.ValidateResponse], error) {
+	if len(strings.TrimSpace(req.Msg.Code)) == 0 {
+		return nil, connect.NewError(connect.CodeInvalidArgument, ErrCodeNotFound)
+	}
+
+	if _, err := parser.Parse(req.Msg.Code); err != nil {
+		if syntaxErr, ok := errors.AsType[*listener.SyntaxError](err); ok {
+			return connect.NewResponse(&quasarv1.ValidateResponse{
+				Valid:   false,
+				Line:    new(int32(syntaxErr.Line)),
+				Column:  new(int32(syntaxErr.Column)),
+				Message: &syntaxErr.Message,
+			}), nil
+		}
+
+		return nil, connect.NewError(connect.CodeInvalidArgument, err)
+	}
+
+	return connect.NewResponse(&quasarv1.ValidateResponse{
+		Valid: true,
 	}), nil
 }
 

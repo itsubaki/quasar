@@ -19,8 +19,6 @@ import (
 	"github.com/itsubaki/qasm/visitor"
 	quasarv1 "github.com/itsubaki/quasar/gen/quasar/v1"
 	"github.com/itsubaki/quasar/store"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -166,10 +164,6 @@ func (s *QuasarService) Edit(
 	// get
 	snippet, err := s.Store.Get(ctx, id)
 	if err != nil {
-		if status.Code(err) == codes.NotFound {
-			return nil, connect.NewError(connect.CodeNotFound, ErrNoSuchEntity)
-		}
-
 		if errors.Is(err, store.ErrNoSuchEntity) {
 			return nil, connect.NewError(connect.CodeNotFound, ErrNoSuchEntity)
 		}

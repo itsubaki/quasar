@@ -29,7 +29,10 @@ const (
 	maxSize = 64 * 1024
 )
 
-var scale = math.Pow(10, 6)
+var (
+	scale   = math.Pow(10, 6)
+	epsilon = 1e-6
+)
 
 var (
 	ErrQubitsNotFound     = errors.New("qubits not found")
@@ -99,17 +102,23 @@ func (s *QuasarService) Simulate(
 	qstate := qsim.Qubit().State(env.Index()...)
 
 	// build response
-	states := make([]*quasarv1.SimulateResponse_State, len(qstate))
-	for i, s := range qstate {
-		states[i] = &quasarv1.SimulateResponse_State{
+	states := make([]*quasarv1.SimulateResponse_State, 0)
+	for _, s := range qstate {
+		prob := round(s.Probability())
+		if prob < epsilon {
+			continue
+		}
+
+		// prob > 0.000000
+		states = append(states, &quasarv1.SimulateResponse_State{
 			BinaryString: s.BinaryString(),
 			Int:          unsigned(s.Int()),
-			Probability:  round(s.Probability()),
+			Probability:  prob,
 			Amplitude: &quasarv1.SimulateResponse_Amplitude{
 				Real: round(real(s.Amplitude())),
 				Imag: round(imag(s.Amplitude())),
 			},
-		}
+		})
 	}
 
 	return connect.NewResponse(&quasarv1.SimulateResponse{

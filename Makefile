@@ -99,3 +99,9 @@ edit:
 		-H 'Content-Type: application/json' \
 		-d '{"id": "64EsAqoWwdHeRn3o"}' \
 		localhost:8080/quasar.v1.QuasarService/Edit | jq .
+
+validate:
+	@curl -s \
+		-H 'Content-Type: application/json' \
+		-d "$$(jq -Rs '{code: .}' testdata/bell.qasm)" \
+		localhost:8080/quasar.v1.QuasarService/Validate | jq .

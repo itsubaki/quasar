@@ -26,7 +26,11 @@ func TestNewWithIdentityToken(t *testing.T) {
 	if err != nil {
 		panic(err)
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if err := resp.Body.Close(); err != nil {
+			panic(err)
+		}
+	}()
 
 	if resp.StatusCode != http.StatusOK {
 		panic("invalid status code")

@@ -138,7 +138,12 @@ func (s *QuasarService) Share(
 	}
 
 	// put
-	id, createdAt := GenID(code, 16), time.Now()
+	id, err := GenID(code, 16)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInternal, ErrSomethingWentWrong)
+	}
+	createdAt := time.Now()
+
 	if err := s.Store.Put(ctx, id, &store.Snippet{
 		Code:      code,
 		CreatedAt: createdAt,
@@ -204,9 +209,11 @@ func (s *QuasarService) Validate(
 	}), nil
 }
 
-func GenID(code string, length int) string {
+func GenID(code string, length int) (string, error) {
 	hash := sha256.New()
-	io.WriteString(hash, salt)
+	if _, err := io.WriteString(hash, salt); err != nil {
+		return "", err
+	}
 	hash.Write([]byte(code))
 
 	sum := hash.Sum(nil)
@@ -218,5 +225,5 @@ func GenID(code string, length int) string {
 		hashLen++
 	}
 
-	return string(b)[:hashLen]
+	return string(b)[:hashLen], nil
 }

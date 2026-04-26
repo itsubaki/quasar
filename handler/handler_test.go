@@ -29,7 +29,11 @@ func ExampleNew_root() {
 	if err != nil {
 		panic(err)
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if err := resp.Body.Close(); err != nil {
+			panic(err)
+		}
+	}()
 
 	if resp.StatusCode != http.StatusOK {
 		panic("invalid status code")
@@ -59,7 +63,11 @@ func ExampleNew_status() {
 	if err != nil {
 		panic(err)
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if err := resp.Body.Close(); err != nil {
+			panic(err)
+		}
+	}()
 
 	if resp.StatusCode != http.StatusOK {
 		panic("invalid status code")

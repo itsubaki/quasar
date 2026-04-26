@@ -4,7 +4,7 @@
 
 # quasar
 
-- Quantum computing simulator as a Service
+Quantum computing simulator as a Service.
 
 ## Deploying to Google Cloud Run
 

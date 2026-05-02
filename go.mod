@@ -8,7 +8,7 @@ require (
 	connectrpc.com/connect v1.19.2
 	github.com/cucumber/godog v0.15.0
 	github.com/itsubaki/q v0.0.11-0.20260501100107-25f8a615681f
-	github.com/itsubaki/qasm v0.1.5-0.20260501100339-c57496f525ee
+	github.com/itsubaki/qasm v0.1.5-0.20260502033431-7d7701aa7f3d
 	golang.org/x/net v0.53.0
 	google.golang.org/protobuf v1.36.11
 )

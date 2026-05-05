@@ -31,27 +31,21 @@ curl -s \
 {
   "states": [
     {
+      "probability": 0.5,
       "amplitude": {
         "real": 0.7071,
         "imag": 0
       },
-      "probability": 0.5,
-      "int": [
-        0
-      ],
       "binary_string": [
         "00"
       ]
     },
     {
+      "probability": 0.5,
       "amplitude": {
         "real": 0.7071,
         "imag": 0
       },
-      "probability": 0.5,
-      "int": [
-        3
-      ],
       "binary_string": [
         "11"
       ]

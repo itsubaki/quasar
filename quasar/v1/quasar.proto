@@ -17,10 +17,9 @@ message SimulateResponse {
   }
 
   message State {
-    Amplitude amplitude = 1;
-    double probability = 2;
-    repeated uint64 int = 3;
-    repeated string binary_string = 4;
+    double probability = 1;
+    Amplitude amplitude = 2;
+    repeated string binary_string = 3;
   }
 
   repeated State states = 1;

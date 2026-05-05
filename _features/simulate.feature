@@ -18,25 +18,19 @@ Feature:
             {
                 "states": [
                     {
+                        "probability": 0.5,
                         "amplitude": {
                             "real": 0.707107
                         },
-                        "probability": 0.5,
-                        "int": [
-                            "0"
-                        ],
                         "binaryString": [
                             "00"
                         ]
                     },
                     {
+                        "probability": 0.5,
                         "amplitude": {
                             "real": 0.707107
                         },
-                        "probability": 0.5,
-                        "int": [
-                            "3"
-                        ],
                         "binaryString": [
                             "11"
                         ]
@@ -61,101 +55,77 @@ Feature:
             {
                 "states": [
                     {
+                        "probability": 0.125,
                         "amplitude": {
                             "real": 0.353553
                         },
-                        "probability": 0.125,
-                        "int": [
-                            "0"
-                        ],
                         "binaryString": [
                             "000"
                         ]
                     },
                     {
+                        "probability": 0.125,
                         "amplitude": {
                             "real": 0.25,
                             "imag": 0.25
                         },
-                        "probability": 0.125,
-                        "int": [
-                            "1"
-                        ],
                         "binaryString": [
                             "001"
                         ]
                     },
                     {
+                        "probability": 0.125,
                         "amplitude": {
                             "imag": 0.353553
                         },
-                        "probability": 0.125,
-                        "int": [
-                            "2"
-                        ],
                         "binaryString": [
                             "010"
                         ]
                     },
                     {
+                        "probability": 0.125,
                         "amplitude": {
                             "real": -0.25,
                             "imag": 0.25
                         },
-                        "probability": 0.125,
-                        "int": [
-                            "3"
-                        ],
                         "binaryString": [
                             "011"
                         ]
                     },
                     {
+                        "probability": 0.125,
                         "amplitude": {
                             "real": -0.353553
                         },
-                        "probability": 0.125,
-                        "int": [
-                            "4"
-                        ],
                         "binaryString": [
                             "100"
                         ]
                     },
                     {
+                        "probability": 0.125,
                         "amplitude": {
                             "real": -0.25,
                             "imag": -0.25
                         },
-                        "probability": 0.125,
-                        "int": [
-                            "5"
-                        ],
                         "binaryString": [
                             "101"
                         ]
                     },
                     {
+                        "probability": 0.125,
                         "amplitude": {
                             "imag": -0.353553
                         },
-                        "probability": 0.125,
-                        "int": [
-                            "6"
-                        ],
                         "binaryString": [
                             "110"
                         ]
                     },
                     {
+                        "probability": 0.125,
                         "amplitude": {
                             "real": 0.25,
                             "imag": -0.25
                         },
-                        "probability": 0.125,
-                        "int": [
-                            "7"
-                        ],
                         "binaryString": [
                             "111"
                         ]

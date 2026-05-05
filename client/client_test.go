@@ -30,13 +30,12 @@ func (m *mock) Simulate(
 	return connect.NewResponse(&quasarv1.SimulateResponse{
 		States: []*quasarv1.SimulateResponse_State{
 			{
-				BinaryString: []string{"101"},
-				Int:          []uint64{1, 0, 1},
-				Probability:  0.5,
+				Probability: 0.5,
 				Amplitude: &quasarv1.SimulateResponse_Amplitude{
 					Real: 1.0,
 					Imag: -1.0,
 				},
+				BinaryString: []string{"101"},
 			},
 		},
 	}), nil
@@ -88,11 +87,11 @@ func ExampleClient_Simulate() {
 	}
 
 	for _, state := range states.States {
-		fmt.Println(state.BinaryString, state.Int, state.Probability, state.Amplitude.Real, state.Amplitude.Imag)
+		fmt.Println(state.BinaryString, state.Probability, state.Amplitude.Real, state.Amplitude.Imag)
 	}
 
 	// Output:
-	// [101] [1 0 1] 0.5 1 -1
+	// [101] 0.5 1 -1
 }
 
 func ExampleClient_Share() {

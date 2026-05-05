@@ -83,15 +83,6 @@ func (s *QuasarService) Simulate(
 		return nil, connect.NewError(connect.CodeInvalidArgument, ErrQubitsNotFound)
 	}
 
-	unsigned := func(v []int) []uint64 {
-		u := make([]uint64, len(v))
-		for i, n := range v {
-			u[i] = uint64(n)
-		}
-
-		return u
-	}
-
 	round := func(v float64) float64 {
 		return math.Round(v*scale) / scale
 	}
@@ -110,7 +101,6 @@ func (s *QuasarService) Simulate(
 		// prob > 0.000000
 		states = append(states, &quasarv1.SimulateResponse_State{
 			BinaryString: s.BinaryString(),
-			Int:          unsigned(s.Int()),
 			Probability:  prob,
 			Amplitude: &quasarv1.SimulateResponse_Amplitude{
 				Real: round(real(s.Amplitude())),

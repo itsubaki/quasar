@@ -476,10 +476,9 @@ func (x *SimulateResponse_Amplitude) GetImag() float64 {
 
 type SimulateResponse_State struct {
 	state         protoimpl.MessageState      `protogen:"open.v1"`
-	Amplitude     *SimulateResponse_Amplitude `protobuf:"bytes,1,opt,name=amplitude,proto3" json:"amplitude,omitempty"`
-	Probability   float64                     `protobuf:"fixed64,2,opt,name=probability,proto3" json:"probability,omitempty"`
-	Int           []uint64                    `protobuf:"varint,3,rep,packed,name=int,proto3" json:"int,omitempty"`
-	BinaryString  []string                    `protobuf:"bytes,4,rep,name=binary_string,json=binaryString,proto3" json:"binary_string,omitempty"`
+	Probability   float64                     `protobuf:"fixed64,1,opt,name=probability,proto3" json:"probability,omitempty"`
+	Amplitude     *SimulateResponse_Amplitude `protobuf:"bytes,2,opt,name=amplitude,proto3" json:"amplitude,omitempty"`
+	BinaryString  []string                    `protobuf:"bytes,3,rep,name=binary_string,json=binaryString,proto3" json:"binary_string,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -514,13 +513,6 @@ func (*SimulateResponse_State) Descriptor() ([]byte, []int) {
 	return file_quasar_v1_quasar_proto_rawDescGZIP(), []int{1, 1}
 }
 
-func (x *SimulateResponse_State) GetAmplitude() *SimulateResponse_Amplitude {
-	if x != nil {
-		return x.Amplitude
-	}
-	return nil
-}
-
 func (x *SimulateResponse_State) GetProbability() float64 {
 	if x != nil {
 		return x.Probability
@@ -528,9 +520,9 @@ func (x *SimulateResponse_State) GetProbability() float64 {
 	return 0
 }
 
-func (x *SimulateResponse_State) GetInt() []uint64 {
+func (x *SimulateResponse_State) GetAmplitude() *SimulateResponse_Amplitude {
 	if x != nil {
-		return x.Int
+		return x.Amplitude
 	}
 	return nil
 }
@@ -548,17 +540,16 @@ const file_quasar_v1_quasar_proto_rawDesc = "" +
 	"\n" +
 	"\x16quasar/v1/quasar.proto\x12\tquasar.v1\x1a\x1fgoogle/protobuf/timestamp.proto\"%\n" +
 	"\x0fSimulateRequest\x12\x12\n" +
-	"\x04code\x18\x01 \x01(\tR\x04code\"\xaa\x02\n" +
+	"\x04code\x18\x01 \x01(\tR\x04code\"\x98\x02\n" +
 	"\x10SimulateResponse\x129\n" +
 	"\x06states\x18\x01 \x03(\v2!.quasar.v1.SimulateResponse.StateR\x06states\x1a3\n" +
 	"\tAmplitude\x12\x12\n" +
 	"\x04real\x18\x01 \x01(\x01R\x04real\x12\x12\n" +
-	"\x04imag\x18\x02 \x01(\x01R\x04imag\x1a\xa5\x01\n" +
-	"\x05State\x12C\n" +
-	"\tamplitude\x18\x01 \x01(\v2%.quasar.v1.SimulateResponse.AmplitudeR\tamplitude\x12 \n" +
-	"\vprobability\x18\x02 \x01(\x01R\vprobability\x12\x10\n" +
-	"\x03int\x18\x03 \x03(\x04R\x03int\x12#\n" +
-	"\rbinary_string\x18\x04 \x03(\tR\fbinaryString\"\"\n" +
+	"\x04imag\x18\x02 \x01(\x01R\x04imag\x1a\x93\x01\n" +
+	"\x05State\x12 \n" +
+	"\vprobability\x18\x01 \x01(\x01R\vprobability\x12C\n" +
+	"\tamplitude\x18\x02 \x01(\v2%.quasar.v1.SimulateResponse.AmplitudeR\tamplitude\x12#\n" +
+	"\rbinary_string\x18\x03 \x03(\tR\fbinaryString\"\"\n" +
 	"\fShareRequest\x12\x12\n" +
 	"\x04code\x18\x01 \x01(\tR\x04code\"Z\n" +
 	"\rShareResponse\x12\x0e\n" +

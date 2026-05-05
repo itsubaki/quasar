@@ -16,9 +16,8 @@ type States struct {
 }
 
 type State struct {
-	Amplitude    Amplitude `json:"amplitude"`
 	Probability  float64   `json:"probability"`
-	Int          []uint64  `json:"int"`
+	Amplitude    Amplitude `json:"amplitude"`
 	BinaryString []string  `json:"binary_string"`
 }
 
@@ -69,7 +68,6 @@ func (c *Client) Simulate(ctx context.Context, code string) (*States, error) {
 				Real: s.Amplitude.Real,
 				Imag: s.Amplitude.Imag,
 			},
-			Int:          s.Int,
 			BinaryString: s.BinaryString,
 		}
 	}

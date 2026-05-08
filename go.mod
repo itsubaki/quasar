@@ -7,8 +7,8 @@ require (
 	cloud.google.com/go/profiler v0.6.0
 	connectrpc.com/connect v1.19.2
 	github.com/cucumber/godog v0.15.0
-	github.com/itsubaki/q v0.0.11
-	github.com/itsubaki/qasm v0.1.5-0.20260505103253-385380f8c567
+	github.com/itsubaki/q v0.0.12-0.20260508122253-964ad0dfd7f4
+	github.com/itsubaki/qasm v0.1.5-0.20260508151555-bb78ff5c8b24
 	golang.org/x/net v0.53.0
 	google.golang.org/protobuf v1.36.11
 )
@@ -47,8 +47,8 @@ require (
 	golang.org/x/exp v0.0.0-20260410095643-746e56fc9e2f // indirect
 	golang.org/x/oauth2 v0.36.0 // indirect
 	golang.org/x/sync v0.20.0 // indirect
-	golang.org/x/sys v0.43.0 // indirect
-	golang.org/x/text v0.36.0 // indirect
+	golang.org/x/sys v0.44.0 // indirect
+	golang.org/x/text v0.37.0 // indirect
 	golang.org/x/time v0.15.0 // indirect
 	google.golang.org/api v0.278.0 // indirect
 	google.golang.org/genproto v0.0.0-20260504160031-60b97b32f348 // indirect

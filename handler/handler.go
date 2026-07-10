@@ -9,8 +9,6 @@ import (
 
 	"connectrpc.com/connect"
 	"github.com/itsubaki/quasar/gen/quasar/v1/quasarv1connect"
-	"golang.org/x/net/http2"
-	"golang.org/x/net/http2/h2c"
 )
 
 func New(maxQubits int, store Store) (http.Handler, error) {
@@ -39,7 +37,7 @@ func New(maxQubits int, store Store) (http.Handler, error) {
 		),
 	))
 
-	return h2c.NewHandler(mux, &http2.Server{}), nil
+	return mux, nil
 }
 
 func Recover() connect.UnaryInterceptorFunc {

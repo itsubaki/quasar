@@ -86,9 +86,14 @@ func main() {
 		addr = fmt.Sprintf(":%s", port)
 	}
 
+	protocols := new(http.Protocols)
+	protocols.SetHTTP1(true)
+	protocols.SetUnencryptedHTTP2(true)
+
 	s := &http.Server{
-		Addr:    addr,
-		Handler: h,
+		Addr:      addr,
+		Handler:   h,
+		Protocols: protocols,
 	}
 
 	go func() {

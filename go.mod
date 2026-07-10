@@ -9,7 +9,6 @@ require (
 	github.com/cucumber/godog v0.15.0
 	github.com/itsubaki/q v0.0.12-0.20260528152819-b781ece81c11
 	github.com/itsubaki/qasm v0.1.5-0.20260706103508-2d2247bbd932
-	golang.org/x/net v0.57.0
 	google.golang.org/protobuf v1.36.11
 )
 
@@ -43,6 +42,7 @@ require (
 	go.opentelemetry.io/otel/trace v1.44.0 // indirect
 	golang.org/x/crypto v0.54.0 // indirect
 	golang.org/x/exp v0.0.0-20260709172345-9ea1abe57597 // indirect
+	golang.org/x/net v0.57.0 // indirect
 	golang.org/x/oauth2 v0.36.0 // indirect
 	golang.org/x/sync v0.22.0 // indirect
 	golang.org/x/sys v0.47.0 // indirect

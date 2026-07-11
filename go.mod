@@ -7,8 +7,8 @@ require (
 	cloud.google.com/go/profiler v0.6.0
 	connectrpc.com/connect v1.20.0
 	github.com/cucumber/godog v0.15.0
-	github.com/itsubaki/q v0.0.12-0.20260528152819-b781ece81c11
-	github.com/itsubaki/qasm v0.1.5-0.20260706103508-2d2247bbd932
+	github.com/itsubaki/q v0.0.12-0.20260706103345-855970e5e7b0
+	github.com/itsubaki/qasm v0.1.5-0.20260711041101-5d1986be724d
 	google.golang.org/protobuf v1.36.11
 )
 

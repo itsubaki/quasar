@@ -3,18 +3,18 @@ module github.com/itsubaki/quasar
 go 1.26.2
 
 require (
-	cloud.google.com/go/firestore v1.23.0
+	cloud.google.com/go/firestore v1.24.0
 	cloud.google.com/go/profiler v0.6.0
 	connectrpc.com/connect v1.20.0
 	github.com/cucumber/godog v0.15.0
 	github.com/itsubaki/q v0.0.12-0.20260706103345-855970e5e7b0
-	github.com/itsubaki/qasm v0.1.5-0.20260711041101-5d1986be724d
+	github.com/itsubaki/qasm v0.1.5-0.20260712023628-2180eb79cab1
 	google.golang.org/protobuf v1.36.11
 )
 
 require (
 	cloud.google.com/go v0.123.0 // indirect
-	cloud.google.com/go/auth v0.21.0 // indirect
+	cloud.google.com/go/auth v0.22.0 // indirect
 	cloud.google.com/go/auth/oauth2adapt v0.2.8 // indirect
 	cloud.google.com/go/compute/metadata v0.9.0 // indirect
 	cloud.google.com/go/longrunning v1.2.0 // indirect
@@ -49,8 +49,8 @@ require (
 	golang.org/x/text v0.40.0 // indirect
 	golang.org/x/time v0.15.0 // indirect
 	google.golang.org/api v0.288.0 // indirect
-	google.golang.org/genproto v0.0.0-20260706201446-f0a921348800 // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20260706201446-f0a921348800 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20260706201446-f0a921348800 // indirect
-	google.golang.org/grpc v1.82.0 // indirect
+	google.golang.org/genproto v0.0.0-20260715232425-e75dac1f907d // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20260715232425-e75dac1f907d // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20260715232425-e75dac1f907d // indirect
+	google.golang.org/grpc v1.82.1 // indirect
 )

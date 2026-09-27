@@ -113,3 +113,6 @@ cli:
 	@cat testdata/bell.qasm | IDENTITY_TOKEN=$(shell gcloud auth print-identity-token) TARGET_URL=${TARGET_URL} quasar --simulate | jq .
 	@cat testdata/bell.qasm | IDENTITY_TOKEN=$(shell gcloud auth print-identity-token) TARGET_URL=${TARGET_URL} quasar --share    | jq .
 	@IDENTITY_TOKEN=$(shell gcloud auth print-identity-token) TARGET_URL=${TARGET_URL} quasar --edit --id NbBucN9CiuSEIHHP        | jq .
+
+installcli:
+	go install github.com/itsubaki/quasar/cli/quasar@latest

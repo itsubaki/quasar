@@ -18,23 +18,26 @@ var (
 	IdentityToken = os.Getenv("IDENTITY_TOKEN")
 )
 
+func init() {
+	flag.Usage = func() {
+		fmt.Fprintf(os.Stderr, "Usage: %s [options]\n\n", os.Args[0])
+		fmt.Fprintln(os.Stderr, "Options:")
+		flag.PrintDefaults()
+		fmt.Fprintln(os.Stderr, "\nEnvironment variables:")
+		fmt.Fprintln(os.Stderr, "  TARGET_URL       URL of the target Google Cloud Run service")
+		fmt.Fprintln(os.Stderr, "  IDENTITY_TOKEN   Identity token for authenticating with Cloud Run")
+	}
+}
+
 func main() {
-	if TargetURL == "" {
-		panic("environment variable TARGET_URL is required")
-	}
-
-	if IdentityToken == "" {
-		panic("environment variable IDENTITY_TOKEN is required")
-	}
-
 	var filepath, snippetID string
 	var simulate, validate, share, edit bool
-	flag.StringVar(&filepath, "f", "", "filepath")
-	flag.StringVar(&snippetID, "id", "", "snippet ID")
-	flag.BoolVar(&simulate, "simulate", false, "")
-	flag.BoolVar(&share, "share", false, "")
-	flag.BoolVar(&validate, "validate", false, "")
-	flag.BoolVar(&edit, "edit", false, "")
+	flag.StringVar(&filepath, "f", "", "path to an OpenQASM file (default: stdin)")
+	flag.StringVar(&snippetID, "id", "", "snippet ID to edit")
+	flag.BoolVar(&simulate, "simulate", false, "simulate the OpenQASM code")
+	flag.BoolVar(&validate, "validate", false, "validate the OpenQASM code")
+	flag.BoolVar(&share, "share", false, "share the OpenQASM code")
+	flag.BoolVar(&edit, "edit", false, "edit a shared snippet")
 	flag.Parse()
 
 	switch {

@@ -109,6 +109,7 @@ validate:
 .PHONY: cli
 cli:
 	go install ./cli/quasar
-	@cat testdata/bell.qasm | IDENTITY_TOKEN=$(shell gcloud auth print-identity-token) TARGET_URL=${TARGET_URL} quasar -validate | jq .
-	@cat testdata/bell.qasm | IDENTITY_TOKEN=$(shell gcloud auth print-identity-token) TARGET_URL=${TARGET_URL} quasar -simulate | jq .
-	@cat testdata/bell.qasm | IDENTITY_TOKEN=$(shell gcloud auth print-identity-token) TARGET_URL=${TARGET_URL} quasar -share    | jq .
+	@cat testdata/bell.qasm | IDENTITY_TOKEN=$(shell gcloud auth print-identity-token) TARGET_URL=${TARGET_URL} quasar --validate | jq .
+	@cat testdata/bell.qasm | IDENTITY_TOKEN=$(shell gcloud auth print-identity-token) TARGET_URL=${TARGET_URL} quasar --simulate | jq .
+	@cat testdata/bell.qasm | IDENTITY_TOKEN=$(shell gcloud auth print-identity-token) TARGET_URL=${TARGET_URL} quasar --share    | jq .
+	@IDENTITY_TOKEN=$(shell gcloud auth print-identity-token) TARGET_URL=${TARGET_URL} quasar --edit --id NbBucN9CiuSEIHHP        | jq .

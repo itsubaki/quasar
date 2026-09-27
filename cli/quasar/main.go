@@ -27,21 +27,60 @@ func main() {
 		panic("environment variable IDENTITY_TOKEN is required")
 	}
 
-	var filepath string
-	var simulate, validate, share bool
+	var filepath, snippetID string
+	var simulate, validate, share, edit bool
 	flag.StringVar(&filepath, "f", "", "filepath")
+	flag.StringVar(&snippetID, "id", "", "snippet ID")
 	flag.BoolVar(&simulate, "simulate", false, "")
 	flag.BoolVar(&share, "share", false, "")
 	flag.BoolVar(&validate, "validate", false, "")
+	flag.BoolVar(&edit, "edit", false, "")
 	flag.Parse()
 
-	contents, err := Read(filepath)
-	if err != nil {
-		panic(err)
-	}
-
 	switch {
+	case simulate:
+		contents, err := Read(filepath)
+		if err != nil {
+			panic(err)
+		}
+
+		resp, err := client.
+			New(TargetURL, client.NewWithIdentityToken(IdentityToken)).
+			Simulate(context.Background(), string(contents))
+		if err != nil {
+			panic(err)
+		}
+
+		bytes, err := json.Marshal(resp)
+		if err != nil {
+			panic(err)
+		}
+
+		fmt.Println(string(bytes))
+	case validate:
+		contents, err := Read(filepath)
+		if err != nil {
+			panic(err)
+		}
+
+		resp, err := client.
+			New(TargetURL, client.NewWithIdentityToken(IdentityToken)).
+			Validate(context.Background(), string(contents))
+		if err != nil {
+			panic(err)
+		}
+
+		bytes, err := json.Marshal(resp)
+		if err != nil {
+			panic(err)
+		}
+
+		fmt.Println(string(bytes))
 	case share:
+		contents, err := Read(filepath)
+		if err != nil {
+			panic(err)
+		}
 		resp, err := client.
 			New(TargetURL, client.NewWithIdentityToken(IdentityToken)).
 			Share(context.Background(), string(contents))
@@ -62,24 +101,10 @@ func main() {
 		}
 
 		fmt.Println(string(bytes))
-	case validate:
+	case edit:
 		resp, err := client.
 			New(TargetURL, client.NewWithIdentityToken(IdentityToken)).
-			Validate(context.Background(), string(contents))
-		if err != nil {
-			panic(err)
-		}
-
-		bytes, err := json.Marshal(resp)
-		if err != nil {
-			panic(err)
-		}
-
-		fmt.Println(string(bytes))
-	case simulate:
-		resp, err := client.
-			New(TargetURL, client.NewWithIdentityToken(IdentityToken)).
-			Simulate(context.Background(), string(contents))
+			Edit(context.Background(), snippetID)
 		if err != nil {
 			panic(err)
 		}

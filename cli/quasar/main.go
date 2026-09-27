@@ -28,8 +28,9 @@ func main() {
 	}
 
 	var filepath string
-	var validate, share bool
+	var simulate, validate, share bool
 	flag.StringVar(&filepath, "f", "", "filepath")
+	flag.BoolVar(&simulate, "simulate", false, "")
 	flag.BoolVar(&share, "share", false, "")
 	flag.BoolVar(&validate, "validate", false, "")
 	flag.Parse()
@@ -48,8 +49,6 @@ func main() {
 			panic(err)
 		}
 
-		fmt.Println("shared: ", resp.ID, resp.CreatedAt)
-
 		snippet, err := client.
 			New(TargetURL, client.NewWithIdentityToken(IdentityToken)).
 			Edit(context.Background(), resp.ID)
@@ -57,8 +56,12 @@ func main() {
 			panic(err)
 		}
 
-		fmt.Println("edited:", snippet.ID, snippet.CreatedAt)
-		fmt.Println(snippet.Code)
+		bytes, err := json.Marshal(snippet)
+		if err != nil {
+			panic(err)
+		}
+
+		fmt.Println(string(bytes))
 	case validate:
 		resp, err := client.
 			New(TargetURL, client.NewWithIdentityToken(IdentityToken)).
@@ -73,7 +76,7 @@ func main() {
 		}
 
 		fmt.Println(string(bytes))
-	default:
+	case simulate:
 		resp, err := client.
 			New(TargetURL, client.NewWithIdentityToken(IdentityToken)).
 			Simulate(context.Background(), string(contents))
@@ -87,6 +90,8 @@ func main() {
 		}
 
 		fmt.Println(string(bytes))
+	default:
+		panic("no valid action specified")
 	}
 }
 

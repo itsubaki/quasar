@@ -81,6 +81,7 @@ func main() {
 		if err != nil {
 			panic(err)
 		}
+
 		resp, err := client.
 			New(TargetURL, client.NewWithIdentityToken(IdentityToken)).
 			Share(context.Background(), string(contents))
@@ -88,14 +89,7 @@ func main() {
 			panic(err)
 		}
 
-		snippet, err := client.
-			New(TargetURL, client.NewWithIdentityToken(IdentityToken)).
-			Edit(context.Background(), resp.ID)
-		if err != nil {
-			panic(err)
-		}
-
-		bytes, err := json.Marshal(snippet)
+		bytes, err := json.Marshal(resp)
 		if err != nil {
 			panic(err)
 		}

@@ -19,6 +19,14 @@ var (
 )
 
 func main() {
+	if TargetURL == "" {
+		panic("environment variable TARGET_URL is required")
+	}
+
+	if IdentityToken == "" {
+		panic("environment variable IDENTITY_TOKEN is required")
+	}
+
 	var filepath string
 	var validate, share bool
 	flag.StringVar(&filepath, "f", "", "filepath")
@@ -28,8 +36,7 @@ func main() {
 
 	contents, err := Read(filepath)
 	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
-		os.Exit(1)
+		panic(err)
 	}
 
 	switch {

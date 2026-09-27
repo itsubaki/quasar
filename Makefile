@@ -105,3 +105,6 @@ validate:
 		-H 'Content-Type: application/json' \
 		-d "$$(jq -Rs '{code: .}' testdata/bell.qasm)" \
 		localhost:8080/quasar.v1.QuasarService/Validate | jq .
+
+installcli:
+	go install cli/quasar

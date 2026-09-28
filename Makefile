@@ -112,9 +112,12 @@ installclisrc:
 installcli:
 	go install github.com/itsubaki/quasar/cli/quasar@latest
 
+# export PROJECT_ID=$(gcloud config get-value project)
+# export TARGET_URL="$(gcloud run services describe quasar --project ${PROJECT_ID} --format 'value(status.url)')"
+# export IDENTITY_TOKEN="$(gcloud auth print-identity-token)"
 .PHONY: cli
 cli:
-	@cat testdata/bell.qasm | IDENTITY_TOKEN=$(shell gcloud auth print-identity-token) TARGET_URL=${TARGET_URL} quasar --validate | jq .
-	@cat testdata/bell.qasm | IDENTITY_TOKEN=$(shell gcloud auth print-identity-token) TARGET_URL=${TARGET_URL} quasar --simulate | jq .
-	@cat testdata/bell.qasm | IDENTITY_TOKEN=$(shell gcloud auth print-identity-token) TARGET_URL=${TARGET_URL} quasar --share    | jq .
-	@IDENTITY_TOKEN=$(shell gcloud auth print-identity-token) TARGET_URL=${TARGET_URL} quasar --edit --id NbBucN9CiuSEIHHP        | jq .
+	@IDENTITY_TOKEN=$(shell gcloud auth print-identity-token) TARGET_URL=${TARGET_URL} quasar validate -f  testdata/bell.qasm | jq .
+	@IDENTITY_TOKEN=$(shell gcloud auth print-identity-token) TARGET_URL=${TARGET_URL} quasar simulate -f  testdata/bell.qasm | jq .
+	@IDENTITY_TOKEN=$(shell gcloud auth print-identity-token) TARGET_URL=${TARGET_URL} quasar share    -f  testdata/bell.qasm | jq .
+	@IDENTITY_TOKEN=$(shell gcloud auth print-identity-token) TARGET_URL=${TARGET_URL} quasar edit     -id NbBucN9CiuSEIHHP   | jq .

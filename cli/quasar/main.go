@@ -4,129 +4,157 @@ import (
 	"bufio"
 	"context"
 	"encoding/json"
-	"flag"
 	"fmt"
 	"io"
 	"os"
 	"strings"
 
 	"github.com/itsubaki/quasar/client"
+	"github.com/urfave/cli/v3"
 )
 
 var (
-	TargetURL     = os.Getenv("TARGET_URL")
-	IdentityToken = os.Getenv("IDENTITY_TOKEN")
+	targetURL     string
+	identityToken string
 )
 
-func init() {
-	flag.Usage = func() {
-		fmt.Fprintf(os.Stderr, "Usage: %s [options]\n\n", os.Args[0])
-		fmt.Fprintln(os.Stderr, "Options:")
-		flag.PrintDefaults()
-		fmt.Fprintln(os.Stderr, "\nEnvironment variables:")
-		fmt.Fprintln(os.Stderr, "  TARGET_URL       URL of the target Google Cloud Run service")
-		fmt.Fprintln(os.Stderr, "  IDENTITY_TOKEN   Identity token for authenticating with Cloud Run")
-	}
-}
-
 func main() {
-	if err := run(); err != nil {
-		fmt.Fprintln(os.Stderr, "error:", err)
+	app := &cli.Command{
+		Name:  "quasar",
+		Usage: "Quasar CLI",
+		Flags: []cli.Flag{
+			&cli.StringFlag{
+				Name:        "target-url",
+				Usage:       "URL of the target Google Cloud Run service",
+				Sources:     cli.EnvVars("TARGET_URL"),
+				Destination: &targetURL,
+			},
+			&cli.StringFlag{
+				Name:        "identity-token",
+				Usage:       "Identity token for authenticating with Cloud Run",
+				Sources:     cli.EnvVars("IDENTITY_TOKEN"),
+				Destination: &identityToken,
+			},
+		},
+		Commands: []*cli.Command{
+			{
+				Name:  "validate",
+				Usage: "Validate OpenQASM code",
+				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:    "file",
+						Aliases: []string{"f"},
+						Usage:   "path to an OpenQASM file (default: stdin)",
+					},
+				},
+				Action: func(ctx context.Context, cmd *cli.Command) error {
+					contents, err := read(cmd.String("file"))
+					if err != nil {
+						return err
+					}
+
+					resp, err := newClient().Validate(ctx, contents)
+					if err != nil {
+						return err
+					}
+
+					return print(resp)
+				},
+			},
+			{
+				Name:  "simulate",
+				Usage: "Simulate OpenQASM code",
+				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:    "file",
+						Aliases: []string{"f"},
+						Usage:   "path to an OpenQASM file (default: stdin)",
+					},
+				},
+				Action: func(ctx context.Context, cmd *cli.Command) error {
+					contents, err := read(cmd.String("file"))
+					if err != nil {
+						return err
+					}
+
+					resp, err := newClient().Simulate(ctx, contents)
+					if err != nil {
+						return err
+					}
+
+					return print(resp)
+				},
+			},
+			{
+				Name:  "share",
+				Usage: "Share OpenQASM code",
+				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:    "file",
+						Aliases: []string{"f"},
+						Usage:   "path to an OpenQASM file (default: stdin)",
+					},
+				},
+				Action: func(ctx context.Context, cmd *cli.Command) error {
+					contents, err := read(cmd.String("file"))
+					if err != nil {
+						return err
+					}
+
+					resp, err := newClient().Share(ctx, contents)
+					if err != nil {
+						return err
+					}
+
+					return print(resp)
+				},
+			},
+			{
+				Name:  "edit",
+				Usage: "Edit a shared snippet",
+				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:     "id",
+						Usage:    "snippet ID to edit",
+						Required: true,
+					},
+				},
+				Action: func(ctx context.Context, cmd *cli.Command) error {
+					resp, err := newClient().Edit(ctx, cmd.String("id"))
+					if err != nil {
+						return err
+					}
+
+					return print(resp)
+				},
+			},
+		},
+	}
+
+	if err := app.Run(context.Background(), os.Args); err != nil {
+		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
 }
 
-func run() error {
-	var filepath, snippetID string
-	var simulate, validate, share, edit bool
-	flag.StringVar(&filepath, "f", "", "path to an OpenQASM file (default: stdin)")
-	flag.StringVar(&snippetID, "id", "", "snippet ID to edit")
-	flag.BoolVar(&simulate, "simulate", false, "simulate the OpenQASM code")
-	flag.BoolVar(&validate, "validate", false, "validate the OpenQASM code")
-	flag.BoolVar(&share, "share", false, "share the OpenQASM code")
-	flag.BoolVar(&edit, "edit", false, "edit a shared snippet")
-	flag.Parse()
+func newClient() *client.Client {
+	return client.New(
+		targetURL,
+		client.NewWithIdentityToken(identityToken),
+	)
+}
 
-	switch {
-	case simulate:
-		contents, err := Read(filepath)
-		if err != nil {
-			return err
-		}
-
-		resp, err := client.
-			New(TargetURL, client.NewWithIdentityToken(IdentityToken)).
-			Simulate(context.Background(), string(contents))
-		if err != nil {
-			return err
-		}
-
-		bytes, err := json.Marshal(resp)
-		if err != nil {
-			return fmt.Errorf("marshal: %w", err)
-		}
-
-		fmt.Println(string(bytes))
-	case validate:
-		contents, err := Read(filepath)
-		if err != nil {
-			return err
-		}
-
-		resp, err := client.
-			New(TargetURL, client.NewWithIdentityToken(IdentityToken)).
-			Validate(context.Background(), string(contents))
-		if err != nil {
-			return err
-		}
-
-		bytes, err := json.Marshal(resp)
-		if err != nil {
-			return fmt.Errorf("marshal: %w", err)
-		}
-
-		fmt.Println(string(bytes))
-	case share:
-		contents, err := Read(filepath)
-		if err != nil {
-			return err
-		}
-
-		resp, err := client.
-			New(TargetURL, client.NewWithIdentityToken(IdentityToken)).
-			Share(context.Background(), string(contents))
-		if err != nil {
-			return err
-		}
-
-		bytes, err := json.Marshal(resp)
-		if err != nil {
-			return fmt.Errorf("marshal: %w", err)
-		}
-
-		fmt.Println(string(bytes))
-	case edit:
-		resp, err := client.
-			New(TargetURL, client.NewWithIdentityToken(IdentityToken)).
-			Edit(context.Background(), snippetID)
-		if err != nil {
-			return err
-		}
-
-		bytes, err := json.Marshal(resp)
-		if err != nil {
-			return fmt.Errorf("marshal: %w", err)
-		}
-
-		fmt.Println(string(bytes))
-	default:
-		return fmt.Errorf("no valid action specified")
+func print(v any) error {
+	data, err := json.Marshal(v)
+	if err != nil {
+		return fmt.Errorf("marshal: %w", err)
 	}
 
+	fmt.Println(string(data))
 	return nil
 }
 
-func Read(filepath string) (string, error) {
+func read(filepath string) (string, error) {
 	if filepath != "" {
 		read, err := os.ReadFile(filepath)
 		if err != nil {
@@ -136,7 +164,7 @@ func Read(filepath string) (string, error) {
 		return string(read), nil
 	}
 
-	text, err := Scan(os.Stdin)
+	text, err := scan(os.Stdin)
 	if err != nil {
 		return "", fmt.Errorf("read stdin: %w", err)
 	}
@@ -144,7 +172,7 @@ func Read(filepath string) (string, error) {
 	return text, nil
 }
 
-func Scan(r io.Reader) (string, error) {
+func scan(r io.Reader) (string, error) {
 	scanner := bufio.NewScanner(r)
 
 	var text strings.Builder

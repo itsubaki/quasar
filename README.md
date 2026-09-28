@@ -67,3 +67,28 @@ curl -s \
   ]
 }
 ```
+
+```shell
+go install github.com/itsubaki/quasar/cli/quasar@latest
+```
+
+```shell
+% quasar --help
+NAME:
+   quasar - Quasar CLI
+
+USAGE:
+   quasar [global options] [command [command options]]
+
+COMMANDS:
+   validate  Validate OpenQASM code
+   simulate  Simulate OpenQASM code
+   share     Share OpenQASM code
+   edit      Edit a shared snippet
+   help, h   Shows a list of commands or help for one command
+
+GLOBAL OPTIONS:
+   --target-url string      URL of the target Google Cloud Run service [$TARGET_URL]
+   --identity-token string  Identity token for authenticating with Cloud Run [$IDENTITY_TOKEN]
+   --help, -h               show help
+```

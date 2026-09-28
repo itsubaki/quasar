@@ -72,7 +72,7 @@ curl -s \
 go install github.com/itsubaki/quasar/cli/quasar@latest
 ```
 
-```shell
+```
 % quasar --help
 NAME:
    quasar - Quasar CLI

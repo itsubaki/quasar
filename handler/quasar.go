@@ -132,7 +132,9 @@ func (s *QuasarService) Share(
 	if err != nil {
 		return nil, connect.NewError(connect.CodeInternal, ErrSomethingWentWrong)
 	}
-	createdAt := time.Now()
+
+	// Truncate to microsecond precision to match Firestore Timestamp precision.
+	createdAt := time.Now().Truncate(time.Microsecond)
 
 	if err := s.Store.Put(ctx, id, &store.Snippet{
 		Code:      code,

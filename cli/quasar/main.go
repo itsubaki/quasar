@@ -30,6 +30,13 @@ func init() {
 }
 
 func main() {
+	if err := run(); err != nil {
+		fmt.Fprintln(os.Stderr, "error:", err)
+		os.Exit(1)
+	}
+}
+
+func run() error {
 	var filepath, snippetID string
 	var simulate, validate, share, edit bool
 	flag.StringVar(&filepath, "f", "", "path to an OpenQASM file (default: stdin)")
@@ -44,57 +51,57 @@ func main() {
 	case simulate:
 		contents, err := Read(filepath)
 		if err != nil {
-			panic(err)
+			return err
 		}
 
 		resp, err := client.
 			New(TargetURL, client.NewWithIdentityToken(IdentityToken)).
 			Simulate(context.Background(), string(contents))
 		if err != nil {
-			panic(err)
+			return err
 		}
 
 		bytes, err := json.Marshal(resp)
 		if err != nil {
-			panic(err)
+			return fmt.Errorf("marshal: %w", err)
 		}
 
 		fmt.Println(string(bytes))
 	case validate:
 		contents, err := Read(filepath)
 		if err != nil {
-			panic(err)
+			return err
 		}
 
 		resp, err := client.
 			New(TargetURL, client.NewWithIdentityToken(IdentityToken)).
 			Validate(context.Background(), string(contents))
 		if err != nil {
-			panic(err)
+			return err
 		}
 
 		bytes, err := json.Marshal(resp)
 		if err != nil {
-			panic(err)
+			return fmt.Errorf("marshal: %w", err)
 		}
 
 		fmt.Println(string(bytes))
 	case share:
 		contents, err := Read(filepath)
 		if err != nil {
-			panic(err)
+			return err
 		}
 
 		resp, err := client.
 			New(TargetURL, client.NewWithIdentityToken(IdentityToken)).
 			Share(context.Background(), string(contents))
 		if err != nil {
-			panic(err)
+			return err
 		}
 
 		bytes, err := json.Marshal(resp)
 		if err != nil {
-			panic(err)
+			return fmt.Errorf("marshal: %w", err)
 		}
 
 		fmt.Println(string(bytes))
@@ -103,18 +110,20 @@ func main() {
 			New(TargetURL, client.NewWithIdentityToken(IdentityToken)).
 			Edit(context.Background(), snippetID)
 		if err != nil {
-			panic(err)
+			return err
 		}
 
 		bytes, err := json.Marshal(resp)
 		if err != nil {
-			panic(err)
+			return fmt.Errorf("marshal: %w", err)
 		}
 
 		fmt.Println(string(bytes))
 	default:
-		panic("no valid action specified")
+		return fmt.Errorf("no valid action specified")
 	}
+
+	return nil
 }
 
 func Read(filepath string) (string, error) {

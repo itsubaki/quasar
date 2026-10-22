@@ -1,4 +1,4 @@
-FROM golang:1.26.7
+FROM golang:1.26.10
 
 WORKDIR /go/src/app
 ENV GO111MODULE=on

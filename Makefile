@@ -54,7 +54,7 @@ cloudbuild:
 build:
 	gcloud auth configure-docker ${LOCATION}-docker.pkg.dev --quiet
 	gcloud artifacts repositories list
-	docker build -t ${IMAGE} .
+	docker build --pull --no-cache --platform linux/amd64 -t ${IMAGE} .
 	docker push ${IMAGE}
 
 deploy:

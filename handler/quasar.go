@@ -141,6 +141,7 @@ func (s *QuasarService) Share(
 		Code:      code,
 		CreatedAt: createdAt,
 	}); err != nil {
+		slog.ErrorContext(ctx, "store put", slog.Any("error", err))
 		return nil, connect.NewError(connect.CodeInternal, ErrSomethingWentWrong)
 	}
 
@@ -166,6 +167,7 @@ func (s *QuasarService) Edit(
 			return nil, connect.NewError(connect.CodeNotFound, ErrNoSuchEntity)
 		}
 
+		slog.ErrorContext(ctx, "store get", slog.Any("error", err))
 		return nil, connect.NewError(connect.CodeInternal, ErrSomethingWentWrong)
 	}
 

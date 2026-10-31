@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log/slog"
 	"math"
 	"time"
 
@@ -74,6 +75,7 @@ func (s *QuasarService) Simulate(
 		visitor.WithMaxQubits(s.MaxQubits),
 	)
 
+	slog.InfoContext(ctx, "simulate", slog.String("code", req.Msg.Code))
 	if err := v.Run(program); err != nil {
 		return nil, connect.NewError(connect.CodeInvalidArgument, err)
 	}

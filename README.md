@@ -18,9 +18,6 @@ gcloud run deploy --image ${IMAGE} --set-env-vars=PROJECT_ID=${PROJECT_ID} quasa
 
 ## Examples
 
-Simulate and Validate reject `include` statements with `invalid_argument`.
-Quasar does not allow submitted code to read files from the server.
-
 ```qasm
 % cat testdata/bell.qasm
 OPENQASM 3.0;

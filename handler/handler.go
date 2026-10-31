@@ -12,7 +12,11 @@ import (
 	"github.com/itsubaki/quasar/gen/quasar/v1/quasarv1connect"
 )
 
-func New(maxQubits int, store Store) (http.Handler, error) {
+func New(maxQubits, maxConcurrent int, store Store) (http.Handler, error) {
+	if maxConcurrent < 1 {
+		return nil, errors.New("max concurrent must be positive")
+	}
+
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
@@ -30,8 +34,9 @@ func New(maxQubits int, store Store) (http.Handler, error) {
 
 	mux.Handle(quasarv1connect.NewQuasarServiceHandler(
 		&QuasarService{
-			MaxQubits: maxQubits,
-			Store:     store,
+			MaxQubits:     maxQubits,
+			MaxConcurrent: maxConcurrent,
+			Store:         store,
 		},
 		connect.WithInterceptors(
 			Recover(),

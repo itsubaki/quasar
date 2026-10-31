@@ -7,6 +7,7 @@ SERVICE_NAME := quasar
 LOCATION := asia-northeast1
 IMAGE := ${LOCATION}-docker.pkg.dev/${PROJECT_ID}/${SERVICE_NAME}/app
 TAG := latest
+MAX_CONCURRENT ?= 1
 
 update:
 	GOPROXY=direct go get github.com/itsubaki/qasm@HEAD
@@ -59,7 +60,7 @@ build:
 
 deploy:
 	gcloud artifacts docker images describe ${IMAGE}
-	gcloud run deploy --region ${LOCATION} --project ${PROJECT_ID} --image ${IMAGE} --set-env-vars=PROJECT_ID=${PROJECT_ID},DATABASE_ID=${DATABASE_ID},USE_CPROF=true,MAX_QUBITS=12 ${SERVICE_NAME}
+	gcloud run deploy --region ${LOCATION} --project ${PROJECT_ID} --image ${IMAGE} --set-env-vars=PROJECT_ID=${PROJECT_ID},DATABASE_ID=${DATABASE_ID},USE_CPROF=true,MAX_QUBITS=12,MAX_CONCURRENT=${MAX_CONCURRENT} ${SERVICE_NAME}
 	gcloud run services update-traffic ${SERVICE_NAME} --to-latest --region ${LOCATION} --project ${PROJECT_ID}
 
 package:

@@ -40,6 +40,19 @@ var (
 
 		return max
 	}()
+	maxConcurrent = func() int {
+		v := os.Getenv("MAX_CONCURRENT")
+		if v == "" {
+			return 1
+		}
+
+		max, err := strconv.Atoi(v)
+		if err != nil || max < 1 {
+			log.Fatalf("invalid MAX_CONCURRENT: %q (must be a positive integer)", v)
+		}
+
+		return max
+	}()
 )
 
 func main() {
@@ -71,6 +84,7 @@ func main() {
 	// handler
 	h, err := handler.New(
 		maxQubits,
+		maxConcurrent,
 		&store.Firestore{
 			Collection: "snippet",
 			Client:     fsc,

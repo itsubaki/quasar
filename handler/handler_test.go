@@ -17,7 +17,7 @@ import (
 )
 
 func ExampleNew_root() {
-	h, err := handler.New(5, nil)
+	h, err := handler.New(5, 1, nil)
 	if err != nil {
 		panic(err)
 	}
@@ -51,7 +51,7 @@ func ExampleNew_root() {
 }
 
 func ExampleNew_status() {
-	h, err := handler.New(5, nil)
+	h, err := handler.New(5, 1, nil)
 	if err != nil {
 		panic(err)
 	}

@@ -9,6 +9,7 @@ import (
 	"io"
 	"log/slog"
 	"math"
+	"sync"
 	"time"
 
 	"connectrpc.com/connect"
@@ -38,6 +39,7 @@ var (
 	ErrNoSuchEntity       = errors.New("no such entity")
 	ErrSomethingWentWrong = errors.New("something went wrong")
 	ErrIncludeNotAllowed  = errors.New("include is not allowed")
+	ErrBusy               = errors.New("another computation is running")
 )
 
 var (
@@ -51,8 +53,11 @@ type Store interface {
 }
 
 type QuasarService struct {
-	MaxQubits int
-	Store     Store
+	MaxQubits     int
+	MaxConcurrent int // Set before first use; values below 1 default to 1.
+	Store         Store
+	computeOnce   sync.Once
+	compute       chan struct{}
 }
 
 func (s *QuasarService) Simulate(
@@ -62,6 +67,11 @@ func (s *QuasarService) Simulate(
 	if err := checkCode(req.Msg.Code); err != nil {
 		return nil, err
 	}
+
+	if !s.acquireCompute() {
+		return nil, connect.NewError(connect.CodeResourceExhausted, ErrBusy)
+	}
+	defer func() { <-s.compute }()
 
 	program, err := parseCode(req.Msg.Code)
 	if err != nil {
@@ -186,6 +196,11 @@ func (s *QuasarService) Validate(
 		return nil, err
 	}
 
+	if !s.acquireCompute() {
+		return nil, connect.NewError(connect.CodeResourceExhausted, ErrBusy)
+	}
+	defer func() { <-s.compute }()
+
 	if _, err := parseCode(req.Msg.Code); err != nil {
 		if syntaxErr, ok := errors.AsType[*listener.SyntaxError](err); ok {
 			return connect.NewResponse(&quasarv1.ValidateResponse{
@@ -202,6 +217,19 @@ func (s *QuasarService) Validate(
 	return connect.NewResponse(&quasarv1.ValidateResponse{
 		Valid: true,
 	}), nil
+}
+
+func (s *QuasarService) acquireCompute() bool {
+	s.computeOnce.Do(func() {
+		s.compute = make(chan struct{}, max(1, s.MaxConcurrent))
+	})
+
+	select {
+	case s.compute <- struct{}{}:
+		return true
+	default:
+		return false
+	}
 }
 
 func GenID(code string, length int) (string, error) {

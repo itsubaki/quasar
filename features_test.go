@@ -32,6 +32,7 @@ type apiFeature struct {
 func (a *apiFeature) start() {
 	h, err := handler.New(
 		0, // no limit
+		1,
 		&store.MemoryStore{},
 	)
 	if err != nil {

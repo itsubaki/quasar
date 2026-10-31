@@ -14,7 +14,6 @@ import (
 	"github.com/itsubaki/q"
 	"github.com/itsubaki/qasm/environ"
 	"github.com/itsubaki/qasm/listener"
-	"github.com/itsubaki/qasm/parser"
 	"github.com/itsubaki/qasm/visitor"
 	quasarv1 "github.com/itsubaki/quasar/gen/quasar/v1"
 	"github.com/itsubaki/quasar/store"
@@ -37,6 +36,7 @@ var (
 	ErrIDNotFound         = errors.New("id not found")
 	ErrNoSuchEntity       = errors.New("no such entity")
 	ErrSomethingWentWrong = errors.New("something went wrong")
+	ErrIncludeNotAllowed  = errors.New("include is not allowed")
 )
 
 var (
@@ -62,7 +62,7 @@ func (s *QuasarService) Simulate(
 		return nil, err
 	}
 
-	program, err := parser.Parse(req.Msg.Code)
+	program, err := parseCode(req.Msg.Code)
 	if err != nil {
 		return nil, connect.NewError(connect.CodeInvalidArgument, err)
 	}
@@ -182,7 +182,7 @@ func (s *QuasarService) Validate(
 		return nil, err
 	}
 
-	if _, err := parser.Parse(req.Msg.Code); err != nil {
+	if _, err := parseCode(req.Msg.Code); err != nil {
 		if syntaxErr, ok := errors.AsType[*listener.SyntaxError](err); ok {
 			return connect.NewResponse(&quasarv1.ValidateResponse{
 				Valid:   false,

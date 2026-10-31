@@ -6,6 +6,7 @@ require (
 	cloud.google.com/go/firestore v1.28.0
 	cloud.google.com/go/profiler v0.7.0
 	connectrpc.com/connect v1.21.1
+	github.com/antlr4-go/antlr/v4 v4.13.1
 	github.com/cucumber/godog v0.15.0
 	github.com/itsubaki/q v0.0.12
 	github.com/itsubaki/qasm v0.1.5-0.20261011014312-e0ea409b1af0
@@ -19,7 +20,6 @@ require (
 	cloud.google.com/go/auth/oauth2adapt v0.3.0 // indirect
 	cloud.google.com/go/compute/metadata v0.10.0 // indirect
 	cloud.google.com/go/longrunning v1.3.0 // indirect
-	github.com/antlr4-go/antlr/v4 v4.13.1 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/cucumber/gherkin/go/v26 v26.2.0 // indirect
 	github.com/cucumber/messages/go/v21 v21.0.1 // indirect

@@ -68,6 +68,8 @@ curl -s \
 }
 ```
 
+## CLI
+
 ```shell
 go install github.com/itsubaki/quasar/cli/quasar@latest
 ```

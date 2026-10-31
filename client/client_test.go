@@ -168,30 +168,48 @@ type roundTripFunc func(*http.Request) (*http.Response, error)
 func (f roundTripFunc) RoundTrip(r *http.Request) (*http.Response, error) { return f(r) }
 
 func TestIdentityTokenDoesNotFollowRedirects(t *testing.T) {
-	for _, code := range []int{301, 302, 303, 307, 308} {
-		for _, target := range []string{"https://other.invalid/capture", "http://original.invalid/capture", "https://original.invalid/next"} {
-			t.Run(fmt.Sprintf("%d/%s", code, target), func(t *testing.T) {
-				c := client.NewWithIdentityToken("dummy-token")
-				calls := 0
-				c.Transport.(*client.HeaderTransport).RoundTripper = roundTripFunc(func(r *http.Request) (*http.Response, error) {
-					calls++
-					if r.URL.String() != "https://original.invalid/start" {
-						t.Fatalf("followed redirect and sent credentials to %s", r.URL)
-					}
-					if r.Header.Get("Authorization") != "Bearer dummy-token" {
-						t.Fatal("missing original credentials")
-					}
-					return &http.Response{StatusCode: code, Header: http.Header{"Location": []string{target}}, Body: io.NopCloser(strings.NewReader("")), Request: r}, nil
-				})
-				resp, err := c.Get("https://original.invalid/start")
-				if err != nil {
-					t.Fatal(err)
+	for _, code := range []int{
+		301,
+		302,
+		303,
+		307,
+		308,
+	} {
+		for _, target := range []string{
+			"https://other.invalid/capture",
+			"http://original.invalid/capture",
+			"https://original.invalid/next",
+		} {
+			c := client.NewWithIdentityToken("dummy-token")
+
+			var calls int
+			c.Transport.(*client.HeaderTransport).RoundTripper = roundTripFunc(func(r *http.Request) (*http.Response, error) {
+				calls++
+				if r.URL.String() != "https://original.invalid/start" {
+					t.Fatalf("followed redirect and sent credentials to %s", r.URL)
 				}
-				defer resp.Body.Close()
-				if resp.StatusCode != code || calls != 1 {
-					t.Fatalf("status=%d calls=%d", resp.StatusCode, calls)
+
+				if r.Header.Get("Authorization") != "Bearer dummy-token" {
+					t.Fatal("missing original credentials")
 				}
+
+				return &http.Response{
+					StatusCode: code,
+					Header:     http.Header{"Location": []string{target}},
+					Body:       io.NopCloser(strings.NewReader("")),
+					Request:    r,
+				}, nil
 			})
+
+			resp, err := c.Get("https://original.invalid/start")
+			if err != nil {
+				t.Fatal(err)
+			}
+			defer func() { _ = resp.Body.Close() }()
+
+			if resp.StatusCode != code || calls != 1 {
+				t.Fatalf("status=%d calls=%d", resp.StatusCode, calls)
+			}
 		}
 	}
 }

@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log/slog"
 	"net/http"
@@ -35,9 +36,10 @@ func New(maxQubits int, store Store) (http.Handler, error) {
 		connect.WithInterceptors(
 			Recover(),
 		),
+		connect.WithReadMaxBytes(maxRequestBytes),
 	))
 
-	return mux, nil
+	return http.MaxBytesHandler(mux, maxRequestBytes), nil
 }
 
 func Recover() connect.UnaryInterceptorFunc {
@@ -51,7 +53,7 @@ func Recover() connect.UnaryInterceptorFunc {
 						slog.String("procedure", req.Spec().Procedure),
 					)
 
-					resp, err = nil, connect.NewError(connect.CodeInternal, fmt.Errorf("unexpected: %v", r))
+					resp, err = nil, connect.NewError(connect.CodeInternal, errors.New("unexpected internal error"))
 				}
 			}()
 

@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"io"
 	"math"
-	"strings"
 	"time"
 
 	"connectrpc.com/connect"
@@ -59,8 +58,8 @@ func (s *QuasarService) Simulate(
 	ctx context.Context,
 	req *connect.Request[quasarv1.SimulateRequest],
 ) (*connect.Response[quasarv1.SimulateResponse], error) {
-	if len(strings.TrimSpace(req.Msg.Code)) == 0 {
-		return nil, connect.NewError(connect.CodeInvalidArgument, ErrCodeNotFound)
+	if err := checkCode(req.Msg.Code); err != nil {
+		return nil, err
 	}
 
 	program, err := parser.Parse(req.Msg.Code)
@@ -179,8 +178,8 @@ func (s *QuasarService) Validate(
 	ctx context.Context,
 	req *connect.Request[quasarv1.ValidateRequest],
 ) (*connect.Response[quasarv1.ValidateResponse], error) {
-	if len(strings.TrimSpace(req.Msg.Code)) == 0 {
-		return nil, connect.NewError(connect.CodeInvalidArgument, ErrCodeNotFound)
+	if err := checkCode(req.Msg.Code); err != nil {
+		return nil, err
 	}
 
 	if _, err := parser.Parse(req.Msg.Code); err != nil {

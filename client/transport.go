@@ -8,6 +8,11 @@ import (
 
 func NewWithIdentityToken(token string) *http.Client {
 	return &http.Client{
+		// The transport adds credentials to every request, including redirects.
+		// Return redirects to the caller so credentials never follow a new origin.
+		CheckRedirect: func(_ *http.Request, _ []*http.Request) error {
+			return http.ErrUseLastResponse
+		},
 		Transport: &HeaderTransport{
 			Header: http.Header{
 				"Authorization": []string{fmt.Sprintf("Bearer %s", token)},

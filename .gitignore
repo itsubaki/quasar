@@ -18,6 +18,7 @@
 
 # Google Cloud
 credentials.json
+gha-creds-*.json
 setenv.sh
 
 # GitHub codespaces

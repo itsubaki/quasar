@@ -1,0 +1,11 @@
+.git
+.github
+gha-creds-*.json
+credentials.json
+setenv.sh
+.env
+.env.*
+*.test
+*.html
+coverage*.txt
+cover.txt

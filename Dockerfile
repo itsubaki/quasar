@@ -11,6 +11,6 @@ FROM alpine:latest
 
 RUN apk --no-cache add ca-certificates
 WORKDIR /root/
-COPY --from=0 /go/src/app .
+COPY --from=0 /go/src/app/app ./app
 
 CMD ["./app"]

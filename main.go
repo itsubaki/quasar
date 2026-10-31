@@ -91,9 +91,13 @@ func main() {
 	protocols.SetUnencryptedHTTP2(true)
 
 	s := &http.Server{
-		Addr:      addr,
-		Handler:   h,
-		Protocols: protocols,
+		Addr:              addr,
+		Handler:           h,
+		Protocols:         protocols,
+		ReadHeaderTimeout: 5 * time.Second,
+		ReadTimeout:       10 * time.Second,
+		WriteTimeout:      15 * time.Second,
+		IdleTimeout:       60 * time.Second,
 	}
 
 	go func() {

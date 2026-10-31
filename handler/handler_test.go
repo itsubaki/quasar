@@ -95,11 +95,11 @@ func TestRecover(t *testing.T) {
 	}{
 		{
 			panicVal: "string panic",
-			errMsg:   "unexpected: string panic",
+			errMsg:   "unexpected internal error",
 		},
 		{
 			panicVal: errors.New("new error panic"),
-			errMsg:   "unexpected: new error panic",
+			errMsg:   "unexpected internal error",
 		},
 	}
 

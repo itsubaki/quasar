@@ -9,13 +9,17 @@ import (
 	"io"
 	"log/slog"
 	"math"
+	"strings"
 	"sync"
 	"time"
 
 	"connectrpc.com/connect"
+	"github.com/antlr4-go/antlr/v4"
 	"github.com/itsubaki/q"
 	"github.com/itsubaki/qasm/environ"
+	"github.com/itsubaki/qasm/gen/parser"
 	"github.com/itsubaki/qasm/listener"
+	xparser "github.com/itsubaki/qasm/parser"
 	"github.com/itsubaki/qasm/visitor"
 	quasarv1 "github.com/itsubaki/quasar/gen/quasar/v1"
 	"github.com/itsubaki/quasar/store"
@@ -23,8 +27,9 @@ import (
 )
 
 const (
-	salt    = "quasar salt\n"
-	maxSize = 64 * 1024
+	salt            = "quasar salt\n"
+	maxSize         = 64 * 1024
+	maxRequestBytes = 6*maxSize + 1024 // JSON may encode each source byte as a six-byte Unicode escape.
 )
 
 var (
@@ -139,7 +144,7 @@ func (s *QuasarService) Share(
 	}
 
 	// put
-	id, err := GenID(code, 16)
+	id, err := genID(code, 16)
 	if err != nil {
 		return nil, connect.NewError(connect.CodeInternal, ErrSomethingWentWrong)
 	}
@@ -232,7 +237,7 @@ func (s *QuasarService) acquireCompute() bool {
 	}
 }
 
-func GenID(code string, length int) (string, error) {
+func genID(code string, length int) (string, error) {
 	hash := sha256.New()
 	if _, err := io.WriteString(hash, salt); err != nil {
 		return "", err
@@ -249,4 +254,38 @@ func GenID(code string, length int) (string, error) {
 	}
 
 	return string(b)[:hashLen], nil
+}
+
+func checkCode(code string) error {
+	if len(code) > maxSize {
+		return fmt.Errorf("code size exceeds %d bytes", maxSize)
+	}
+
+	if len(strings.TrimSpace(code)) == 0 {
+		return ErrCodeNotFound
+	}
+
+	return nil
+}
+
+func parseCode(code string) (parser.IProgramContext, error) {
+	program, err := xparser.Parse(code)
+	if err != nil {
+		return nil, err
+	}
+
+	// Inspect the entire AST before execution, including inactive branches and
+	// uncalled functions. Comments and string contents are not include statements.
+	pending := []antlr.Tree{program}
+	for len(pending) > 0 {
+		node := pending[len(pending)-1]
+		pending = pending[:len(pending)-1]
+		if _, ok := node.(*parser.IncludeStatementContext); ok {
+			return nil, ErrIncludeNotAllowed
+		}
+
+		pending = append(pending, node.GetChildren()...)
+	}
+
+	return program, nil
 }

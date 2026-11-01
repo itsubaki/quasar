@@ -16,58 +16,149 @@ import (
 )
 
 func TestCodeSizeLimits(t *testing.T) {
+	cases := []struct {
+		name   string
+		size   int
+		errMsg string
+	}{
+		{
+			name: "at limit",
+			size: 64 * 1024,
+		},
+		{
+			name: "below limit",
+			size: 64*1024 - 1,
+		},
+		{
+			name:   "above limit",
+			size:   64*1024 + 1,
+			errMsg: "invalid_argument: code size exceeds 65536 bytes",
+		},
+	}
+
 	svc := &handler.QuasarService{}
 	const prefix = "qubit q; //"
 
-	for _, size := range []int{
-		64 * 1024,
-		64*1024 - 1,
-		64*1024 + 1,
-	} {
-		code := prefix + strings.Repeat("x", size-len(prefix))
-		_, validateErr := svc.Validate(t.Context(), connect.NewRequest(&quasarv1.ValidateRequest{Code: code}))
-		_, simulateErr := svc.Simulate(t.Context(), connect.NewRequest(&quasarv1.SimulateRequest{Code: code}))
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			code := prefix + strings.Repeat("x", c.size-len(prefix))
+			_, validateErr := svc.Validate(t.Context(), connect.NewRequest(&quasarv1.ValidateRequest{Code: code}))
+			_, simulateErr := svc.Simulate(t.Context(), connect.NewRequest(&quasarv1.SimulateRequest{Code: code}))
 
-		for _, err := range []error{validateErr, simulateErr} {
-			if size <= 64*1024 {
+			for _, err := range []error{validateErr, simulateErr} {
 				if err != nil {
-					t.Fatalf("valid source rejected: %v", err)
+					if err.Error() != c.errMsg {
+						t.Errorf("got=%v, want=%v", err, c.errMsg)
+					}
+
+					continue
 				}
 
-				continue
+				if c.errMsg != "" {
+					t.Errorf("got=nil, want=%v", c.errMsg)
+				}
 			}
-
-			if err == nil || connect.CodeOf(err) != connect.CodeInvalidArgument {
-				t.Fatalf("oversized source accepted: %v", err)
-			}
-		}
+		})
 	}
 }
 
 func TestRequestSizeLimits(t *testing.T) {
+	cases := []struct {
+		name       string
+		method     string
+		code       string
+		compressed bool
+		statusCode int
+		errCode    string
+	}{
+		{
+			name:       "Simulate uncompressed",
+			method:     "Simulate",
+			code:       strings.Repeat("x", 512*1024),
+			compressed: false,
+			statusCode: http.StatusTooManyRequests,
+			errCode:    "resource_exhausted",
+		},
+		{
+			name:       "Simulate gzip",
+			method:     "Simulate",
+			code:       strings.Repeat("x", 512*1024),
+			compressed: true,
+			statusCode: http.StatusTooManyRequests,
+			errCode:    "resource_exhausted",
+		},
+		{
+			name:       "Validate uncompressed",
+			method:     "Validate",
+			code:       strings.Repeat("x", 512*1024),
+			compressed: false,
+			statusCode: http.StatusTooManyRequests,
+			errCode:    "resource_exhausted",
+		},
+		{
+			name:       "Validate gzip",
+			method:     "Validate",
+			code:       strings.Repeat("x", 512*1024),
+			compressed: true,
+			statusCode: http.StatusTooManyRequests,
+			errCode:    "resource_exhausted",
+		},
+		{
+			name:       "Share uncompressed",
+			method:     "Share",
+			code:       strings.Repeat("x", 512*1024),
+			compressed: false,
+			statusCode: http.StatusTooManyRequests,
+			errCode:    "resource_exhausted",
+		},
+		{
+			name:       "Share gzip",
+			method:     "Share",
+			code:       strings.Repeat("x", 512*1024),
+			compressed: true,
+			statusCode: http.StatusTooManyRequests,
+			errCode:    "resource_exhausted",
+		},
+		{
+			name:       "Edit uncompressed",
+			method:     "Edit",
+			code:       strings.Repeat("x", 512*1024),
+			compressed: false,
+			statusCode: http.StatusTooManyRequests,
+			errCode:    "resource_exhausted",
+		},
+		{
+			name:       "Edit gzip",
+			method:     "Edit",
+			code:       strings.Repeat("x", 512*1024),
+			compressed: true,
+			statusCode: http.StatusTooManyRequests,
+			errCode:    "resource_exhausted",
+		},
+		{
+			// Preserve the full 64 KiB source allowance even with six-byte JSON escapes.
+			name:       "Share escaped source at limit",
+			method:     "Share",
+			code:       strings.Repeat("\x01", 64*1024),
+			statusCode: http.StatusOK,
+		},
+	}
+
 	h, err := handler.New(1, 1, &store.MemoryStore{})
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	for _, method := range []string{
-		"Simulate",
-		"Validate",
-		"Share",
-		"Edit",
-	} {
-		for _, compressed := range []bool{
-			false,
-			true,
-		} {
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
 			body, err := json.Marshal(map[string]string{
-				"code": strings.Repeat("x", 512*1024),
+				"code": c.code,
 			})
 			if err != nil {
 				t.Fatal(err)
 			}
 
-			if compressed {
+			if c.compressed {
 				var zipped bytes.Buffer
 				w := gzip.NewWriter(&zipped)
 				if _, err := w.Write(body); err != nil {
@@ -81,14 +172,18 @@ func TestRequestSizeLimits(t *testing.T) {
 				body = zipped.Bytes()
 			}
 
-			req := httptest.NewRequest(http.MethodPost, "/quasar.v1.QuasarService/"+method, bytes.NewReader(body))
+			req := httptest.NewRequest(http.MethodPost, "/quasar.v1.QuasarService/"+c.method, bytes.NewReader(body))
 			req.Header.Set("Content-Type", "application/json")
-			if compressed {
+			if c.compressed {
 				req.Header.Set("Content-Encoding", "gzip")
 			}
 
 			rec := httptest.NewRecorder()
 			h.ServeHTTP(rec, req)
+
+			if rec.Code != c.statusCode {
+				t.Fatalf("status=%d, want=%d response=%s", rec.Code, c.statusCode, rec.Body.String())
+			}
 
 			var result struct {
 				Code string `json:"code"`
@@ -98,24 +193,9 @@ func TestRequestSizeLimits(t *testing.T) {
 				t.Fatal(err)
 			}
 
-			if result.Code != "resource_exhausted" {
-				t.Fatalf("status=%d response=%s", rec.Code, rec.Body.String())
+			if result.Code != c.errCode {
+				t.Errorf("code=%s, want=%s response=%s", result.Code, c.errCode, rec.Body.String())
 			}
-		}
-	}
-
-	// Preserve the full 64 KiB source allowance even with six-byte JSON escapes.
-	body, _ := json.Marshal(map[string]string{
-		"code": strings.Repeat("\x01", 64*1024),
-	})
-
-	req := httptest.NewRequest(http.MethodPost, "/quasar.v1.QuasarService/Share", bytes.NewReader(body))
-	req.Header.Set("Content-Type", "application/json")
-
-	rec := httptest.NewRecorder()
-	h.ServeHTTP(rec, req)
-
-	if rec.Code != http.StatusOK {
-		t.Fatalf("valid size rejected: %s", rec.Body.String())
+		})
 	}
 }

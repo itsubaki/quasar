@@ -168,22 +168,78 @@ type roundTripFunc func(*http.Request) (*http.Response, error)
 func (f roundTripFunc) RoundTrip(r *http.Request) (*http.Response, error) { return f(r) }
 
 func TestIdentityTokenDoesNotFollowRedirects(t *testing.T) {
-	for _, code := range []int{
-		301,
-		302,
-		303,
-		307,
-		308,
-	} {
-		for _, target := range []string{
-			"https://other.invalid/capture",
-			"http://original.invalid/capture",
-			"https://original.invalid/next",
-		} {
-			c := client.NewWithIdentityToken("dummy-token")
+	cases := []struct {
+		statusCode int
+		target     string
+	}{
+		{
+			statusCode: http.StatusMovedPermanently,
+			target:     "https://other.invalid/capture",
+		},
+		{
+			statusCode: http.StatusMovedPermanently,
+			target:     "http://original.invalid/capture",
+		},
+		{
+			statusCode: http.StatusMovedPermanently,
+			target:     "https://original.invalid/next",
+		},
+		{
+			statusCode: http.StatusFound,
+			target:     "https://other.invalid/capture",
+		},
+		{
+			statusCode: http.StatusFound,
+			target:     "http://original.invalid/capture",
+		},
+		{
+			statusCode: http.StatusFound,
+			target:     "https://original.invalid/next",
+		},
+		{
+			statusCode: http.StatusSeeOther,
+			target:     "https://other.invalid/capture",
+		},
+		{
+			statusCode: http.StatusSeeOther,
+			target:     "http://original.invalid/capture",
+		},
+		{
+			statusCode: http.StatusSeeOther,
+			target:     "https://original.invalid/next",
+		},
+		{
+			statusCode: http.StatusTemporaryRedirect,
+			target:     "https://other.invalid/capture",
+		},
+		{
+			statusCode: http.StatusTemporaryRedirect,
+			target:     "http://original.invalid/capture",
+		},
+		{
+			statusCode: http.StatusTemporaryRedirect,
+			target:     "https://original.invalid/next",
+		},
+		{
+			statusCode: http.StatusPermanentRedirect,
+			target:     "https://other.invalid/capture",
+		},
+		{
+			statusCode: http.StatusPermanentRedirect,
+			target:     "http://original.invalid/capture",
+		},
+		{
+			statusCode: http.StatusPermanentRedirect,
+			target:     "https://original.invalid/next",
+		},
+	}
+
+	for _, c := range cases {
+		t.Run(fmt.Sprintf("%d/%s", c.statusCode, c.target), func(t *testing.T) {
+			httpClient := client.NewWithIdentityToken("dummy-token")
 
 			var calls int
-			c.Transport.(*client.HeaderTransport).RoundTripper = roundTripFunc(func(r *http.Request) (*http.Response, error) {
+			httpClient.Transport.(*client.HeaderTransport).RoundTripper = roundTripFunc(func(r *http.Request) (*http.Response, error) {
 				calls++
 				if r.URL.String() != "https://original.invalid/start" {
 					t.Fatalf("followed redirect and sent credentials to %s", r.URL)
@@ -194,22 +250,22 @@ func TestIdentityTokenDoesNotFollowRedirects(t *testing.T) {
 				}
 
 				return &http.Response{
-					StatusCode: code,
-					Header:     http.Header{"Location": []string{target}},
+					StatusCode: c.statusCode,
+					Header:     http.Header{"Location": []string{c.target}},
 					Body:       io.NopCloser(strings.NewReader("")),
 					Request:    r,
 				}, nil
 			})
 
-			resp, err := c.Get("https://original.invalid/start")
+			resp, err := httpClient.Get("https://original.invalid/start")
 			if err != nil {
 				t.Fatal(err)
 			}
 			defer func() { _ = resp.Body.Close() }()
 
-			if resp.StatusCode != code || calls != 1 {
+			if resp.StatusCode != c.statusCode || calls != 1 {
 				t.Fatalf("status=%d calls=%d", resp.StatusCode, calls)
 			}
-		}
+		})
 	}
 }

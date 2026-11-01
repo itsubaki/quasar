@@ -65,7 +65,7 @@ func (s *QuasarService) Simulate(
 	req *connect.Request[quasarv1.SimulateRequest],
 ) (*connect.Response[quasarv1.SimulateResponse], error) {
 	if err := checkCode(req.Msg.Code); err != nil {
-		return nil, err
+		return nil, connect.NewError(connect.CodeInvalidArgument, err)
 	}
 
 	if !s.acquireCompute() {
@@ -193,7 +193,7 @@ func (s *QuasarService) Validate(
 	req *connect.Request[quasarv1.ValidateRequest],
 ) (*connect.Response[quasarv1.ValidateResponse], error) {
 	if err := checkCode(req.Msg.Code); err != nil {
-		return nil, err
+		return nil, connect.NewError(connect.CodeInvalidArgument, err)
 	}
 
 	if !s.acquireCompute() {

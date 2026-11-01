@@ -24,7 +24,11 @@ func TestIncludeNotAllowed(t *testing.T) {
 	} {
 		_, simulateErr := svc.Simulate(t.Context(), connect.NewRequest(&quasarv1.SimulateRequest{Code: code}))
 		_, validateErr := svc.Validate(t.Context(), connect.NewRequest(&quasarv1.ValidateRequest{Code: code}))
-		for _, err := range []error{simulateErr, validateErr} {
+
+		for _, err := range []error{
+			simulateErr,
+			validateErr,
+		} {
 			if connect.CodeOf(err) != connect.CodeInvalidArgument || !errors.Is(err, handler.ErrIncludeNotAllowed) {
 				t.Fatalf("got %v, want invalid_argument: include is not allowed", err)
 			}
@@ -53,7 +57,10 @@ func TestIncludeTextIsAllowed(t *testing.T) {
 	}
 
 	// A string literal in another statement must not trigger the include policy.
-	resp, err := svc.Validate(t.Context(), connect.NewRequest(&quasarv1.ValidateRequest{Code: `defcalgrammar "include"; qubit q;`}))
+	resp, err := svc.Validate(t.Context(), connect.NewRequest(&quasarv1.ValidateRequest{
+		Code: `defcalgrammar "include"; qubit q;`,
+	}))
+
 	if err != nil || !resp.Msg.Valid {
 		t.Fatalf("resp=%v err=%v", resp, err)
 	}

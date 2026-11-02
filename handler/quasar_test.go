@@ -273,18 +273,25 @@ func TestCodeSizeLimits(t *testing.T) {
 
 	for _, c := range cases {
 		code := prefix + strings.Repeat("x", c.size-len(prefix))
-		_, validateErr := svc.Validate(t.Context(), connect.NewRequest(&quasarv1.ValidateRequest{Code: code}))
-		_, simulateErr := svc.Simulate(t.Context(), connect.NewRequest(&quasarv1.SimulateRequest{Code: code}))
-
-		for _, err := range []error{validateErr, simulateErr} {
-			if err != nil {
-				if err.Error() != c.errMsg {
-					t.Errorf("got=%v, want=%v", err, c.errMsg)
-				}
-
-				continue
+		if _, err := svc.Validate(t.Context(), connect.NewRequest(&quasarv1.ValidateRequest{
+			Code: code,
+		})); err != nil {
+			if err.Error() != c.errMsg {
+				t.Errorf("got=%v, want=%v", err, c.errMsg)
 			}
+		} else {
+			if c.errMsg != "" {
+				t.Errorf("got=nil, want=%v", c.errMsg)
+			}
+		}
 
+		if _, err := svc.Simulate(t.Context(), connect.NewRequest(&quasarv1.SimulateRequest{
+			Code: code,
+		})); err != nil {
+			if err.Error() != c.errMsg {
+				t.Errorf("got=%v, want=%v", err, c.errMsg)
+			}
+		} else {
 			if c.errMsg != "" {
 				t.Errorf("got=nil, want=%v", c.errMsg)
 			}
@@ -442,30 +449,32 @@ func TestSimulateClientHeaders(t *testing.T) {
 		{name: "invalid header", forwarded: "not-an-ip", peer: "[::1]:12345", wantIP: "::1"},
 		{name: "IP list rejected", forwarded: "203.0.113.5, 203.0.113.6", peer: "192.0.2.1:12345", wantIP: "192.0.2.1"},
 	} {
-		t.Run(tc.name, func(t *testing.T) {
-			var output bytes.Buffer
-			h, err := handler.New("test", 1, 1, nil, &execlog.StdOutLogger{Writer: &output})
-			if err != nil {
-				t.Fatal(err)
-			}
-			req := httptest.NewRequest(http.MethodPost, "/quasar.v1.QuasarService/Simulate", strings.NewReader(`{"code":"qubit q;"}`))
-			req.RemoteAddr = tc.peer
-			req.Header.Set("Content-Type", "application/json")
-			req.Header.Set("X-Quasar-Client-IP", tc.forwarded)
-			req.Header.Set("User-Agent", "Mozilla/5.0 quasar-test")
-			rec := httptest.NewRecorder()
-			h.ServeHTTP(rec, req)
-			if rec.Code != http.StatusOK {
-				t.Fatalf("status=%d response=%s", rec.Code, rec.Body.String())
-			}
-			var entry execlog.Entry
-			if err := json.Unmarshal(output.Bytes(), &entry); err != nil {
-				t.Fatal(err)
-			}
-			if entry.ClientIP != tc.wantIP || entry.UserAgent != "Mozilla/5.0 quasar-test" {
-				t.Fatalf("client_ip=%q user_agent=%q, want client_ip=%q", entry.ClientIP, entry.UserAgent, tc.wantIP)
-			}
-		})
+		var output bytes.Buffer
+		h, err := handler.New("test", 1, 1, nil, &execlog.StdOutLogger{Writer: &output})
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		req := httptest.NewRequest(http.MethodPost, "/quasar.v1.QuasarService/Simulate", strings.NewReader(`{"code":"qubit q;"}`))
+		req.Header.Set("Content-Type", "application/json")
+		req.Header.Set("X-Quasar-Client-IP", tc.forwarded)
+		req.Header.Set("User-Agent", "Mozilla/5.0 quasar-test")
+		req.RemoteAddr = tc.peer
+		rec := httptest.NewRecorder()
+
+		h.ServeHTTP(rec, req)
+		if rec.Code != http.StatusOK {
+			t.Fatalf("status=%d response=%s", rec.Code, rec.Body.String())
+		}
+
+		var entry execlog.Entry
+		if err := json.Unmarshal(output.Bytes(), &entry); err != nil {
+			t.Fatal(err)
+		}
+
+		if entry.ClientIP != tc.wantIP || entry.UserAgent != "Mozilla/5.0 quasar-test" {
+			t.Fatalf("client_ip=%q user_agent=%q, want client_ip=%q", entry.ClientIP, entry.UserAgent, tc.wantIP)
+		}
 	}
 }
 
@@ -507,13 +516,16 @@ func TestIncludeNotAllowed(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		_, simulateErr := svc.Simulate(t.Context(), connect.NewRequest(&quasarv1.SimulateRequest{Code: c.code}))
-		_, validateErr := svc.Validate(t.Context(), connect.NewRequest(&quasarv1.ValidateRequest{Code: c.code}))
+		if _, err := svc.Simulate(t.Context(), connect.NewRequest(&quasarv1.SimulateRequest{
+			Code: c.code,
+		})); connect.CodeOf(err) != connect.CodeInvalidArgument || !errors.Is(err, handler.ErrIncludeNotAllowed) {
+			t.Errorf("got %v, want invalid_argument: include is not allowed", err)
+		}
 
-		for _, err := range []error{simulateErr, validateErr} {
-			if connect.CodeOf(err) != connect.CodeInvalidArgument || !errors.Is(err, handler.ErrIncludeNotAllowed) {
-				t.Errorf("got %v, want invalid_argument: include is not allowed", err)
-			}
+		if _, err := svc.Validate(t.Context(), connect.NewRequest(&quasarv1.ValidateRequest{
+			Code: c.code,
+		})); connect.CodeOf(err) != connect.CodeInvalidArgument || !errors.Is(err, handler.ErrIncludeNotAllowed) {
+			t.Errorf("got %v, want invalid_argument: include is not allowed", err)
 		}
 	}
 }
@@ -551,12 +563,16 @@ func TestIncludeTextIsAllowed(t *testing.T) {
 
 	for _, c := range cases {
 		if c.simulate {
-			if _, err := svc.Simulate(t.Context(), connect.NewRequest(&quasarv1.SimulateRequest{Code: c.code})); err != nil {
+			if _, err := svc.Simulate(t.Context(), connect.NewRequest(&quasarv1.SimulateRequest{
+				Code: c.code,
+			})); err != nil {
 				t.Fatal(err)
 			}
 		}
 
-		resp, err := svc.Validate(t.Context(), connect.NewRequest(&quasarv1.ValidateRequest{Code: c.code}))
+		resp, err := svc.Validate(t.Context(), connect.NewRequest(&quasarv1.ValidateRequest{
+			Code: c.code,
+		}))
 		if err != nil || !resp.Msg.Valid {
 			t.Fatalf("resp=%v err=%v", resp, err)
 		}

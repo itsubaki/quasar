@@ -90,13 +90,16 @@ func (s *QuasarService) Simulate(
 		return nil, connect.NewError(connect.CodeResourceExhausted, ErrBusy)
 	}
 
-	startedAt := time.Now()
+	var startedAt time.Time
 	defer func() {
 		panicValue := recover()
 		// Logging must not occupy a compute slot while waiting for its sink.
 		<-s.compute
 
-		s.logExecution(ctx, req, resp, err, panicValue, startedAt)
+		if !startedAt.IsZero() {
+			s.logExecution(ctx, req, resp, err, panicValue, startedAt)
+		}
+
 		if panicValue != nil {
 			panic(panicValue)
 		}
@@ -114,6 +117,7 @@ func (s *QuasarService) Simulate(
 		visitor.WithMaxQubits(s.MaxQubits),
 	)
 
+	startedAt = time.Now()
 	if err := v.Run(program); err != nil {
 		return nil, connect.NewError(connect.CodeInvalidArgument, err)
 	}
@@ -295,10 +299,15 @@ func (s *QuasarService) logExecution(
 		// Match Connect's protobuf JSON encoding, including its field names.
 		result, err := protojson.Marshal(resp.Msg)
 		if err != nil {
-			slog.ErrorContext(ctx, "marshal execution result", slog.String("execution_id", entry.ExecutionID), slog.Any("error", err))
-		} else {
-			entry.Result = result
+			slog.ErrorContext(ctx, "marshal execution result",
+				slog.String("execution_id", entry.ExecutionID),
+				slog.Any("error", err),
+			)
+
+			break
 		}
+
+		entry.Result = result
 	}
 
 	// Complete the bounded write even if the requesting client disconnects.

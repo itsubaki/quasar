@@ -15,8 +15,10 @@ import (
 
 	"cloud.google.com/go/firestore"
 	"cloud.google.com/go/profiler"
+	"github.com/itsubaki/quasar/execlog"
 	"github.com/itsubaki/quasar/handler"
 	"github.com/itsubaki/quasar/store"
+	"google.golang.org/api/bigquery/v2"
 )
 
 var (
@@ -81,13 +83,26 @@ func main() {
 		log.Fatalf("new firestore client: %v", err)
 	}
 
+	// bigquery client
+	bqc, err := bigquery.NewService(context.Background())
+	if err != nil {
+		log.Fatalf("new bigquery client: %v", err)
+	}
+
 	// handler
 	h, err := handler.New(
+		revision,
 		maxQubits,
 		maxConcurrent,
 		&store.Firestore{
 			Collection: "snippet",
 			Client:     fsc,
+		},
+		&execlog.BigQueryLogger{
+			ProjectID: projectID,
+			DatasetID: "quasar",
+			TableID:   "execution_log",
+			Client:    bqc,
 		},
 	)
 	if err != nil {

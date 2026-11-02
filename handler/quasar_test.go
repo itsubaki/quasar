@@ -7,18 +7,22 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log/slog"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
 
 	"connectrpc.com/connect"
+	"github.com/itsubaki/quasar/execlog"
 	quasarv1 "github.com/itsubaki/quasar/gen/quasar/v1"
 	"github.com/itsubaki/quasar/handler"
 	"github.com/itsubaki/quasar/store"
 )
 
 func ExampleQuasarService_Simulate() {
+	slog.SetDefault(slog.New(slog.DiscardHandler))
+
 	code := `
 	OPENQASM 3.0;
 
@@ -77,6 +81,8 @@ qft(q);
 }
 
 func TestQuasarService_Simulate(t *testing.T) {
+	slog.SetDefault(slog.New(slog.DiscardHandler))
+
 	cases := []struct {
 		code   string
 		errMsg string
@@ -240,6 +246,8 @@ func TestQuasarService_Validate(t *testing.T) {
 }
 
 func TestCodeSizeLimits(t *testing.T) {
+	slog.SetDefault(slog.New(slog.DiscardHandler))
+
 	cases := []struct {
 		name   string
 		size   int
@@ -264,25 +272,23 @@ func TestCodeSizeLimits(t *testing.T) {
 	const prefix = "qubit q; //"
 
 	for _, c := range cases {
-		t.Run(c.name, func(t *testing.T) {
-			code := prefix + strings.Repeat("x", c.size-len(prefix))
-			_, validateErr := svc.Validate(t.Context(), connect.NewRequest(&quasarv1.ValidateRequest{Code: code}))
-			_, simulateErr := svc.Simulate(t.Context(), connect.NewRequest(&quasarv1.SimulateRequest{Code: code}))
+		code := prefix + strings.Repeat("x", c.size-len(prefix))
+		_, validateErr := svc.Validate(t.Context(), connect.NewRequest(&quasarv1.ValidateRequest{Code: code}))
+		_, simulateErr := svc.Simulate(t.Context(), connect.NewRequest(&quasarv1.SimulateRequest{Code: code}))
 
-			for _, err := range []error{validateErr, simulateErr} {
-				if err != nil {
-					if err.Error() != c.errMsg {
-						t.Errorf("got=%v, want=%v", err, c.errMsg)
-					}
-
-					continue
+		for _, err := range []error{validateErr, simulateErr} {
+			if err != nil {
+				if err.Error() != c.errMsg {
+					t.Errorf("got=%v, want=%v", err, c.errMsg)
 				}
 
-				if c.errMsg != "" {
-					t.Errorf("got=nil, want=%v", c.errMsg)
-				}
+				continue
 			}
-		})
+
+			if c.errMsg != "" {
+				t.Errorf("got=nil, want=%v", c.errMsg)
+			}
+		}
 	}
 }
 
@@ -368,63 +374,104 @@ func TestRequestSizeLimits(t *testing.T) {
 		},
 	}
 
-	h, err := handler.New(1, 1, &store.MemoryStore{})
+	h, err := handler.New("", 1, 1, &store.MemoryStore{}, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	for _, c := range cases {
-		t.Run(c.name, func(t *testing.T) {
-			body, err := json.Marshal(map[string]string{
-				"code": c.code,
-			})
+		body, err := json.Marshal(map[string]string{
+			"code": c.code,
+		})
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if c.compressed {
+			var zipped bytes.Buffer
+			w := gzip.NewWriter(&zipped)
+			if _, err := w.Write(body); err != nil {
+				t.Fatal(err)
+			}
+
+			if err := w.Close(); err != nil {
+				t.Fatal(err)
+			}
+
+			body = zipped.Bytes()
+		}
+
+		req := httptest.NewRequest(http.MethodPost, "/quasar.v1.QuasarService/"+c.method, bytes.NewReader(body))
+		req.Header.Set("Content-Type", "application/json")
+		if c.compressed {
+			req.Header.Set("Content-Encoding", "gzip")
+		}
+
+		rec := httptest.NewRecorder()
+		h.ServeHTTP(rec, req)
+
+		if rec.Code != c.statusCode {
+			t.Fatalf("status=%d, want=%d response=%s", rec.Code, c.statusCode, rec.Body.String())
+		}
+
+		var result struct {
+			Code string `json:"code"`
+		}
+
+		if err := json.Unmarshal(rec.Body.Bytes(), &result); err != nil {
+			t.Fatal(err)
+		}
+
+		if result.Code != c.errCode {
+			t.Errorf("code=%s, want=%s response=%s", result.Code, c.errCode, rec.Body.String())
+		}
+	}
+}
+
+func TestSimulateClientHeaders(t *testing.T) {
+	for _, tc := range []struct {
+		name      string
+		forwarded string
+		peer      string
+		wantIP    string
+	}{
+		{name: "forwarded IPv4", forwarded: "203.0.113.5", peer: "192.0.2.1:12345", wantIP: "203.0.113.5"},
+		{name: "forwarded IPv6", forwarded: "2001:db8::5", peer: "192.0.2.1:12345", wantIP: "2001:db8::5"},
+		{name: "mapped IPv4", forwarded: "::ffff:203.0.113.5", peer: "192.0.2.1:12345", wantIP: "203.0.113.5"},
+		{name: "missing header", peer: "192.0.2.1:12345", wantIP: "192.0.2.1"},
+		{name: "invalid header", forwarded: "not-an-ip", peer: "[::1]:12345", wantIP: "::1"},
+		{name: "IP list rejected", forwarded: "203.0.113.5, 203.0.113.6", peer: "192.0.2.1:12345", wantIP: "192.0.2.1"},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			var output bytes.Buffer
+			h, err := handler.New("test", 1, 1, nil, &execlog.StdOutLogger{Writer: &output})
 			if err != nil {
 				t.Fatal(err)
 			}
-
-			if c.compressed {
-				var zipped bytes.Buffer
-				w := gzip.NewWriter(&zipped)
-				if _, err := w.Write(body); err != nil {
-					t.Fatal(err)
-				}
-
-				if err := w.Close(); err != nil {
-					t.Fatal(err)
-				}
-
-				body = zipped.Bytes()
-			}
-
-			req := httptest.NewRequest(http.MethodPost, "/quasar.v1.QuasarService/"+c.method, bytes.NewReader(body))
+			req := httptest.NewRequest(http.MethodPost, "/quasar.v1.QuasarService/Simulate", strings.NewReader(`{"code":"qubit q;"}`))
+			req.RemoteAddr = tc.peer
 			req.Header.Set("Content-Type", "application/json")
-			if c.compressed {
-				req.Header.Set("Content-Encoding", "gzip")
-			}
-
+			req.Header.Set("X-Quasar-Client-IP", tc.forwarded)
+			req.Header.Set("User-Agent", "Mozilla/5.0 quasar-test")
 			rec := httptest.NewRecorder()
 			h.ServeHTTP(rec, req)
-
-			if rec.Code != c.statusCode {
-				t.Fatalf("status=%d, want=%d response=%s", rec.Code, c.statusCode, rec.Body.String())
+			if rec.Code != http.StatusOK {
+				t.Fatalf("status=%d response=%s", rec.Code, rec.Body.String())
 			}
-
-			var result struct {
-				Code string `json:"code"`
-			}
-
-			if err := json.Unmarshal(rec.Body.Bytes(), &result); err != nil {
+			var entry execlog.Entry
+			if err := json.Unmarshal(output.Bytes(), &entry); err != nil {
 				t.Fatal(err)
 			}
-
-			if result.Code != c.errCode {
-				t.Errorf("code=%s, want=%s response=%s", result.Code, c.errCode, rec.Body.String())
+			if entry.ClientIP != tc.wantIP || entry.UserAgent != "Mozilla/5.0 quasar-test" {
+				t.Fatalf("client_ip=%q user_agent=%q, want client_ip=%q", entry.ClientIP, entry.UserAgent, tc.wantIP)
 			}
 		})
 	}
 }
 
 func TestIncludeNotAllowed(t *testing.T) {
+	slog.SetDefault(slog.New(slog.DiscardHandler))
+
 	cases := []struct {
 		name string
 		code string
@@ -460,16 +507,14 @@ func TestIncludeNotAllowed(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		t.Run(c.name, func(t *testing.T) {
-			_, simulateErr := svc.Simulate(t.Context(), connect.NewRequest(&quasarv1.SimulateRequest{Code: c.code}))
-			_, validateErr := svc.Validate(t.Context(), connect.NewRequest(&quasarv1.ValidateRequest{Code: c.code}))
+		_, simulateErr := svc.Simulate(t.Context(), connect.NewRequest(&quasarv1.SimulateRequest{Code: c.code}))
+		_, validateErr := svc.Validate(t.Context(), connect.NewRequest(&quasarv1.ValidateRequest{Code: c.code}))
 
-			for _, err := range []error{simulateErr, validateErr} {
-				if connect.CodeOf(err) != connect.CodeInvalidArgument || !errors.Is(err, handler.ErrIncludeNotAllowed) {
-					t.Errorf("got %v, want invalid_argument: include is not allowed", err)
-				}
+		for _, err := range []error{simulateErr, validateErr} {
+			if connect.CodeOf(err) != connect.CodeInvalidArgument || !errors.Is(err, handler.ErrIncludeNotAllowed) {
+				t.Errorf("got %v, want invalid_argument: include is not allowed", err)
 			}
-		})
+		}
 	}
 }
 
@@ -505,17 +550,15 @@ func TestIncludeTextIsAllowed(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		t.Run(c.name, func(t *testing.T) {
-			if c.simulate {
-				if _, err := svc.Simulate(t.Context(), connect.NewRequest(&quasarv1.SimulateRequest{Code: c.code})); err != nil {
-					t.Fatal(err)
-				}
+		if c.simulate {
+			if _, err := svc.Simulate(t.Context(), connect.NewRequest(&quasarv1.SimulateRequest{Code: c.code})); err != nil {
+				t.Fatal(err)
 			}
+		}
 
-			resp, err := svc.Validate(t.Context(), connect.NewRequest(&quasarv1.ValidateRequest{Code: c.code}))
-			if err != nil || !resp.Msg.Valid {
-				t.Fatalf("resp=%v err=%v", resp, err)
-			}
-		})
+		resp, err := svc.Validate(t.Context(), connect.NewRequest(&quasarv1.ValidateRequest{Code: c.code}))
+		if err != nil || !resp.Msg.Valid {
+			t.Fatalf("resp=%v err=%v", resp, err)
+		}
 	}
 }

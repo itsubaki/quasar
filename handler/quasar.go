@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"crypto/rand"
 	"crypto/sha256"
 	"encoding/base64"
 	"errors"
@@ -9,6 +10,7 @@ import (
 	"io"
 	"log/slog"
 	"math"
+	"net/netip"
 	"strings"
 	"sync"
 	"time"
@@ -21,8 +23,10 @@ import (
 	"github.com/itsubaki/qasm/listener"
 	xparser "github.com/itsubaki/qasm/parser"
 	"github.com/itsubaki/qasm/visitor"
+	"github.com/itsubaki/quasar/execlog"
 	quasarv1 "github.com/itsubaki/quasar/gen/quasar/v1"
 	"github.com/itsubaki/quasar/store"
+	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -30,6 +34,7 @@ const (
 	salt            = "quasar salt\n"
 	maxSize         = 64 * 1024
 	maxRequestBytes = 6*maxSize + 1024 // JSON may encode each source byte as a six-byte Unicode escape.
+	execLogTimeout  = 2 * time.Second
 )
 
 var (
@@ -48,8 +53,10 @@ var (
 )
 
 var (
-	_ Store = (*store.MemoryStore)(nil)
-	_ Store = (*store.Firestore)(nil)
+	_ Store      = (*store.MemoryStore)(nil)
+	_ Store      = (*store.Firestore)(nil)
+	_ ExecLogger = (*execlog.StdOutLogger)(nil)
+	_ ExecLogger = (*execlog.BigQueryLogger)(nil)
 )
 
 type Store interface {
@@ -57,10 +64,16 @@ type Store interface {
 	Get(ctx context.Context, id string) (*store.Snippet, error)
 }
 
+type ExecLogger interface {
+	Log(ctx context.Context, entry *execlog.Entry) error
+}
+
 type QuasarService struct {
+	Revision      string
 	MaxQubits     int
 	MaxConcurrent int // Set before first use; values below 1 default to 1.
 	Store         Store
+	ExecLogger    ExecLogger
 	computeOnce   sync.Once
 	compute       chan struct{}
 }
@@ -68,7 +81,7 @@ type QuasarService struct {
 func (s *QuasarService) Simulate(
 	ctx context.Context,
 	req *connect.Request[quasarv1.SimulateRequest],
-) (*connect.Response[quasarv1.SimulateResponse], error) {
+) (resp *connect.Response[quasarv1.SimulateResponse], err error) {
 	if err := checkCode(req.Msg.Code); err != nil {
 		return nil, connect.NewError(connect.CodeInvalidArgument, err)
 	}
@@ -76,7 +89,18 @@ func (s *QuasarService) Simulate(
 	if !s.acquireCompute() {
 		return nil, connect.NewError(connect.CodeResourceExhausted, ErrBusy)
 	}
-	defer func() { <-s.compute }()
+
+	startedAt := time.Now()
+	defer func() {
+		panicValue := recover()
+		// Logging must not occupy a compute slot while waiting for its sink.
+		<-s.compute
+
+		s.logExecution(ctx, req, resp, err, panicValue, startedAt)
+		if panicValue != nil {
+			panic(panicValue)
+		}
+	}()
 
 	program, err := parseCode(req.Msg.Code)
 	if err != nil {
@@ -90,7 +114,6 @@ func (s *QuasarService) Simulate(
 		visitor.WithMaxQubits(s.MaxQubits),
 	)
 
-	slog.InfoContext(ctx, "simulate", slog.String("code", req.Msg.Code))
 	if err := v.Run(program); err != nil {
 		return nil, connect.NewError(connect.CodeInvalidArgument, err)
 	}
@@ -235,6 +258,75 @@ func (s *QuasarService) acquireCompute() bool {
 	default:
 		return false
 	}
+}
+
+func (s *QuasarService) logExecution(
+	ctx context.Context,
+	req *connect.Request[quasarv1.SimulateRequest],
+	resp *connect.Response[quasarv1.SimulateResponse],
+	runErr error,
+	panicValue any,
+	startedAt time.Time,
+) {
+	if s.ExecLogger == nil || s.Revision == "" {
+		return
+	}
+
+	entry := &execlog.Entry{
+		ExecutionID:     rand.Text(),
+		StartedAt:       startedAt.UTC().Truncate(time.Microsecond),
+		Code:            req.Msg.Code,
+		CodeSHA256:      fmt.Sprintf("%x", sha256.Sum256([]byte(req.Msg.Code))),
+		DurationMS:      time.Since(startedAt).Milliseconds(),
+		ResultCode:      "ok",
+		ServiceRevision: s.Revision,
+		ClientIP:        clientIP(req.Header().Get("X-Quasar-Client-IP"), req.Peer().Addr),
+		UserAgent:       req.Header().Get("User-Agent"),
+	}
+
+	switch {
+	case panicValue != nil:
+		entry.ResultCode = connect.CodeInternal.String()
+		entry.ErrorMessage = "unexpected internal error"
+	case runErr != nil:
+		entry.ResultCode = connect.CodeOf(runErr).String()
+		entry.ErrorMessage = runErr.Error()
+	case resp != nil:
+		// Match Connect's protobuf JSON encoding, including its field names.
+		result, err := protojson.Marshal(resp.Msg)
+		if err != nil {
+			slog.ErrorContext(ctx, "marshal execution result", slog.String("execution_id", entry.ExecutionID), slog.Any("error", err))
+		} else {
+			entry.Result = result
+		}
+	}
+
+	// Complete the bounded write even if the requesting client disconnects.
+	logCtx, cancel := context.WithTimeout(context.WithoutCancel(ctx), execLogTimeout)
+	defer cancel()
+
+	if err := s.ExecLogger.Log(logCtx, entry); err != nil {
+		slog.ErrorContext(logCtx, "write execution log",
+			slog.String("execution_id", entry.ExecutionID),
+			slog.Any("error", err),
+		)
+	}
+}
+
+func clientIP(forwarded, peer string) string {
+	if addr, err := netip.ParseAddr(strings.TrimSpace(forwarded)); err == nil {
+		return addr.Unmap().String()
+	}
+
+	if addr, err := netip.ParseAddrPort(peer); err == nil {
+		return addr.Addr().Unmap().String()
+	}
+
+	if addr, err := netip.ParseAddr(peer); err == nil {
+		return addr.Unmap().String()
+	}
+
+	return ""
 }
 
 func genID(code string, length int) (string, error) {

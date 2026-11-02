@@ -2,7 +2,7 @@ SHELL := /bin/bash
 
 PROJECT_ID := $(shell gcloud config get-value project)
 DATABASE_ID := $(shell gcloud config get-value project)
-TARGET_URL := $(shell gcloud run services describe quasar --region asia-northeast1 --format 'value(status.url)' --project ${PROJECT_ID})
+TARGET_URL = $(shell gcloud run services describe quasar --region asia-northeast1 --format 'value(status.url)' --project ${PROJECT_ID})
 SERVICE_NAME := quasar
 LOCATION := asia-northeast1
 IMAGE := ${LOCATION}-docker.pkg.dev/${PROJECT_ID}/${SERVICE_NAME}/app
@@ -48,6 +48,11 @@ lint:
 
 artifact:
 	gcloud artifacts repositories create ${SERVICE_NAME} --repository-format=docker --location=${LOCATION} --project=${PROJECT_ID}
+
+.PHONY: schema
+schema:
+	bq --project_id="${PROJECT_ID}" --location="${LOCATION}" query --use_legacy_sql=false 'CREATE SCHEMA IF NOT EXISTS ${SERVICE_NAME} OPTIONS(location = "${LOCATION}");'
+	bq --project_id="${PROJECT_ID}" --location="${LOCATION}" query --use_legacy_sql=false < execlog/schema.sql
 
 cloudbuild:
 	gcloud builds submit --config cloudbuild.yaml --substitutions=_IMAGE=${IMAGE},_TAG=${TAG} .

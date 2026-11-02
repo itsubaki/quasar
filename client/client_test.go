@@ -235,37 +235,35 @@ func TestIdentityTokenDoesNotFollowRedirects(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		t.Run(fmt.Sprintf("%d/%s", c.statusCode, c.target), func(t *testing.T) {
-			httpClient := client.NewWithIdentityToken("dummy-token")
+		httpClient := client.NewWithIdentityToken("dummy-token")
 
-			var calls int
-			httpClient.Transport.(*client.HeaderTransport).RoundTripper = roundTripFunc(func(r *http.Request) (*http.Response, error) {
-				calls++
-				if r.URL.String() != "https://original.invalid/start" {
-					t.Fatalf("followed redirect and sent credentials to %s", r.URL)
-				}
-
-				if r.Header.Get("Authorization") != "Bearer dummy-token" {
-					t.Fatal("missing original credentials")
-				}
-
-				return &http.Response{
-					StatusCode: c.statusCode,
-					Header:     http.Header{"Location": []string{c.target}},
-					Body:       io.NopCloser(strings.NewReader("")),
-					Request:    r,
-				}, nil
-			})
-
-			resp, err := httpClient.Get("https://original.invalid/start")
-			if err != nil {
-				t.Fatal(err)
+		var calls int
+		httpClient.Transport.(*client.HeaderTransport).RoundTripper = roundTripFunc(func(r *http.Request) (*http.Response, error) {
+			calls++
+			if r.URL.String() != "https://original.invalid/start" {
+				t.Fatalf("followed redirect and sent credentials to %s", r.URL)
 			}
-			defer func() { _ = resp.Body.Close() }()
 
-			if resp.StatusCode != c.statusCode || calls != 1 {
-				t.Fatalf("status=%d calls=%d", resp.StatusCode, calls)
+			if r.Header.Get("Authorization") != "Bearer dummy-token" {
+				t.Fatal("missing original credentials")
 			}
+
+			return &http.Response{
+				StatusCode: c.statusCode,
+				Header:     http.Header{"Location": []string{c.target}},
+				Body:       io.NopCloser(strings.NewReader("")),
+				Request:    r,
+			}, nil
 		})
+
+		resp, err := httpClient.Get("https://original.invalid/start")
+		if err != nil {
+			t.Fatal(err)
+		}
+		defer func() { _ = resp.Body.Close() }()
+
+		if resp.StatusCode != c.statusCode || calls != 1 {
+			t.Fatalf("status=%d calls=%d", resp.StatusCode, calls)
+		}
 	}
 }

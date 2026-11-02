@@ -31,9 +31,11 @@ type apiFeature struct {
 
 func (a *apiFeature) start() {
 	h, err := handler.New(
-		0, // no limit
+		"", // no revision
+		0,  // no limit
 		1,
 		&store.MemoryStore{},
+		nil,
 	)
 	if err != nil {
 		log.Fatalf("new handler: %v", err)

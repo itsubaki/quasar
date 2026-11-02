@@ -12,7 +12,13 @@ import (
 	"github.com/itsubaki/quasar/gen/quasar/v1/quasarv1connect"
 )
 
-func New(maxQubits, maxConcurrent int, store Store) (http.Handler, error) {
+func New(
+	revision string,
+	maxQubits int,
+	maxConcurrent int,
+	store Store,
+	execLogger ExecLogger,
+) (http.Handler, error) {
 	if maxConcurrent < 1 {
 		return nil, errors.New("max concurrent must be positive")
 	}
@@ -34,9 +40,11 @@ func New(maxQubits, maxConcurrent int, store Store) (http.Handler, error) {
 
 	mux.Handle(quasarv1connect.NewQuasarServiceHandler(
 		&QuasarService{
+			Revision:      revision,
 			MaxQubits:     maxQubits,
 			MaxConcurrent: maxConcurrent,
 			Store:         store,
+			ExecLogger:    execLogger,
 		},
 		connect.WithInterceptors(
 			Recover(),

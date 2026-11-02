@@ -2,6 +2,7 @@ package execlog
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	bq "google.golang.org/api/bigquery/v2"
@@ -51,16 +52,15 @@ func (l *BigQueryLogger) Log(ctx context.Context, entry *Entry) error {
 		return fmt.Errorf("insert execution log: %w", err)
 	}
 
-	if len(resp.InsertErrors) == 0 {
-		// no errors
-		return nil
-	}
-
+	var errs []error
 	for _, rowError := range resp.InsertErrors {
+		if len(rowError.Errors) == 0 {
+			errs = append(errs, fmt.Errorf("insert execution log row %d: no error details", rowError.Index))
+		}
 		for _, detail := range rowError.Errors {
-			return fmt.Errorf("insert execution log row %d: %s: %s", rowError.Index, detail.Reason, detail.Message)
+			errs = append(errs, fmt.Errorf("insert execution log row %d: %s: %s", rowError.Index, detail.Reason, detail.Message))
 		}
 	}
 
-	return fmt.Errorf("insert execution log: %d row errors", len(resp.InsertErrors))
+	return errors.Join(errs...)
 }

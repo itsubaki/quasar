@@ -27,4 +27,4 @@ oryxBuildBinary
 # vscode
 .vscode
 *.html
-
+.DS_Store

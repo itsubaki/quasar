@@ -8,8 +8,8 @@ require (
 	connectrpc.com/connect v1.21.1
 	github.com/antlr4-go/antlr/v4 v4.13.1
 	github.com/cucumber/godog v0.15.0
-	github.com/itsubaki/q v0.0.12
-	github.com/itsubaki/qasm v0.1.5-0.20261101020302-d192bcb9d33f
+	github.com/itsubaki/q v0.0.13-0.20261103025435-5403cdbbed89
+	github.com/itsubaki/qasm v0.1.5-0.20261103025526-7352bc2d7184
 	github.com/urfave/cli/v3 v3.13.0
 	google.golang.org/api v0.310.0
 	google.golang.org/protobuf v1.36.12
@@ -29,7 +29,7 @@ require (
 	github.com/go-logr/logr v1.4.4 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/gofrs/uuid v4.3.1+incompatible // indirect
-	github.com/google/pprof v0.0.0-20261026192309-dbd0ed30aa88 // indirect
+	github.com/google/pprof v0.0.0-20261102214848-0031fcd306b0 // indirect
 	github.com/google/s2a-go v0.1.11 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/googleapis/enterprise-certificate-proxy v0.3.24 // indirect

@@ -509,6 +509,14 @@ func TestIncludeNotAllowed(t *testing.T) {
 			name: "intervening comment",
 			code: "include /* comment */ \n\"private.qasm\"; qubit q;",
 		},
+		{
+			name: "invalid syntax before include",
+			code: `qubit[ q; include "private.qasm";`,
+		},
+		{
+			name: "invalid token before include",
+			code: `$ include "private.qasm";`,
+		},
 	}
 
 	svc := &handler.QuasarService{
@@ -519,14 +527,37 @@ func TestIncludeNotAllowed(t *testing.T) {
 		if _, err := svc.Simulate(t.Context(), connect.NewRequest(&quasarv1.SimulateRequest{
 			Code: c.code,
 		})); connect.CodeOf(err) != connect.CodeInvalidArgument || !errors.Is(err, handler.ErrIncludeNotAllowed) {
-			t.Errorf("got %v, want invalid_argument: include is not allowed", err)
+			t.Errorf("%s: got %v, want invalid_argument: include is not allowed", c.name, err)
 		}
 
 		if _, err := svc.Validate(t.Context(), connect.NewRequest(&quasarv1.ValidateRequest{
 			Code: c.code,
 		})); connect.CodeOf(err) != connect.CodeInvalidArgument || !errors.Is(err, handler.ErrIncludeNotAllowed) {
-			t.Errorf("got %v, want invalid_argument: include is not allowed", err)
+			t.Errorf("%s: got %v, want invalid_argument: include is not allowed", c.name, err)
 		}
+	}
+}
+
+func TestLexicalErrorWithoutInclude(t *testing.T) {
+	const code = "qubit q;\n$ U(pi,0,pi) q;"
+	svc := &handler.QuasarService{MaxQubits: 1}
+
+	if _, err := svc.Simulate(t.Context(), connect.NewRequest(&quasarv1.SimulateRequest{
+		Code: code,
+	})); connect.CodeOf(err) != connect.CodeInvalidArgument || !strings.Contains(err.Error(), "token recognition error") {
+		t.Errorf("Simulate: got %v, want lexical error", err)
+	}
+
+	resp, err := svc.Validate(t.Context(), connect.NewRequest(&quasarv1.ValidateRequest{
+		Code: code,
+	}))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if resp.Msg.Valid || resp.Msg.Line == nil || *resp.Msg.Line != 2 || resp.Msg.Column == nil || *resp.Msg.Column != 0 ||
+		resp.Msg.Message == nil || !strings.Contains(*resp.Msg.Message, "token recognition error") {
+		t.Errorf("Validate: got %v, want lexical error at 2:0", resp.Msg)
 	}
 }
 

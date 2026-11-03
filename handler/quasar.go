@@ -370,23 +370,14 @@ func checkCode(code string) error {
 }
 
 func parseCode(code string) (parser.IProgramContext, error) {
-	program, err := xparser.Parse(code)
-	if err != nil {
-		return nil, err
-	}
+	lexer := parser.Newqasm3Lexer(antlr.NewInputStream(code))
+	lexer.RemoveErrorListeners()
 
-	// Inspect the entire AST before execution, including inactive branches and
-	// uncalled functions. Comments and string contents are not include statements.
-	pending := []antlr.Tree{program}
-	for len(pending) > 0 {
-		node := pending[len(pending)-1]
-		pending = pending[:len(pending)-1]
-		if _, ok := node.(*parser.IncludeStatementContext); ok {
+	for token := lexer.NextToken(); token.GetTokenType() != antlr.TokenEOF; token = lexer.NextToken() {
+		if lexer.GetSymbolicNames()[token.GetTokenType()] == "INCLUDE" {
 			return nil, ErrIncludeNotAllowed
 		}
-
-		pending = append(pending, node.GetChildren()...)
 	}
 
-	return program, nil
+	return xparser.Parse(code)
 }

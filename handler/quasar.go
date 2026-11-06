@@ -122,7 +122,7 @@ func (s *QuasarService) Simulate(
 		return nil, connect.NewError(connect.CodeInvalidArgument, err)
 	}
 
-	if len(env.Qubit) == 0 {
+	if len(env.Qubit) == 0 && len(env.QubitArray) == 0 {
 		return nil, connect.NewError(connect.CodeInvalidArgument, ErrQubitsNotFound)
 	}
 

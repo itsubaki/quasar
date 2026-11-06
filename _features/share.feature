@@ -19,7 +19,7 @@ Feature:
         Given I set request body:
             """
             {
-                "id": "AMOYU8a1VLEfWjqf"
+                "id": "pQTB57u8PiLtyjjb"
             }
             """
         When I send "POST" request to "/quasar.v1.QuasarService/Edit"

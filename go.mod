@@ -9,7 +9,7 @@ require (
 	github.com/antlr4-go/antlr/v4 v4.13.1
 	github.com/cucumber/godog v0.15.0
 	github.com/itsubaki/q v0.0.13-0.20261103084702-3f5078c7be93
-	github.com/itsubaki/qasm v0.1.5-0.20261106014220-d06606b9217b
+	github.com/itsubaki/qasm v0.1.5-0.20261107214909-3dec04b184ee
 	github.com/urfave/cli/v3 v3.13.0
 	google.golang.org/api v0.311.0
 	google.golang.org/protobuf v1.36.12
@@ -46,7 +46,7 @@ require (
 	go.opentelemetry.io/otel/metric v1.47.0 // indirect
 	go.opentelemetry.io/otel/trace v1.47.0 // indirect
 	golang.org/x/crypto v0.58.0 // indirect
-	golang.org/x/exp v0.0.0-20261014143641-f0251eb4aa3e // indirect
+	golang.org/x/exp v0.0.0-20261106192419-47ce03d25ef0 // indirect
 	golang.org/x/net v0.62.0 // indirect
 	golang.org/x/oauth2 v0.37.0 // indirect
 	golang.org/x/sync v0.24.0 // indirect
